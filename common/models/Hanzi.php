@@ -51,10 +51,10 @@ class Hanzi extends \yii\db\ActiveRecord
     const TYPE_PICTURE = 2;
     const TYPE_WORD_PICTURE = 3; 
 
-    const TYPE_NORMAL_PURE = 1; # 纯正字
-    const TYPE_NORMAL_WIDE = 2; # 正字且广义异体字
-    const TYPE_VARIANT_NARROW = 3;  # 狭义异体字
-    const TYPE_VARIANT_WIDE = 4;    # 广义异体字且非正字
+    const TYPE_NORMAL_PURE = 0; # 纯正字
+    const TYPE_NORMAL_WIDE = 1; # 正字且广义异体字
+    const TYPE_VARIANT_NARROW = 2;  # 狭义异体字
+    const TYPE_VARIANT_WIDE = 3;    # 广义异体字且非正字
 
     const HARD_TRUE = 1;
     const HARD_FALSE = 0;
@@ -148,10 +148,10 @@ class Hanzi extends \yii\db\ActiveRecord
     public static function norVarTypes()
     {
         return [
-            self::TYPE_NORMAL_PURE => Yii::t('common', '正字'),
+            self::TYPE_NORMAL_PURE => Yii::t('common', '纯正字'),
             self::TYPE_VARIANT_NARROW => Yii::t('common', '狭义异体字'),
-            self::TYPE_NORMAL_WIDE => Yii::t('common', '广义异体字且正字'),
-            self::TYPE_VARIANT_WIDE => Yii::t('common', '广义异体字非正字')
+            self::TYPE_NORMAL_WIDE => Yii::t('common', '广义且正字'),
+            self::TYPE_VARIANT_WIDE => Yii::t('common', '广义非正字')
         ];
     }
 

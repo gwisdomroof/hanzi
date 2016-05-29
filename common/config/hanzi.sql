@@ -1,5 +1,5 @@
 -- 来源：unicode，汉语大字典，台湾异体字字典，高丽异体字字典，敦煌俗字典
-CREATE TABLE IF NOT EXISTS hanzi (
+CREATE TABLE IF NOT EXISTS hanzi_tw (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
   hanzi_type INT DEFAULT NULL, -- '字形类型'

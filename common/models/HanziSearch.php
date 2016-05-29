@@ -42,7 +42,7 @@ class HanziSearch extends Hanzi
      */
     public function search($params)
     {
-        $query = Hanzi::find();
+        $query = Hanzi::find()->where(['word' => '']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

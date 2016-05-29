@@ -35,6 +35,7 @@ class HanziSplitController extends Controller
     public function actionIndex()
     {
         $searchModel = new HanziSearch();
+        // $dataProvider = $searchModel->search(Yii::$app->request->post());
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider->pagination->pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
