@@ -24,7 +24,8 @@ class HanziTask extends \yii\db\ActiveRecord
 {
     const STATUS_ASSIGNMENT = 0;
     const STATUS_ONGOING = 1;
-    const STATUS_COMPLETE = 2;
+    const STATUS_CANCEL = 2;
+    const STATUS_COMPLETE = 3;
 
     const SEQ_FIRST = 1;
     const SEQ_SECOND = 2;
@@ -46,9 +47,41 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['leader.username', 'member.username', 'created_at', 'updated_at'], 'safe'],
             [['remark'], 'string', 'max' => 128],
+            ['page', function ($attribute, $params) {
+                if ($this->status == self::STATUS_CANCEL) {
+                    return true;
+                }
+                // 1. create, current page is not allowed duplicated except the record is canceled
+                $query = HanziTask::find()->where(['page' => $this->page])->andwhere(['!=', 'status', self::STATUS_CANCEL]);
+                // update
+                if (!empty($this->id)) {
+                    $query->andFilterWhere(['!=', 'id', $this->id]);
+                }
+                if ($query->exists()) {
+                    $this->addError('page', '该页面已分配。');
+                }
+            }],
         ];
+    }
+
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getMember()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getLeader()
+    {
+        return $this->hasOne(User::className(), ['id' => 'leader_id']);
     }
 
     /**
@@ -59,9 +92,11 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'leader_id' => Yii::t('app', '组长'),
-            'user_id' => Yii::t('app', '姓名'),
+            'user_id' => Yii::t('app', '组员'),
+            'leader.username' => Yii::t('app', '组长'),
+            'member.username' => Yii::t('app', '组员'),
             'page' => Yii::t('app', '页码'),
-            'seq' => Yii::t('app', '次数'),
+            'seq' => Yii::t('app', '阶段'),
             'start_id' => Yii::t('app', '起始ID'),
             'end_id' => Yii::t('app', '结束ID'),
             'status' => Yii::t('app', '状态'),
@@ -79,6 +114,13 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::className()
         ];
+    }
+
+
+    public function attributes()
+    {
+        // 添加关联字段到可搜索特性
+        return array_merge(parent::attributes(), ['member.username', 'leader.username']);
     }
 
     public function beforeSave($insert)
@@ -146,6 +188,7 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             self::STATUS_ASSIGNMENT => Yii::t('common', '初分配'),
             self::STATUS_ONGOING => Yii::t('common', '进行中'),
+            self::STATUS_CANCEL => Yii::t('common', '已取消'),            
             self::STATUS_COMPLETE => Yii::t('common', '已完成')
         ];
     }

@@ -12,6 +12,7 @@ use common\models\HanziTask;
  */
 class HanziTaskSearch extends HanziTask
 {
+
     /**
      * @inheritdoc
      */
@@ -19,7 +20,7 @@ class HanziTaskSearch extends HanziTask
     {
         return [
             [['id', 'leader_id', 'user_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['remark'], 'safe'],
+            [['remark', 'member.username', 'leader.username'], 'safe'],
         ];
     }
 
@@ -47,9 +48,26 @@ class HanziTaskSearch extends HanziTask
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['id'=>SORT_ASC]]
         ]);
 
         $this->load($params);
+
+        // 并设置表别名为 `member`
+        $query->joinWith(['member' => function($query) { $query->from(['member' => 'user']); }]);
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['member.username'] = [
+            'asc' => ['member.username' => SORT_ASC],
+            'desc' => ['member.username' => SORT_DESC],
+        ];
+
+        // 并设置表别名为 `leader`
+        $query->joinWith(['leader' => function($query) { $query->from(['leader' => 'user']); }]);
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['leader.username'] = [
+            'asc' => ['leader.username' => SORT_ASC],
+            'desc' => ['leader.username' => SORT_DESC],
+        ];
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -60,8 +78,8 @@ class HanziTaskSearch extends HanziTask
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'leader_id' => $this->leader_id,
-            'user_id' => $this->user_id,
+            // 'leader_id' => $this->leader_id,
+            // 'user_id' => $this->user_id,
             'page' => $this->page,
             'seq' => $this->seq,
             'start_id' => $this->start_id,
@@ -71,6 +89,8 @@ class HanziTaskSearch extends HanziTask
             'updated_at' => $this->updated_at,
         ]);
 
+        $query->andFilterWhere(['like', 'leader.username', $this->getAttribute('leader.username')]);
+        $query->andFilterWhere(['like', 'member.username', $this->getAttribute('member.username')]);
         $query->andFilterWhere(['like', 'remark', $this->remark]);
 
         return $dataProvider;

@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php if (\common\models\HanziTask::isLeader(Yii::$app->user->id))
-            Html::a(Yii::t('frontend', 'Create Hanzi Task'), ['create'], ['class' => 'btn btn-success']) 
+           echo Html::a(Yii::t('frontend', 'Create Hanzi Task'), ['create'], ['class' => 'btn btn-success']) 
         ?>
     </p>
     <?= GridView::widget([
@@ -29,19 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'id',
                 "headerOptions" => ["width" => "30"]
             ],
-            [                     
-            'attribute' => 'user_id',
-            'value' => function ($data) {
-                return User::findIdentity($data['user_id'])->username; 
-                },
-            'filter'=>HanziTask::seqs(),
-            ],
-            [                     
-            'attribute' => 'leader_id',
-            'value' => function ($data) {
-                return User::findIdentity($data['leader_id'])->username; 
-                },
-            ],
+            'member.username',
+            'leader.username',
             [                     
             'attribute' => 'seq',
             'value' => function ($data) {

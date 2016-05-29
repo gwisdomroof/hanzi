@@ -16,8 +16,8 @@ use common\models\Hanzi;
 </tr>
 <tr>
 	<td>是否难字</td>
-	<td><?php echo Hanzi::hards()[$model->hard10]; ?></td>
-	<td><?php echo Hanzi::hards()[$model->hard20]; ?></td>
+	<td><?php echo empty($model->hard10) ?null : Hanzi::hards()[$model->hard10]; ?></td>
+	<td><?php echo empty($model->hard20) ?null : Hanzi::hards()[$model->hard20]; ?></td>
 </tr>
 <tr>
 	<td>初步拆分1</td>

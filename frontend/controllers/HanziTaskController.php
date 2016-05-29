@@ -70,10 +70,11 @@ class HanziTaskController extends Controller
     {
         $model = new HanziTask();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->leader_id = null;
-            if ($model->save())
-                return $this->redirect(['view', 'id' => $model->id]);
+        // set default seq
+        $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             // var_dump($model->getErrors()); die;
             return $this->render('create', [
@@ -97,10 +98,8 @@ class HanziTaskController extends Controller
             throw new HttpException(401, '对不起，您无权修改。'); 
         }
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->leader_id = null;
-            if ($model->save())
-                return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

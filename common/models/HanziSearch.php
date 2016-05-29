@@ -23,6 +23,7 @@ class HanziSearch extends Hanzi
         ];
     }
 
+
     /**
      * @inheritdoc
      */
@@ -45,7 +46,9 @@ class HanziSearch extends Hanzi
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['id'=>SORT_ASC]]
         ]);
+
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;

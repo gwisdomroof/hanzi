@@ -63,7 +63,7 @@ class HanziSplitController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($seq=1)
+    public function actionCreate()
     {
         $model = new Hanzi();
 
@@ -72,7 +72,6 @@ class HanziSplitController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'seq' => $seq,
             ]);
         }
     }

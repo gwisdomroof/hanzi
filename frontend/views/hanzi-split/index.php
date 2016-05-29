@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'source',
                 'value'=>function ($model) {
-                    return Hanzi::sources()[$model->source];
+                    return empty($model->source) ? null: Hanzi::sources()[$model->source];
                 },
                 'filter'=>Hanzi::sources(),
             ],
@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'hard10',
                 'value'=>function ($model) {
-                    return \common\models\Hanzi::hards()[$model->hard10];
+                    return empty($model->hard10) ? null:  \common\models\Hanzi::hards()[$model->hard10];
                 },
                 'filter'=>Hanzi::hards()
             ],

@@ -15,13 +15,20 @@ use common\models\user;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <?= $form->field($model, 'leader_id', ['enableClientValidation'=>false])->textInput(['readonly' => 'readonly', 'value' => Yii::$app->user->identity->username]) ?>
+    <!-- <?= $form->field($model, 'leader_id', ['enableClientValidation'=>false])->textInput(['readonly' => 'readonly', 'value' => Yii::$app->user->identity->username]) ?> -->
+
+    <div class="form-group field-hanzitask-leader">
+        <?= Html::label('组长', null, ['class' => 'control-label col-sm-3']); ?>
+        <div class="col-sm-6">
+        <?= Html::textInput('leader_id', Yii::$app->user->identity->username, ['readonly' => true, 'class' => "form-control"]);?>
+        </div>
+    </div>
+
+    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?>
 
     <?= $form->field($model, 'user_id')->dropDownList($model->members(), ['prompt' => '']) ?>
 
     <?= $form->field($model, 'page')->textInput() ?>
-
-    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '']) ?>
 
     <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['prompt' => '']) ?>
 
