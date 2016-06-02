@@ -6,6 +6,7 @@ use Yii;
 use common\models\HanziTask;
 use common\models\HanziTaskSearch;
 use common\models\User;
+use common\models\Hanzi;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -39,7 +40,18 @@ class HanziTaskController extends Controller
     public function actionIndex()
     {
         $searchModel = new HanziTaskSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $param = Yii::$app->request->queryParams;
+
+        if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['member.username'])) {
+            $param = array_merge($param, [
+                'HanziTaskSearch' => [
+                    'member.username' => Yii::$app->user->identity->username
+                    ]
+                ]);
+        }
+
+        $dataProvider = $searchModel->search($param);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

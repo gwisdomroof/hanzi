@@ -126,10 +126,9 @@ class HanziTask extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $index = 1;
-            $perPage = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
-            $this->start_id = $index + ($this->page - 1) * $perPage; 
-            $this->end_id =$this->page * $perPage; 
+            $idRange = Hanzi::getIdRangeByPage($this->page);
+            $this->start_id = $idRange['minId']; 
+            $this->end_id = $idRange['maxId'];
             $this->leader_id = Yii::$app->user->id;
             return true;
 

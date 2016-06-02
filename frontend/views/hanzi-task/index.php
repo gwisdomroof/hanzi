@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
             'attribute' => 'page',
             'value' => function ($data) {
-                return Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => 2], true));
+                return Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
                 },
             'format' => 'raw',
             ],

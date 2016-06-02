@@ -52,9 +52,9 @@ class Hanzi extends \yii\db\ActiveRecord
     const TYPE_WORD_PICTURE = 3; 
 
     const TYPE_NORMAL_PURE = 0; # 纯正字
-    const TYPE_NORMAL_WIDE = 1; # 正字且广义异体字
-    const TYPE_VARIANT_NARROW = 2;  # 狭义异体字
-    const TYPE_VARIANT_WIDE = 3;    # 广义异体字且非正字
+    const TYPE_VARIANT_NARROW = 1; # 狭义异体字
+    const TYPE_NORMAL_WIDE = 2;  # 广义且正字
+    const TYPE_VARIANT_WIDE = 3;    # 广义非正字
 
     const HARD_TRUE = 1;
     const HARD_FALSE = 0;
@@ -139,6 +139,23 @@ class Hanzi extends \yii\db\ActiveRecord
     public static function find()
     {
         return new HanziQuery(get_called_class());
+    }
+
+    /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
+    public static function getIdRangeByPage($page)
+    {
+        $pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
+
+        $dataset = Hanzi::find()->select('id')->where(['word' => ''])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
+
+        return  [
+            'minId' => (int)$dataset[0]['id'],
+            'maxId' => (int)$dataset[count($dataset) - 1]['id']
+        ];
     }
 
     /**

@@ -40,15 +40,20 @@ class HanziSearch extends Hanzi
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $bWordBlank = false)
     {
-        $query = Hanzi::find()->where(['word' => '']);
+        $query = Hanzi::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort'=> ['defaultOrder' => ['id'=>SORT_ASC]]
         ]);
 
+        if ($bWordBlank) {
+            $query->andWhere(['word' => '']);
+        } else {
+            $query->andFilterWhere(['like', 'word', $this->word]);
+        }
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
@@ -67,8 +72,7 @@ class HanziSearch extends Hanzi
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'word', $this->word])
-            ->andFilterWhere(['like', 'picture', $this->picture])
+        $query->andFilterWhere(['like', 'picture', $this->picture])
             ->andFilterWhere(['like', 'standard_word', $this->standard_word])
             ->andFilterWhere(['like', 'position_code', $this->position_code])
             ->andFilterWhere(['like', 'radical', $this->radical])
@@ -91,4 +95,5 @@ class HanziSearch extends Hanzi
 
         return $dataProvider;
     }
+
 }
