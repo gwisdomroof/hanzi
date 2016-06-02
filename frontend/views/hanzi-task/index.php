@@ -34,14 +34,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
             'attribute' => 'seq',
             'value' => function ($data) {
-                return $data->seqs()[$data['seq']]; 
+                return empty($data['seq']) ? '' : $data->seqs()[$data['seq']]; 
                 },
             'filter'=>HanziTask::seqs(),
             ],
             [                     
             'attribute' => 'page',
             'value' => function ($data) {
-                return Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
+                return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
                 },
             'format' => 'raw',
             ],
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
             'attribute' => 'status',
             'value' => function ($data) {
-                return $data->statuses()[$data['status']]; 
+                return empty($data['status']) ? '' : $data->statuses()[$data['status']]; 
                 },
             'filter'=>HanziTask::statuses(),
             ],

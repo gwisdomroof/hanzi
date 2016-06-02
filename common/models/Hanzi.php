@@ -150,7 +150,7 @@ class Hanzi extends \yii\db\ActiveRecord
     {
         $pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
 
-        $dataset = Hanzi::find()->select('id')->where(['word' => ''])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
+        $dataset = Hanzi::find()->orderBy('id')->where(['word' => ''])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
 
         return  [
             'minId' => (int)$dataset[0]['id'],

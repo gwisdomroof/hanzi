@@ -15,8 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="hanzi-create">
 
     <?php echo $this->render('_form', [
-        'model' => $model,
-        'seq' => $seq,
+        'model' => $model
     ]) ?>
 
 </div>
