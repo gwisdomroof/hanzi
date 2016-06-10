@@ -31,6 +31,17 @@ $this->params['breadcrumbs'][] = $this->title;
         padding: 0px;
         border-collapse: collapse;;
     }
+    .component-img {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        display: inline-table;
+        border: 1px solid #eee;
+        vertical-align: middle;
+        margin: 0;
+        padding: 1px 3px 5px 3px;
+        border-collapse: collapse;;
+    }
 </style>
 <div class="hanzi-split-index">
 	<div class="col-sm-offset-1 col-sm-10">
@@ -56,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else {
                             echo "<span>";
                             $path =  '/img/components/' . $key . '.png';
-                            echo "<img class='component-item' src='$path' alt='$value'>";
+                            echo "<img class='component-img' src='$path' alt='$value'>";
                         }
                         echo "</span>";
                     } ?>

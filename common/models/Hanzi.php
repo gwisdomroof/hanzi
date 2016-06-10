@@ -64,7 +64,7 @@ class Hanzi extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%hanzi}}';
+        return '{{%hanzi_split}}';
     }
 
     /**

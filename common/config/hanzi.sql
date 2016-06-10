@@ -1,5 +1,5 @@
 -- 来源：unicode，汉语大字典，台湾异体字字典，高丽异体字字典，敦煌俗字典
-CREATE TABLE IF NOT EXISTS hanzi_tw (
+CREATE TABLE IF NOT EXISTS hanzi (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
   hanzi_type INT DEFAULT NULL, -- '字形类型'
@@ -29,6 +29,38 @@ CREATE TABLE IF NOT EXISTS hanzi_tw (
   deform_split30 varchar(128) DEFAULT NULL, -- '调笔拆分'
   similar_stock30 varchar(128) DEFAULT NULL, -- '相似部件'
   remark varchar(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL 
+);
+
+
+CREATE TABLE IF NOT EXISTS hanzi_set (
+  id BIGSERIAL PRIMARY KEY,
+  source smallint DEFAULT NULL, -- '来源'
+  type smallint DEFAULT NULL, -- '字形类型'
+  word varchar(8) DEFAULT NULL, -- '文字'
+  pic_name varchar(64) DEFAULT NULL, -- '图片'
+  nor_var_type smallint DEFAULT NULL, -- '正异类型'
+  belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
+  standard_word_code varchar(64) DEFAULT NULL, -- '兼正字号'
+  position_code varchar(128) DEFAULT NULL, -- '位置编号'
+  bDuplicate smallint DEFAULT NULL, -- '是否重复'
+  duplicate_id varchar(128) DEFAULT NULL, -- '重复ID'
+  frequence INT DEFAULT 0, -- '字频'
+  pinyin varchar(64) DEFAULT NULL, -- '拼音'
+  radical varchar(8) DEFAULT NULL, -- '部首'
+  stocks smallint DEFAULT NULL, -- '笔画'
+  zhengma varchar(128) DEFAULT NULL, -- '郑码'
+  wubi varchar(128) DEFAULT NULL, -- '五笔'
+  structure varchar(8) DEFAULT NULL, -- '结构'
+  bHard smallint DEFAULT NULL, -- '是否难字'
+  min_split varchar(128) DEFAULT NULL, -- '初步拆分'
+  deform_split varchar(128) DEFAULT NULL, -- '调笔拆分'
+  similar_stock varchar(128) DEFAULT NULL, -- '相似部件'
+  max_split varchar(256) DEFAULT NULL, -- '最大拆分'
+  mix_split varchar(256) DEFAULT NULL, -- '混合拆分'
+  stock_serial varchar(256) DEFAULT NULL, -- '部件序列'
+  remark varchar(256) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
 );
