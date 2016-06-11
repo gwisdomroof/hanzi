@@ -23,10 +23,11 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             // ['label' => Yii::t('frontend', 'Home'), 'url' => ['/site/index']],
             // ['label' => Yii::t('frontend', 'About'), 'url' => ['/page/view', 'slug'=>'about']],
             // ['label' => Yii::t('frontend', 'Articles'), 'url' => ['/article/index']],
-
-            ['label' => Yii::t('frontend', '任务'), 'url' => ['/hanzi-task/index'],],
+            ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['/hanzi-set/search'],],
+            ['label' => Yii::t('frontend', '我的任务'), 'url' => ['/hanzi-task/index'],],
+            ['label' => Yii::t('frontend', '任务管理'), 'url' => ['/hanzi-task/admin'],],
             ['label' => Yii::t('frontend', '拆字'), 'url' => ['/hanzi-split/index'],],
-            ['label' => Yii::t('frontend', '部件'), 'url' => ['/hanzi-split/component'],],
+            ['label' => Yii::t('frontend', '部件集'), 'url' => ['/hanzi-split/component'],],
             ['label' => Yii::t('frontend', '帮助'), 'url' => ['/article/split-intro'],],
 
             // ['label' => Yii::t('frontend', 'Contact'), 'url' => ['/site/contact']],

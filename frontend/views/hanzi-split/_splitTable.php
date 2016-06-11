@@ -11,8 +11,8 @@ use common\models\Hanzi;
 <tbody>
 <tr>
 	<td width="100px">&nbsp;</td>
-	<td>初次拆分</td>
-	<td>二次拆分</td>
+	<td style="font-weight: bold">初次拆分</td>
+	<td style="font-weight: bold">二次拆分</td>
 </tr>
 <tr>
 	<td>是否难字</td>
