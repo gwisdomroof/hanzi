@@ -8,21 +8,18 @@ use common\models\HanziTask;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('frontend', 'Hanzi Tasks');
+$this->title = Yii::t('frontend', '我的任务');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hanzi-task-index">
 
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
-    <p>
-        <?php if (\common\models\HanziTask::isLeader(Yii::$app->user->id))
-           echo Html::a(Yii::t('frontend', 'Create Hanzi Task'), ['create'], ['class' => 'btn btn-success']) 
-        ?>
-    </p>
     <?= GridView::widget([
+        'layout'=>"{summary}\n{items}\n{pager}",
+        'summary' => "您共有{totalCount}页任务，当前为{begin}至{end}页。",
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        // 'filterModel' => $searchModel,
         'columns' => [
             // ['class' => 'yii\grid\SerialColumn'],
             [
@@ -50,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
             'attribute' => 'status',
             'value' => function ($data) {
-                return empty($data['status']) ? '' : $data->statuses()[$data['status']]; 
+                return !isset($data['status']) ? '' : $data->statuses()[$data['status']]; 
                 },
             'filter'=>HanziTask::statuses(),
             ],
@@ -59,7 +56,9 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_at',
 
             [
+                'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}',
                 "headerOptions" => ["width" => "100"]
             ],
         ],

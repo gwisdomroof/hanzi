@@ -47,6 +47,7 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['page'], 'integer', 'max' => 10000],
             [['leader.username', 'member.username', 'created_at', 'updated_at'], 'safe'],
             [['remark'], 'string', 'max' => 128],
             ['page', function ($attribute, $params) {

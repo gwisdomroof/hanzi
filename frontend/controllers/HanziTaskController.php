@@ -60,6 +60,33 @@ class HanziTaskController extends Controller
 
     }
 
+    /**
+     * Lists all HanziTask models.
+     * @return mixed
+     */
+    public function actionAdmin()
+    {
+        $searchModel = new HanziTaskSearch();
+
+        $param = Yii::$app->request->queryParams;
+
+        if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['member.username'])) {
+            $param = array_merge($param, [
+                'HanziTaskSearch' => [
+                    'member.username' => Yii::$app->user->identity->username
+                    ]
+                ]);
+        }
+
+        $dataProvider = $searchModel->search($param);
+
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    }
+
 
     /**
      * Displays a single HanziTask model.
