@@ -1,0 +1,55 @@
+#commentWrap {
+    width: 61.8%;
+    margin: auto;
+}
+#commentWrap .comment-text {
+    margin-bottom: 1em;
+}
+#commentWrap textarea.text-content {
+    width: 100%;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    border-radius: 2px;
+    height: 5em;
+}
+#commentWrap textarea.reply {
+    height: 4em;
+}
+#commentWrap .bullet {
+    margin:0 5px;
+}
+#commentWrap .text-ctrl {
+    text-align: right;
+}
+#commentWrap .comment-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#commentWrap .comment-list li .body{
+    border:1px solid #ddd;
+    margin-bottom: 1em;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+#commentWrap .comment-list .children {
+    margin-left: 2em;
+    margin-top: -10px;
+}
+#commentWrap .comment-list li > div{
+    padding: 5px 0.5em;
+}
+#commentWrap .comment-list li .author {
+    font-weight: bold;
+    color:#000;
+}
+#commentWrap .comment-list li .header {
+    color:#8d8d8d;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+#commentWrap .comment-list li .footer {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
