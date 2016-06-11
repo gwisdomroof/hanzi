@@ -5,6 +5,10 @@ use common\models\Hanzi;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use app\modules\comment\assets\YannAssets;
+
+YannAssets::register($this);
+
 /* @var $this yii\web\View */
 /* @var $model common\models\Hanzi */
 
@@ -88,3 +92,15 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 </div>
+
+
+<div id="commentWrap"></div>
+<?php
+$username = Yii::$app->user->identity['username'];
+$script = <<<SCRIPT
+    new Comment({
+        el: '#commentWrap',
+        username: '{$username}',
+    })
+SCRIPT;
+$this->registerJs($script, \yii\web\View::POS_END);

@@ -18,6 +18,9 @@ $config = [
             'modules' => [
                 'v1' => 'frontend\modules\api\v1\Module'
             ]
+        ],
+        'comment' => [
+            'class' => 'app\modules\comment\Module'
         ]
     ],
     'components' => [
