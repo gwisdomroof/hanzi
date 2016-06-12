@@ -43,7 +43,10 @@ $config = [
         'i18n' => [
             'class' => 'backend\modules\i18n\Module',
             'defaultRoute'=>'i18n-message/index'
-        ]
+        ],
+        'comment' => [
+            'class' => 'app\modules\yann\Module',
+        ],
     ],
     // 'as access' => [
     //     'class' => 'mdm\admin\components\AccessControl',
