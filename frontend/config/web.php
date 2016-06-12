@@ -2,7 +2,7 @@
 $config = [
     'homeUrl'=>Yii::getAlias('@frontendUrl'),
     'controllerNamespace' => 'frontend\controllers',
-    'defaultRoute' => 'site/index',
+    'defaultRoute' => 'hanzi-set/search',
     'bootstrap' => ['maintenance'],
     'modules' => [
         'admin' => [
@@ -63,14 +63,16 @@ $config = [
             'identityClass' => 'common\models\User',
             'loginUrl'=>['/user/sign-in/login'],
             'enableAutoLogin' => true,
+            // 'enableSession' => true,
+            // 'authTimeout' => 3600,
             'as afterLogin' => 'common\behaviors\LoginTimestampBehavior'
         ],
     ],
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
-            'site/*',
-            // 'admin/*',
+            // 'site/*',
+            'admin/*',
             // 'some-controller/some-action',
             // The actions listed here will be allowed to everyone including guests.
             // So, 'admin/*' should not appear here in the production, of course.
