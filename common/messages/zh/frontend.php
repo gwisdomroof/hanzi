@@ -76,6 +76,7 @@ return [
     '{app-name} | Your login information' => '{app-name} | 您的登录信息',
     'Hanzis' => '汉字',
     'Hanzi Tasks' => '汉字拆分',
+    'hanzi-set' => '汉字',
     'Create Hanzi Task' => '创建',
     'Create {modelClass}' => '创建 {modelClass}',
     'Update And Next' => '更新后转下一条',

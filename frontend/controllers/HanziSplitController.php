@@ -36,6 +36,10 @@ class HanziSplitController extends Controller
     {
         $searchModel = new HanziSearch();
 
+        $currentPage = isset(Yii::$app->request->queryParams['page']) ? (int)Yii::$app->request->queryParams['page'] : 1;
+
+        $authority = HanziTask::checkPagePermission(Yii::$app->user->id, $currentPage);
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
 
         $dataProvider->pagination->pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
@@ -43,6 +47,7 @@ class HanziSplitController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'authority' => $authority
         ]);
     }
 
@@ -167,7 +172,8 @@ class HanziSplitController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $next == 'true' ? $this->redirect(['first', 'id' => $model->id + 1]) : $this->redirect(['view', 'id' => $model->id]);
+            $nextId = $model->nextSplitId($model->id);
+            return $next == 'true' ? $this->redirect(['first', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('first', [
                 'model' => $model,

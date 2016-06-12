@@ -26,6 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		'model' => $model,
 		'seq' => $seq,
 	]) ?>
+
+	
 	<div id="app">
 		<form class="form-horizontal">
 			<div class="form-group">

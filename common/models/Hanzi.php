@@ -73,10 +73,10 @@ class Hanzi extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'hanzi_type', 'nor_var_type', 'stocks', 'hard10', 'hard20', 'hard30', 'created_at', 'updated_at'], 'integer'],
+            [['source', 'hanzi_type', 'nor_var_type', 'stocks', 'duplicate', 'hard10', 'hard20', 'hard30', 'created_at', 'updated_at'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['word', 'radical', 'structure'], 'string', 'max' => 8],
-            [['picture', 'corners', 'attach'], 'string', 'max' => 32],
+            [['picture', 'corners', 'attach','duplicate10', 'duplicate20', 'duplicate30', ], 'string', 'max' => 32],
             [['standard_word', 'position_code'], 'string', 'max' => 64],
             [['initial_split11', 'initial_split12', 'deform_split10', 'similar_stock10', 'initial_split21', 'initial_split22', 'deform_split20', 'similar_stock20', 'initial_split31', 'initial_split32', 'deform_split30', 'similar_stock30', 'remark'], 'string', 'max' => 128],
         ];
@@ -90,6 +90,20 @@ class Hanzi extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::className()
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function nextSplitId($curId)
+    {
+        if (!isset($curId)) 
+            return false;
+
+        $query = Hanzi::find()->OrderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
+
+        return $query->one()->id;
+
     }
 
     /**
@@ -111,16 +125,19 @@ class Hanzi extends \yii\db\ActiveRecord
             'structure' => Yii::t('app', '结构'),
             'corners' => Yii::t('app', '四角'),
             'attach' => Yii::t('app', '附码'),
+            'duplicate10' => Yii::t('app', '重复值'),
             'hard10' => Yii::t('app', '是否难字'),
             'initial_split11' => Yii::t('app', '初步拆分1'),
             'initial_split12' => Yii::t('app', '初步拆分2'),
             'deform_split10' => Yii::t('app', '调笔拆分'),
             'similar_stock10' => Yii::t('app', '相似部件'),
+            'duplicate20' => Yii::t('app', '重复值'),
             'hard20' => Yii::t('app', '是否难字'),
             'initial_split21' => Yii::t('app', '初步拆分1'),
             'initial_split22' => Yii::t('app', '初步拆分2'),
             'deform_split20' => Yii::t('app', '调笔拆分'),
             'similar_stock20' => Yii::t('app', '相似部件'),
+            'duplicate30' => Yii::t('app', '重复值'),
             'hard30' => Yii::t('app', '是否难字'),
             'initial_split31' => Yii::t('app', '初步拆分1'),
             'initial_split32' => Yii::t('app', '初步拆分2'),
@@ -157,6 +174,7 @@ class Hanzi extends \yii\db\ActiveRecord
             'maxId' => (int)$dataset[count($dataset) - 1]['id']
         ];
     }
+
 
     /**
      * Returns user statuses list

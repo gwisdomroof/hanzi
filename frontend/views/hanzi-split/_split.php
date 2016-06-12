@@ -12,13 +12,15 @@ use yii\bootstrap\ActiveForm;
 <div class="hanzi-form">
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal', 'id' => 'hanzi-form']); ?>
+    
+    
 
     <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-6 strong" style="font-size: 25px" > 
+        <div class="col-sm-offset-3 col-sm-6 strong" style="font-size: 25px;" > 
             <?php if(!empty($model->word)) {
                     echo $model->word;
                 } else{
-                    echo Html::img("@web/img/tw/$model->picture");
+                    echo Html::img(\common\models\HanziSet::getPicturePath($model->source, $model->picture));
                 }  
             ?>
         </div>
@@ -28,7 +30,12 @@ use yii\bootstrap\ActiveForm;
         $readonly = $seq == 1 ? false : true;
         ?>
 
-    <?php echo $form->field($model, 'hard10')->dropDownList(['0' => '否', '1' => '是'], ['disabled' => $readonly]) ?>
+    <?php echo $form->field($model, 'duplicate10')->textInput(['maxlength' => true, 'readonly' => $readonly, 'placeholder' => '填写与上面字头重复的文字或图片编号。若已重复，则不须拆分。']) ?>
+
+    <?php echo $form->field($model, 'hard10')->radioList(['0' => '否', '1' => '是'], [
+        'item' => function ($index, $label, $name, $checked, $value) {
+            return '<label class="radio-inline">' . Html::radio($name, $checked, ['value'  => $value]) . $label . '</label>';
+        }]); ?>
 
     <?php echo $form->field($model, 'initial_split11')->textInput(['maxlength' => true, 'readonly' => $readonly]) ?>
 
@@ -43,6 +50,7 @@ use yii\bootstrap\ActiveForm;
     <?php if($seq == 2) { 
         $readonly = $seq == 2 ? false : true;
         ?>
+    <?php echo $form->field($model, 'duplicate20')->textInput(['maxlength' => true, 'readonly' => $readonly, 'placeholder' => '填写与上面字头重复的文字或图片编号。若已重复，则不须拆分。']) ?>
 
     <?php echo $form->field($model, 'hard20')->dropDownList(['0' => '否', '1' => '是'], ['disabled' => $readonly]) ?>
 
@@ -61,6 +69,8 @@ use yii\bootstrap\ActiveForm;
     <?php echo $this->render('_splitTable', [
         'model' => $model,
     ]) ?>
+
+    <?php echo $form->field($model, 'duplicate30')->textInput(['maxlength' => true, 'readonly' => $readonly, 'placeholder' => '填写与上面字头重复的文字或图片编号。若已重复，则不须拆分。']) ?>
 
     <?php echo $form->field($model, 'hard30')->dropDownList(['0' => '否', '1' => '是']) ?>
 

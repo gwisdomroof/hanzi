@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'modelClass' => 'Hanzi',
         ]), ['create'], ['class' => 'btn btn-success']) ?> -->
     </p>
+    
 
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -104,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ];
                         return Html::a('<span>查看</span>&nbsp;', $url, $options);
                     },
-                    'update' => function ($url, $model, $key) {
+                    'update' => !$authority ? function () {return '';} : function ($url, $model, $key) {
                         $options = [
                             'title' => Yii::t('yii', '拆字'),
                             'aria-label' => Yii::t('yii', '拆字'),
