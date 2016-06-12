@@ -17,11 +17,11 @@ $this->title = $name;
         <?php echo nl2br(Html::encode($message)) ?>
     </div>
 
-    <p>
+    <!-- <p>
         The above error occurred while the Web server was processing your request.
     </p>
     <p>
         Please contact us if you think this is a server error. Thank you.
-    </p>
+    </p> -->
 
 </div>
