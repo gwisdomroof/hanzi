@@ -70,10 +70,10 @@ class HanziTaskController extends Controller
 
         $param = Yii::$app->request->queryParams;
 
-        if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['member.username'])) {
+        if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['leader.username'])) {
             $param = array_merge($param, [
                 'HanziTaskSearch' => [
-                    'member.username' => Yii::$app->user->identity->username
+                    'leader.username' => Yii::$app->user->identity->username
                     ]
                 ]);
         }
@@ -109,7 +109,7 @@ class HanziTaskController extends Controller
     {
         $model = new HanziTask();
 
-        // set default seq
+        // set current seq
         $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

@@ -68,6 +68,39 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 获取当前可分配的页码
+     * @return [type] [description]
+     */
+    public static function getIdlePages($count = 50)
+    {
+        // 待拆分的记录
+        $countToSplit = Hanzi::find()->where(['duplicate' => 0])->count();
+
+        $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false))+ 1;
+
+        $usedPages = HanziTask::find()->select('page')->orderBy('id')->where(['!=', 'status', self::STATUS_CANCEL])->asArray()->all();
+
+        $usedPagesArr = [];
+        foreach ($usedPages as $page) {
+          if (!empty($page['page']))
+            $usedPagesArr[] = $page['page']; 
+        }
+
+        $idlePagesArr = [];
+        for ($i=1; $i < $maxPageNumber; $i++) { 
+          if (!in_array($i, $usedPagesArr)) {
+            $idlePagesArr[$i] = $i;
+            if (count($idlePagesArr) >= $count) {
+              break;
+            }
+          }
+        }
+
+        return $idlePagesArr;
+
+    }
+
+    /**
      * [getCustomer description]
      * @return [type] [description]
      */
@@ -161,9 +194,13 @@ class HanziTask extends \yii\db\ActiveRecord
      * @param string $id
      * @return mixed
      */
-    public static function checkPagePermission($userId, $page, $seq)
+    public static function checkPagePermission($userId, $page, $seq=0)
     {
-        return HanziTask::find()->where(['user_id'=>$userId, 'page'=>$page, 'seq'=>$seq])->exists();
+        $query = HanziTask::find()->where(['user_id'=>$userId, 'page'=>$page]);
+        if ($seq !== 0) {
+          $query->andwhere(['seq'=>$seq]);
+        }
+        return $query->exists();
     }
 
     /**

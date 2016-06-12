@@ -28,7 +28,7 @@ use common\models\user;
 
     <?= $form->field($model, 'user_id')->dropDownList($model->members(), ['prompt' => '']) ?>
 
-    <?= $form->field($model, 'page')->textInput() ?>
+    <?= $form->field($model, 'page')->dropDownList(HanziTask::getIdlePages(), ['prompt' => '']) ?>
 
     <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['prompt' => '']) ?>
 

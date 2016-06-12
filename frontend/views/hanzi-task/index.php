@@ -17,15 +17,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'layout'=>"{summary}\n{items}\n{pager}",
-        'summary' => "您共有{totalCount}页任务，当前为{begin}至{end}页。",
+        'summary' => "您共有{totalCount}个任务，当前为第{begin}至{end}个。",
         'dataProvider' => $dataProvider,
         // 'filterModel' => $searchModel,
         'columns' => [
-            // ['class' => 'yii\grid\SerialColumn'],
             [
-                'attribute'=>'id',
+                'class' => 'yii\grid\SerialColumn',
                 "headerOptions" => ["width" => "30"]
             ],
+            // [
+            //     'attribute'=>'id',
+            //     "headerOptions" => ["width" => "30"]
+            // ],
             'member.username',
             'leader.username',
             [                     
@@ -59,7 +62,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',
-                "headerOptions" => ["width" => "100"]
+                "headerOptions" => ["width" => "100"],
+                'buttons' => [
+                    'view' => function ($url, $data, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', '查看任务'),
+                            'aria-label' => Yii::t('yii', '查看任务'),
+                        ];
+                        $url = yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page]);
+                        return Html::a('<span>查看</span>&nbsp;', $url, $options);
+                    },
+                ],
             ],
         ],
     ]); ?>
