@@ -30,7 +30,7 @@ use yii\bootstrap\ActiveForm;
         $readonly = $seq == 1 ? false : true;
         ?>
 
-    <?php echo $form->field($model, 'duplicate10')->textInput(['maxlength' => true, 'readonly' => $readonly, 'placeholder' => '填写与上面字头重复的文字或图片编号。若已重复，则不须拆分。']) ?>
+    <?php echo $form->field($model, 'duplicate10')->textInput(['maxlength' => true, 'readonly' => $readonly, 'placeholder' => '填写与上面字头重复的文字或图片编号。若有重复，则不须进行后面的拆分。']) ?>
 
     <?php echo $form->field($model, 'hard10')->radioList(['0' => '否', '1' => '是'], [
         'item' => function ($index, $label, $name, $checked, $value) {

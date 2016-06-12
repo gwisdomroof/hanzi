@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'belong_standard_word_code',
             // 'standard_word_code',
             // 'position_code',
-            // 'bduplicate',
+            // 'duplicate',
             // 'duplicate_id',
             // 'pinyin',
             // 'radical',

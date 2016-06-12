@@ -26,9 +26,26 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['/hanzi-set/search'],],
             ['label' => Yii::t('frontend', '任务管理'), 'url' => ['/hanzi-task/admin'], 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id)],
             ['label' => Yii::t('frontend', '我的任务'), 'url' => ['/hanzi-task/index'],],
-            ['label' => Yii::t('frontend', '拆字'), 'url' => ['/hanzi-split/index'],],
+            // ['label' => Yii::t('frontend', '拆字'), 'url' => ['/hanzi-split/index'],],
             ['label' => Yii::t('frontend', '部件集'), 'url' => ['/hanzi-split/component'],],
-            ['label' => Yii::t('frontend', '帮助'), 'url' => ['/article/split-intro'],],
+            [
+                'label' => Yii::t('frontend', '文档'),
+                'visible'=>!Yii::$app->user->isGuest,
+                'items'=>[
+                    [
+                        'label' => Yii::t('frontend', '部件笔画检字法'),
+                        'url' => ['/article/hanzi-search']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '拆字工作流程'),
+                        'url' => ['/article/split-intro']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '网站更新说明'),
+                        'url' => ['/article/update-intro']
+                    ]
+                ]
+            ],
 
             // ['label' => Yii::t('frontend', 'Contact'), 'url' => ['/site/contact']],
             // ['label' => Yii::t('frontend', 'Signup'), 'url' => ['/user/sign-in/signup'], 'visible'=>Yii::$app->user->isGuest],
@@ -74,7 +91,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; Lqs <?php echo date('Y') ?></p>
-        <p class="pull-right"><?php echo Yii::powered() ?></p> 
+        <!-- <p class="pull-right"><?php echo Yii::powered() ?></p>  -->
     </div>
 </footer>
 <?php $this->endContent() ?>

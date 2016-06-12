@@ -33,7 +33,7 @@ use yii\bootstrap\ActiveForm;
 
     <?php // echo $form->field($model, 'position_code') ?>
 
-    <?php // echo $form->field($model, 'bduplicate') ?>
+    <?php // echo $form->field($model, 'duplicate') ?>
 
     <?php // echo $form->field($model, 'duplicate_id') ?>
 

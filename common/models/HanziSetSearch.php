@@ -19,7 +19,7 @@ class HanziSetSearch extends HanziSet
     public function rules()
     {
         return [
-            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'bduplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
             [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
             [['param'], 'trim']
         ];
@@ -58,7 +58,7 @@ class HanziSetSearch extends HanziSet
             'source' => $this->source,
             'type' => $this->type,
             'nor_var_type' => $this->nor_var_type,
-            'bduplicate' => $this->bduplicate,
+            'duplicate' => $this->duplicate,
             'stocks' => $this->stocks,
             'bhard' => $this->bhard,
             'created_at' => $this->created_at,
@@ -172,7 +172,7 @@ class HanziSetSearch extends HanziSet
         }
 
         # 去重
-        $sqlParam .= $sqlParam == '' ? "bduplicate = 0" : " AND bduplicate = 0";
+        $sqlParam .= $sqlParam == '' ? "duplicate = 0" : " AND duplicate = 0";
 
         return HanziSet::find()->where($sqlParam);
 

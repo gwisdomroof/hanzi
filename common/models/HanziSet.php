@@ -17,7 +17,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $belong_standard_word_code
  * @property string $standard_word_code
  * @property string $position_code
- * @property integer $bduplicate
+ * @property integer $duplicate
  * @property string $duplicate_id
  * @property integer $frequency
  * @property string $pinyin
@@ -87,7 +87,7 @@ class HanziSet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'type', 'nor_var_type', 'frequence', 'bduplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
             [['word', 'radical', 'structure'], 'string', 'max' => 8],
             [['pic_name', 'belong_standard_word_code', 'standard_word_code', 'pinyin'], 'string', 'max' => 64],
             [['position_code', 'duplicate_id', 'zhengma', 'wubi',  'similar_stock'], 'string', 'max' => 128],
@@ -122,7 +122,7 @@ class HanziSet extends \yii\db\ActiveRecord
             'belong_standard_word_code' => Yii::t('app', '所属正字'),
             'standard_word_code' => Yii::t('app', '兼正字号'),
             'position_code' => Yii::t('app', '位置编码'),
-            'bduplicate' => Yii::t('app', '是否重复'),
+            'duplicate' => Yii::t('app', '是否重复'),
             'duplicate_id' => Yii::t('app', '重复ID'),
             'pinyin' => Yii::t('app', '拼音'),
             'radical' => Yii::t('app', '部首'),

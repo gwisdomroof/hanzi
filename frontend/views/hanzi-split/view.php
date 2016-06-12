@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 
-<div id="commentWrap"></div>
+<!-- <div id="commentWrap"  class="col-lg-10"></div> -->
 <?php
 $username = Yii::$app->user->identity['username'];
 $script = <<<SCRIPT

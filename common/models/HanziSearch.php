@@ -37,7 +37,7 @@ class HanziSearch extends Hanzi
     /**
      * Creates data provider instance with search query applied
      *
-     * @param bDuplicate 查找数据时，是否包含重复
+     * @param duplicate 查找数据时，是否包含重复
      *
      * @return ActiveDataProvider
      */

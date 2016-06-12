@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'layout'=>"{summary}\n{items}\n{pager}",
         'summary' => "您共有{totalCount}个任务，当前为第{begin}至{end}个。",
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
@@ -29,21 +29,27 @@ $this->params['breadcrumbs'][] = $this->title;
             //     'attribute'=>'id',
             //     "headerOptions" => ["width" => "30"]
             // ],
-            'member.username',
+            
+            [
+                'attribute' => 'member.username',
+                "headerOptions" => ["width" => "30"],
+                'filter'=>false
+            ],
             'leader.username',
             [                     
-            'attribute' => 'seq',
-            'value' => function ($data) {
-                return empty($data['seq']) ? '' : $data->seqs()[$data['seq']]; 
-                },
-            'filter'=>HanziTask::seqs(),
+                'attribute' => 'seq',
+                'value' => function ($data) {
+                    return empty($data['seq']) ? '' : $data->seqs()[$data['seq']]; 
+                    },
+                'filter'=>HanziTask::seqs(),
+                "headerOptions" => ["width" => "120"]
             ],
             [                     
-            'attribute' => 'page',
-            'value' => function ($data) {
-                return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
-                },
-            'format' => 'raw',
+                'attribute' => 'page',
+                'value' => function ($data) {
+                    return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
+                    },
+                'format' => 'raw',
             ],
             'start_id',
             'end_id',
@@ -53,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return !isset($data['status']) ? '' : $data->statuses()[$data['status']]; 
                 },
             'filter'=>HanziTask::statuses(),
+            "headerOptions" => ["width" => "120"]
             ],
             // 'remark',
             // 'created_at',

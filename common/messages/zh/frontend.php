@@ -81,4 +81,5 @@ return [
     'Create {modelClass}' => '创建 {modelClass}',
     'Update And Next' => '更新后转下一条',
     'Create And Next' => '创建后转下一条',
+    'Hanzi Sets' => '汉字集',
 ];

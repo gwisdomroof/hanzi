@@ -65,8 +65,8 @@ CREATE TABLE IF NOT EXISTS hanzi_set (
   mix_split varchar(256) DEFAULT NULL, -- '混合拆分'
   stock_serial varchar(256) DEFAULT NULL, -- '部件序列'
   remark varchar(256) DEFAULT NULL, -- '备注'
-  created_at INT NOT NULL,
-  updated_at INT NOT NULL 
+  created_at INT DEFAULT NULL,
+  updated_at INT DEFAULT NULL 
 );
 
 CREATE TABLE IF NOT EXISTS hanzi_task (

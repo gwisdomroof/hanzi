@@ -84,7 +84,7 @@ class HanziTaskSearch extends HanziTask
             'seq' => $this->seq,
             'start_id' => $this->start_id,
             'end_id' => $this->end_id,
-            'status' => $this->status,
+            'hanzi_task.status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

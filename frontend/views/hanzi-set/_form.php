@@ -30,7 +30,7 @@ use yii\bootstrap\ActiveForm;
 
     <?php echo $form->field($model, 'position_code')->textInput(['maxlength' => true]) ?>
 
-    <?php echo $form->field($model, 'bduplicate')->textInput() ?>
+    <?php echo $form->field($model, 'duplicate')->textInput() ?>
 
     <?php echo $form->field($model, 'duplicate_id')->textInput(['maxlength' => true]) ?>
 
