@@ -71,7 +71,7 @@ class HanziSet extends \yii\db\ActiveRecord
     {
         $gapDir = substr($pic_name, 0, 2);
         if ($soure = self::SOURCE_TAIWAN) {
-            return "/img/tw/$gapDir/$pic_name";
+            return "/img/tw/$gapDir/$pic_name.png";
         } elseif($soure = self::SOURCE_HANYU) {
             return "/img/hy/$pic_name.png";
         } elseif($soure = self::SOURCE_GAOLI) {

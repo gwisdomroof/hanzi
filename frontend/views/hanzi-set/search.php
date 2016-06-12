@@ -9,8 +9,8 @@ use yii\bootstrap\ActiveForm;
 /* @var $searchModel common\models\hanziSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'hanzi-set Ids');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'hanzi-set'), 'url' => ['search']];
+$this->title = Yii::t('frontend', 'hanzi-set');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'hanzi-set'), 'url' => ['search']];
 $this->params['breadcrumbs'][] = '部件笔画检字法';
 
 ?>

@@ -122,23 +122,7 @@ class HanziSetController extends Controller
         }
     }
 
-    /**
-     * 检查台湾异体字字典的文字是否为Unicode.
-     * @return mixed
-     */
-    public function actionChecktw()
-    {
-        $file = fopen("d:/Inbox/tw-unicode-compatible.txt","r");
 
-        while (!feof($file)){
-            $word  = fgets($file);
-            echo "update hanzi_set set bduplicate = null where source = 2 And word = '$word';<br/>";
-            
-        }
-
-        fclose($file);
-        die;
-    }
 
     /**
      * import from xls file.
