@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
                 echo "<span class='hanzi-item'>". $item->word . "</span>";
             } elseif (!empty($item->pic_name)) {
                 $picPath = \common\models\HanziSet::getPicturePath($item->source, $item->pic_name);
-                echo "<img alt= '$item->id' src='$picPath' class='hanzi-img'>";
+                echo "<img alt= '$item->pic_name' src='$picPath' class='hanzi-img'>";
             }
         } ?>
 
