@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	]) ?>
 
 	
-	<div id="app">
+	<!-- <div id="app">
 		<form class="form-horizontal">
 			<div class="form-group">
 				<label class="col-sm-3 control-label">是否难字</label>
@@ -54,9 +54,11 @@ $this->params['breadcrumbs'][] = $this->title;
 				</div>
 			</div>
 		</form>
-	</div>
+	</div> -->
+	
 </div>
-<template id="check-tmpl">
+
+<!-- <template id="check-tmpl">
 	<div class="form-control">
 		<span>{{one_text}}</span><input type="text" v-model="filterBihua" style="border:0;box-sizing:none;" @keyup="onDown($event)" />
 	</div>
@@ -74,4 +76,4 @@ $this->params['breadcrumbs'][] = $this->title;
 	</div>
 </template>
 <script type="text/javascript" src="/js/vue.min.js"></script>
-<script type="text/javascript" src="/js/bushou.js"></script>
+<script type="text/javascript" src="/js/bushou.js"></script> -->

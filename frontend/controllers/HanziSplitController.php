@@ -175,6 +175,9 @@ class HanziSplitController extends Controller
             $nextId = $model->nextSplitId($model->id);
             return $next == 'true' ? $this->redirect(['first', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
+            // set default value
+            if (!isset($model->hard10))
+                $model->hard10 = 0;
             return $this->render('first', [
                 'model' => $model,
                 'seq' => $seq,
@@ -206,6 +209,9 @@ class HanziSplitController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $next == 'true' ?  $this->redirect(['second', 'id' => $model->id + 1]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
+            // set default value
+            if (!isset($model->hard20))
+                $model->hard10 = 0;
             return $this->render('second', [
                 'model' => $model,
                 'seq' => $seq,
@@ -235,6 +241,9 @@ class HanziSplitController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $next == 'true' ? $this->redirect(['determine', 'id' => $model->id + 1]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
+            // set default value
+            if (!isset($model->hard30))
+                $model->hard10 = 0;
             return $this->render('determine', [
                 'model' => $model,
                 'seq' => $seq,
