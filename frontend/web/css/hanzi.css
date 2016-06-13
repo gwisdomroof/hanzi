@@ -1,6 +1,20 @@
 body {font-family: Arial, Helvetica, sans-serif, KaiXinSong;}
-.article-item p {font-size: 16px; text-indent: 32px}
-.article-item table p {font-size: 15px; text-indent: 0px}
+.article-item p {
+	/*font-size: 13px; 
+	text-indent: 26px;*/
+	font-size: 15px;
+	line-height: 1.82;
+	text-indent: 30px;
+	margin-top: 10px;
+	overflow: hidden;
+	white-space: pre-wrap;
+	width: 100%;
+	word-wrap: break-word;
+}
+.article-item table p {
+	font-size: 15px; 
+	text-indent: 0px;
+}
 
 .component-item{
     margin: 1px;
