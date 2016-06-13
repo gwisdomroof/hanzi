@@ -29,7 +29,9 @@ $config = [
             'class'=>'yii\web\User',
             'identityClass' => 'common\models\User',
             'loginUrl'=>['sign-in/login'],
-            'enableAutoLogin' => true,
+            // 'enableAutoLogin' => true,
+            'enableSession' => true,
+            'authTimeout' => 3600,
             'as afterLogin' => 'common\behaviors\LoginTimestampBehavior'
         ],
         'authManager' => [
@@ -39,6 +41,7 @@ $config = [
     'modules'=>[
         'admin' => [
             'class' => 'mdm\admin\Module',
+            'layout' => 'left-menu',
         ],
         'i18n' => [
             'class' => 'backend\modules\i18n\Module',
