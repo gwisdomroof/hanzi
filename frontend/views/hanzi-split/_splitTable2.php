@@ -10,10 +10,10 @@ use common\models\Hanzi;
 <table class="table table-striped table-bordered table-center">
 	<tbody>
 	<tr>
-		<td width="100px">&nbsp;</td>
-		<td style="font-weight: bold">初次拆分</td>
-		<td style="font-weight: bold">二次拆分</td>
-		<td style="font-weight: bold">审查</td>
+		<td>&nbsp;</td>
+		<td style="font-weight: bold" width="28%">初次拆分</td>
+		<td style="font-weight: bold" width="28%">二次拆分</td>
+		<td style="font-weight: bold" width="28%">审查</td>
 	</tr>
 	<tr>
 		<td>是否难字</td>
