@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 </style>
 
 <div class="hanzi-set-ids-index">
-    <div class="hanzi-set-ids-form col-lg-6">
+    <div class="hanzi-set-ids-form col-sm-6">
 
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
         <?= $form->field($hanziSearch, 'param', ['template' => "{input}\n{hint}\n{error}", 'options' => ['class' => 'col-sm-8']])->textInput(['maxlength' => true]) ?> 
     
         <?= Html::submitButton('检索', ['class' => 'btn btn-primary']) ?> 
-        <?= Html::Button('清空', ['class' => 'btn btn-warning', 'id' => 'searchIds-clear']) ?>
+        <?= Html::Button('清空', ['class' => 'btn btn-secondary ', 'id' => 'searchIds-clear']) ?>
 
         <?php ActiveForm::end(); ?>  
 
@@ -89,20 +89,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
 </div>
 
+<?php echo $this->render('..\hanzi-part\component') ?>
 
 
- <?php
-$script = <<<SCRIPT
-$('.component-item').click(function() {
-    var value = $('#hanziSearch-param').val() + $(this).text();
-    $('#hanziSearch-param').val(value);
-});
-$('.component-img').click(function() {
-    var value = $('#hanziSearch-param').val() + $(this).attr("alt");
-    $('#hanziSearch-param').val(value);
-});
-$('#searchIds-clear').click(function() {
-    $('#hanziSearch-param').val('');
-});
-SCRIPT;
-$this->registerJs($script, \yii\web\View::POS_END);
+ 
