@@ -15,32 +15,33 @@ body {font-family: Arial, Helvetica, sans-serif, KaiXinSong;}
 	font-size: 15px; 
 	text-indent: 0px;
 }
-
-.component-item{
-    margin: 1px;
-    width: 25px;
-	height: 25px;
-	font-size: 20px;
-	line-height: 25px;
-	text-align: center;
-	color: #003399;
-	cursor: pointer;
-}
-.component-img {
-    width: 25px;
-	height: 25px;
-	cursor: pointer;
-	padding-top: 0px;
-	padding-bottom: 5px;
-}
-.component-table {
-	border-style: solid; 
-	border-width: 1px;
-	border-color: red;
-}
-
 .article-item {
 	width: 80%;
 	margin-left:10%;
 }
+
+   .hanzi-img {
+        /*border: 1px solid #eee;*/
+        border-collapse: collapse;
+        display: inline-table;
+        font-size: 28px;
+        width: 35px;
+        height: 35px;
+        margin: 1px 1px;
+        padding: 2px 0px;
+        vertical-align: middle;
+    }
+
+    .hanzi-item {
+        /*border: 1px solid #eee;*/
+        color: #003399;
+        width: 35px;
+        height: 35px;
+        font-size: 28px;
+        display: inline-table;
+        vertical-align: middle;
+        margin: 1px 1px;
+        padding: 2px 0px;
+        border-collapse: collapse;
+    }
 

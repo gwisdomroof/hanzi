@@ -15,35 +15,6 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
 ?>
 
-<style type="text/css">
-    .hanzi-img {
-        /*border: 1px solid #eee;*/
-        border-collapse: collapse;
-        display: inline-table;
-        font-size: 28px;
-        width: 35px;
-        height: 35px;
-        margin: 1px 1px;
-        padding: 2px 0px;
-        vertical-align: middle;
-    }
-
-    .hanzi-item {
-        /*border: 1px solid #eee;*/
-        color: #003399;
-        width: 35px;
-        height: 35px;
-        font-size: 28px;
-        display: inline-table;
-        vertical-align: middle;
-        margin: 1px 1px;
-        padding: 2px 0px;
-        border-collapse: collapse;;
-    }
-</style>
-
-
-
 <div class="hanzi-set-ids-index">
     <div class="hanzi-set-ids-form col-sm-6">
 
@@ -89,9 +60,25 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
     </div>
 
+    <div class="col-sm-6">
+        <?= \common\components\hanziPart\HanziPart::widget() ?>
+    </div>
+
 </div>
 
-<?php echo $this->render('..\hanzi-part\component') ?>
+ <?php
+$script = <<<SCRIPT
+    $('.component-item').on('click', 'span', function() {
+        var value = $('#hanzisetsearch-param').val() + $(this).text();
+        $('#hanzisetsearch-param').val(value);
+    });
+    $('.component-img').on('click', 'img', function() {
+        var value = $('#hanzisetsearch-param').val() + $(this).attr("alt");
+        $('#hanzisetsearch-param').val(value);
+    });
+    $('#searchIds-clear').on('click', 'div', function() {
+        $('#hanzisetsearch-param').val('');
+    });
+SCRIPT;
+$this->registerJs($script, \yii\web\View::POS_END);
 
-
- 

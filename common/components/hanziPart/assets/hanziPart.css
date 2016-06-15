@@ -1,0 +1,59 @@
+.stock-item {
+    width: 22px;
+    height: 22px;
+    font-size: 19px;
+    color: #cc0000;
+    display: inline-table;
+    border: 1px solid #eee;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    border-collapse: collapse;
+}
+.component-item {
+    width: 22px;
+    height: 22px;
+    font-size: 20px;
+    display: inline-table;
+    border: 1px solid #eef;
+    vertical-align: middle;
+    margin: 1px;
+    padding: 0px;
+    border-collapse: collapse;
+}
+.component-img {
+    width: 22px;
+    height: 27px;
+    font-size: 20px;
+    display: inline-table;
+    border: 1px solid #eef;
+    vertical-align: middle;
+    margin: 1px;
+    padding: 3px 1px;
+    border-collapse: collapse;;
+}
+.hanzi-component {
+    border: 1px solid #eef;
+    width: 100%;
+}
+.component-hide {
+    color: #2e6da4; 
+    border: 5px solid #eef; 
+    background: #eef; 
+    margin-top: -2px; 
+}
+.component-show {
+    color: #2e6da4; 
+    border: 5px solid #eef; 
+    background: #eef; 
+    margin-top: -2px; 
+    display:none;
+}
+.component-search {
+    width:90%; 
+    margin: 10px 5px;
+}
+.search-help {
+       font-weight:bold; 
+}
