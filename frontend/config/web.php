@@ -24,6 +24,10 @@ $config = [
         ]
     ],
     'components' => [
+        'assetManager' => [
+            'linkAssets' => true,
+            // 'appendTimestamp' => true,
+        ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
         ],

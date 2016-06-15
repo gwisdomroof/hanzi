@@ -1,6 +1,7 @@
 <?php
 namespace common\components\hanziPart;
 
+use yii;
 use yii\web\AssetBundle;
 
 /**
@@ -24,7 +25,8 @@ class HanziPartAsset extends AssetBundle
     public function init()
     {
         $this->sourcePath = __DIR__ . '/assets';
-        parent::init();
+        parent::init();      
+
     }
 
 }
