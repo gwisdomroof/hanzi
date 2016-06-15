@@ -251,18 +251,6 @@ class HanziSplitController extends Controller
         }
     }
 
-    
-
-    /**
-     * Components.
-     * @return mixed
-     */
-    public function actionComponent()
-    {
-        return $this->render('component');
-
-    }
-
     /**
      * Help.
      * @return mixed

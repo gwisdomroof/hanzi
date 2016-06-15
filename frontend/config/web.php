@@ -25,8 +25,8 @@ $config = [
     ],
     'components' => [
         'assetManager' => [
-            'linkAssets' => true,
-            // 'appendTimestamp' => true,
+            'linkAssets' => PATH_SEPARATOR==':' ? true : false,
+            'appendTimestamp' => true,
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'

@@ -20,8 +20,10 @@ class HanziSetSearch extends HanziSet
     {
         return [
             [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['param'], 'trim'],
+            [['param'], 'required','message' => '请输入检索式。'],
             [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
-            [['param'], 'trim']
+            
         ];
     }
 

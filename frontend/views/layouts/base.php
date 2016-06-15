@@ -27,7 +27,6 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             ['label' => Yii::t('frontend', '任务管理'), 'url' => ['/hanzi-task/admin'], 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id)],
             ['label' => Yii::t('frontend', '我的任务'), 'url' => ['/hanzi-task/index'],],
             // ['label' => Yii::t('frontend', '拆字'), 'url' => ['/hanzi-split/index'],],
-            ['label' => Yii::t('frontend', '部件集'), 'url' => ['/hanzi-split/component'],],
             [
                 'label' => Yii::t('frontend', '文档'),
                 'visible'=>!Yii::$app->user->isGuest,
@@ -39,6 +38,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '拆字工作流程'),
                         'url' => ['/article/split-intro']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '部件查找介绍'),
+                        'url' => ['/article/component-help']
                     ],
                     [
                         'label' => Yii::t('frontend', '网站更新说明'),

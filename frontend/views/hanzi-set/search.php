@@ -26,7 +26,8 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
         ]); ?>
 
         <?= $form->field($hanziSearch, 'param', ['template' => "{input}\n{hint}\n{error}", 'options' => ['class' => 'col-sm-8']])->textInput(['maxlength' => true]) ?> 
-    
+        <a target="blank" href="/article/hanzi-search" title="帮助" style="font-size:16px; margin-right:8px; margin-left:-5px; z-index:100">?</a>
+
         <?= Html::submitButton('检索', ['class' => 'btn btn-primary']) ?> 
         <?= Html::Button('清空', ['class' => 'btn btn-secondary ', 'id' => 'searchIds-clear']) ?>
 
