@@ -51,7 +51,7 @@ require_once(__DIR__ . '/_components.php');
         border-collapse: collapse;;
     }
 
-    .hanzi-split-index {
+    .hanzi-component-index {
         border: 1px solid #eef;
     }
 
@@ -59,8 +59,11 @@ require_once(__DIR__ . '/_components.php');
 </style>
 
 
-<div class="hanzi-split-index col-sm-6 pull-right">
-    <div style="width:100%; margin: 10px 0px;" >
+<span title="显示" class="glyphicon glyphicon-align-justify pull-right" style="color: #2e6da4; border: 5px solid #eef; background: #eef; margin-top: -2px; display:none" id="toggle2"></span>
+
+<div class="hanzi-component-index pull-right" id="hanzi-component" style="width:50%">
+    <span title="隐藏" class="glyphicon glyphicon-align-justify pull-right" style="color: #2e6da4; border: 5px solid #eef; background: #eef; margin-top: -2px; z-index:100" id="toggle1"></span>
+    <div style="width:90%; margin: 10px 5px;" >
         <div class="input-group add-on" >
             <input class="form-control" placeholder="请输入笔画、笔顺检索部件..." name="srch-term" id="search" type="text" oninput="FindMatch()">
             <div class="input-group-btn">
@@ -99,15 +102,26 @@ $this->registerJsFile('@web/js/component.js', ['depends' => 'frontend\assets\Fro
 
 $script = <<<SCRIPT
     $('.component-item').click(function() {
-        var value = $('#hanziSearch-param').val() + $(this).text();
-        $('#hanziSearch-param').val(value);
+        var value = $('#hanzisetsearch-param').val() + $(this).text();
+        $('#hanzisetsearch-param').val(value);
     });
     $('.component-img').click(function() {
-        var value = $('#hanziSearch-param').val() + $(this).attr("alt");
-        $('#hanziSearch-param').val(value);
+        var value = $('#hanzisetsearch-param').val() + $(this).attr("alt");
+        $('#hanzisetsearch-param').val(value);
     });
     $('#searchIds-clear').click(function() {
-        $('#hanziSearch-param').val('');
+        $('#hanzisetsearch-param').val('');
+    });
+
+    $('#toggle1').click(function() {
+        $('#hanzi-component').hide(500);
+        $('#toggle1').hide();
+        $('#toggle2').show();
+    });
+    $('#toggle2').click(function() {
+        $('#hanzi-component').show(200);
+        $('#toggle1').show();
+        $('#toggle2').hide();
     });
 
     // 计算四字节汉字的长度
