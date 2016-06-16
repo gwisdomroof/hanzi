@@ -119,7 +119,9 @@ $script = <<<SCRIPT
 
     $(document).on('click', '.component-item', function() {
         var value = curSplitInput.val() + $(this).text();
+        curSplitInput.focus();
         curSplitInput.val(value);
+
     });
     $(document).on('click', '.component-img', function() {
         var value = curSplitInput.val() + $(this).attr("alt");

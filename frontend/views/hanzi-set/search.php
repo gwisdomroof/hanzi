@@ -71,10 +71,12 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 $script = <<<SCRIPT
     $(document).on('click', '.component-item', function() {
         var value = $('#hanzisetsearch-param').val() + $(this).text();
+        $('#hanzisetsearch-param').focus();
         $('#hanzisetsearch-param').val(value);
     });
     $(document).on('click', '.component-img', function() {
         var value = $('#hanzisetsearch-param').val() + $(this).attr("alt");
+        $('#hanzisetsearch-param').focus();
         $('#hanzisetsearch-param').val(value);
     });
     $(document).on('click', '#searchIds-clear', function() {
