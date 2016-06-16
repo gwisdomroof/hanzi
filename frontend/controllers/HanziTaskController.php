@@ -131,9 +131,8 @@ class HanziTaskController extends Controller
     public function actionUpdate($id)
     {
         $model =  $this->findModel($id);
-
         $userId = Yii::$app->user->id;
-        if ($model->leader_id !== $userId) {
+        if ($model->leader_id !== $userId && $model->user_id !== $userId) {
             throw new HttpException(401, '对不起，您无权修改。'); 
         }
 

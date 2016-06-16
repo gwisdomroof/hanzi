@@ -68,14 +68,14 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'deform_split30',
             // 'similar_stock30',
             'remark',
-            // [                      
-            // 'attribute' => 'created_at',
-            // 'format'=>['datetime','php:Y-m-d H:i:s'],
-            // ],
-            // [                      
-            // 'attribute' => 'updated_at',
-            // 'format'=>['datetime','php:Y-m-d H:i:s'],
-            // ],
+            [                      
+            'attribute' => 'created_at',
+            'format'=>['datetime','php:Y-m-d H:i:s'],
+            ],
+            [                      
+            'attribute' => 'updated_at',
+            'format'=>['datetime','php:Y-m-d H:i:s'],
+            ],
         ],
     ]) ?>
 

@@ -21,6 +21,7 @@
     margin: 1px;
     padding: 0px;
     border-collapse: collapse;
+    cursor: pointer;
 }
 .component-img {
     width: 22px;
@@ -31,7 +32,8 @@
     vertical-align: middle;
     margin: 1px;
     padding: 3px 1px;
-    border-collapse: collapse;;
+    border-collapse: collapse;
+    cursor: pointer;
 }
 .hanzi-component {
     border: 1px solid #eef;

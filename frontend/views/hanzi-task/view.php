@@ -41,14 +41,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => HanziTask::statuses()[$model->status],
             ],
             'remark',
-            // [                      
-            // 'attribute' => 'created_at',
-            // 'format'=>['datetime','php:Y-m-d H:i:s'],
-            // ],
-            // [                      
-            // 'attribute' => 'updated_at',
-            // 'format'=>['datetime','php:Y-m-d H:i:s'],
-            // ],
+            [                      
+            'attribute' => 'created_at',
+            'format'=>['datetime','php:Y-m-d H:i:s'],
+            ],
+            [                      
+            'attribute' => 'updated_at',
+            'format'=>['datetime','php:Y-m-d H:i:s'],
+            ],
         ],
     ]) ?>
     

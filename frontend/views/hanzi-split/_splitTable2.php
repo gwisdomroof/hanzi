@@ -16,6 +16,12 @@ use common\models\Hanzi;
 		<td style="font-weight: bold" width="28%">审查</td>
 	</tr>
 	<tr>
+		<td>重复值</td>
+		<td><?php echo empty($model->duplicate10) ?null : $model->duplicate10; ?></td>
+		<td><?php echo empty($model->duplicate20) ?null : $model->duplicate10; ?></td>
+		<td><?php echo empty($model->duplicate30) ?null : $model->duplicate10; ?></td>
+	</tr>
+	<tr>
 		<td>是否难字</td>
 		<td><?php echo empty($model->hard10) ?null : Hanzi::hards()[$model->hard10]; ?></td>
 		<td><?php echo empty($model->hard20) ?null : Hanzi::hards()[$model->hard20]; ?></td>

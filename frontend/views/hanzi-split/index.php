@@ -55,6 +55,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter'=>Hanzi::sources(),
             ],
+            [
+                'header' => '', # 取消排序
+                'attribute'=>'duplicate10',
+            ],
             // 'nor_var_type',
             // 'standard_word',
             // 'position_code',

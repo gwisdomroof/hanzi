@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view}',
+                'template' => '{view}{update}',
                 "headerOptions" => ["width" => "100"],
                 'buttons' => [
                     'view' => function ($url, $data, $key) {
@@ -78,6 +78,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ];
                         $url = yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page]);
                         return Html::a('<span>查看</span>&nbsp;', $url, $options);
+                    },
+                    'update' => function ($url, $data, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', '更新任务'),
+                            'aria-label' => Yii::t('yii', '更新任务'),
+                        ];
+                        $url = yii\helpers\Url::to(['hanzi-task/update', 'id' => $data->id]);
+                        return Html::a('<span>更新</span>&nbsp;', $url, $options);
                     },
                 ],
             ],
