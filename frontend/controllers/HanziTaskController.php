@@ -111,12 +111,45 @@ class HanziTaskController extends Controller
 
         // set current seq
         $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        $model->leader_id = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             // var_dump($model->getErrors()); die;
             return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * 向系统组长申请任务
+     * 页码自动分配
+     * @return mixed
+     */
+    public function actionApply()
+    {
+        $model = new HanziTask();
+
+        // 如果有工作状态为“初分配”“进行中”或为空，则不能继续申请
+        if (HanziTask::checkApplyPermission(Yii::$app->user->id)) {
+            throw new HttpException(403, '您有工作未完成，请先完成手头的工作。'); 
+        }
+
+        // set default value
+        $systemLeader = HanziTask::getSystemLeader();
+        $model->leader_id = $systemLeader['id'];
+
+        $model->user_id = Yii::$app->user->id;
+
+        // set current seq
+        $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['index']);
+        } else {
+            return $this->render('apply', [
                 'model' => $model,
             ]);
         }
@@ -163,7 +196,7 @@ class HanziTaskController extends Controller
 
         $model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['admin']);
     }
 
 

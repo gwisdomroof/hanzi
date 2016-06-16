@@ -68,6 +68,15 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 获取系统组长
+     * @return [type] [description]
+     */
+    public static function getSystemLeader()
+    {
+        return User::getUsersByRole("系统组长")[0];
+    }
+
+    /**
      * 获取当前可分配的页码
      * @return [type] [description]
      */
@@ -163,7 +172,7 @@ class HanziTask extends \yii\db\ActiveRecord
             $idRange = Hanzi::getIdRangeByPage($this->page);
             $this->start_id = $idRange['minId']; 
             $this->end_id = $idRange['maxId'];
-            $this->leader_id = Yii::$app->user->id;
+            // $this->leader_id = Yii::$app->user->id;
             return true;
 
         } else {
@@ -179,6 +188,15 @@ class HanziTask extends \yii\db\ActiveRecord
     {       
         $model = HanziTask::find()->where(['user_id'=>$userId])->andwhere(['<=', 'start_id', $id])->andwhere(['>=', 'end_id', $id])->one();
         return empty($model) ? null : $model->seq;
+    }
+
+    /**
+     * @param string $id
+     * @return mixed
+     */
+    public static function checkApplyPermission($userId)
+    {       
+        return HanziTask::find()->where(['user_id'=>$userId])->andwhere(['<=', 'status', self::STATUS_ONGOING])->exists();
     }
 
     /**

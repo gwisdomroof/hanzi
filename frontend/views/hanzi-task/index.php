@@ -15,6 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
+    <p>
+        <?php echo Html::a(Yii::t('frontend', '申请拆字任务'), ['apply'], ['class' => 'btn btn-success  pull-right']) 
+        ?>
+    </p>
+
     <?= GridView::widget([
         'layout'=>"{summary}\n{items}\n{pager}",
         'summary' => "您共有{totalCount}个任务，当前为第{begin}至{end}个。",
@@ -32,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             
             [
                 'attribute' => 'member.username',
-                "headerOptions" => ["width" => "30"],
+                "headerOptions" => ["width" => "80"],
                 'filter'=>false
             ],
             'leader.username',
@@ -69,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}{update}',
-                "headerOptions" => ["width" => "100"],
+                "headerOptions" => ["width" => "120"],
                 'buttons' => [
                     'view' => function ($url, $data, $key) {
                         $options = [
@@ -81,11 +86,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'update' => function ($url, $data, $key) {
                         $options = [
-                            'title' => Yii::t('yii', '更新任务'),
-                            'aria-label' => Yii::t('yii', '更新任务'),
+                            'title' => Yii::t('yii', '更新状态'),
+                            'aria-label' => Yii::t('yii', '更新状态'),
                         ];
                         $url = yii\helpers\Url::to(['hanzi-task/update', 'id' => $data->id]);
-                        return Html::a('<span>更新</span>&nbsp;', $url, $options);
+                        return Html::a('<span>更新状态</span>&nbsp;', $url, $options);
                     },
                 ],
             ],

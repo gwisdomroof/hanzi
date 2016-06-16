@@ -8,10 +8,14 @@ use common\models\user;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\HanziTask */
-/* @var $form yii\bootstrap\ActiveForm */
-?>
 
-<div class="hanzi-task-form">
+$this->title = Yii::t('frontend', 'Apply Hanzi Task');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzi Tasks'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="hanzi-task-apply">
+	
+	<div class="hanzi-task-form">
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
@@ -19,15 +23,13 @@ use common\models\user;
 
     <?= $form->field($model, 'leader_id')->dropDownList([$model->leader->id => $model->leader->username], ['readonly' => true]) ?>
 
-    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?>
+    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['readonly' => true]) ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList($model->members(), ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
+    <?= $form->field($model, 'user_id')->dropDownList([Yii::$app->user->id => Yii::$app->user->identity->username], ['readonly' => true]) ?>
 
-    <?php
-    $pageArr =  isset($model->page) ? [$model->page => $model->page] + HanziTask::getIdlePages() : HanziTask::getIdlePages();
-    echo $form->field($model, 'page')->dropDownList($pageArr, ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
+    <?= $form->field($model, 'page')->dropDownList(HanziTask::getIdlePages()) ?>
 
-    <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['prompt' => '']) ?>
+    <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['readonly' => true]) ?>
 
     <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
@@ -38,5 +40,7 @@ use common\models\user;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+	</div>
 
 </div>
