@@ -34,14 +34,16 @@ class HanziTaskController extends Controller
     }
 
     /**
-     * Lists all HanziTask models.
+     * 列出当前任务。
+     * @type 任务类型
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($type=1)
     {
         $searchModel = new HanziTaskSearch();
 
         $param = Yii::$app->request->queryParams;
+        unset($param['type']);
 
         if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['member.username'])) {
             $param = array_merge($param, [
@@ -51,11 +53,14 @@ class HanziTaskController extends Controller
                 ]);
         }
 
+        $param['HanziTaskSearch']['task_type'] = $type;
+
         $dataProvider = $searchModel->search($param);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'type' => $type
         ]);
 
     }
@@ -64,11 +69,12 @@ class HanziTaskController extends Controller
      * Lists all HanziTask models.
      * @return mixed
      */
-    public function actionAdmin()
+    public function actionAdmin($type=1)
     {
         $searchModel = new HanziTaskSearch();
 
         $param = Yii::$app->request->queryParams;
+        unset($param['type']);
 
         if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['leader.username'])) {
             $param = array_merge($param, [
@@ -78,11 +84,14 @@ class HanziTaskController extends Controller
                 ]);
         }
 
+        $param['HanziTaskSearch']['task_type'] = $type;
+
         $dataProvider = $searchModel->search($param);
 
         return $this->render('admin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'type' => $type
         ]);
 
     }
@@ -105,18 +114,18 @@ class HanziTaskController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($type=1)
     {
         $model = new HanziTask();
 
         // set current seq
         $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
         $model->leader_id = Yii::$app->user->id;
+        $model->task_type = $type;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            // var_dump($model->getErrors()); die;
             return $this->render('create', [
                 'model' => $model,
             ]);
@@ -128,26 +137,26 @@ class HanziTaskController extends Controller
      * 页码自动分配
      * @return mixed
      */
-    public function actionApply()
+    public function actionApply($type=1)
     {
         $model = new HanziTask();
 
         // 如果有工作状态为“初分配”“进行中”或为空，则不能继续申请
-        if (HanziTask::checkApplyPermission(Yii::$app->user->id)) {
+        if (HanziTask::checkApplyPermission(Yii::$app->user->id, $type)) {
             throw new HttpException(403, '您有工作未完成，请先完成手头的工作。'); 
         }
 
         // set default value
         $systemLeader = HanziTask::getSystemLeader();
         $model->leader_id = $systemLeader['id'];
-
         $model->user_id = Yii::$app->user->id;
+        $model->task_type = $type;
 
         // set current seq
         $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'type' => $model->task_type]);
         } else {
             return $this->render('apply', [
                 'model' => $model,

@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\HanziTask */
 
-$this->title = Yii::t('frontend', 'Create Hanzi Task');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzi Tasks'), 'url' => ['index']];
+$taskName = $model->task_type == 1 ? '拆字' : '录入';
+$this->title = Yii::t('frontend', "创建$taskName". "任务");
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hanzi-task-create">

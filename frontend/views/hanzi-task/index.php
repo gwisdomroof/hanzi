@@ -8,33 +8,24 @@ use common\models\HanziTask;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('frontend', '我的任务');
+$taskName = $type == 1 ? '拆字' : '录入';
+
+$this->title = Yii::t('frontend', "我的$taskName"."任务");
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hanzi-task-index">
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
-
     <p>
-        <?php echo Html::a(Yii::t('frontend', '申请拆字任务'), ['apply'], ['class' => 'btn btn-success  pull-right']) 
+        <?php 
+        echo Html::a(Yii::t('frontend', "申请$taskName"."任务"), ['apply', 'type' => $type], ['class' => 'btn btn-success  pull-right']) 
         ?>
     </p>
 
-    <?= GridView::widget([
-        'layout'=>"{summary}\n{items}\n{pager}",
-        'summary' => "您共有{totalCount}个任务，当前为第{begin}至{end}个。",
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
+    <?php
+    $columns = [
             [
                 'class' => 'yii\grid\SerialColumn',
                 "headerOptions" => ["width" => "30"]
             ],
-            // [
-            //     'attribute'=>'id',
-            //     "headerOptions" => ["width" => "30"]
-            // ],
-            
             [
                 'attribute' => 'member.username',
                 "headerOptions" => ["width" => "80"],
@@ -52,13 +43,20 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
                 'attribute' => 'page',
                 'value' => function ($data) {
-                    return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page], true));
+                    $url = $data->task_type == HanziTask::TYPE_SPLIT ? 'hanzi-split/index' : 'hanzi-hyyt/index';
+                    return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to([$url, 'page' => $data->page], true));
                     },
                 'format' => 'raw',
             ],
+        ];
+    if ($type == 1) {
+        $columns = array_merge($columns, [
             'start_id',
             'end_id',
-            [                     
+        ]);
+    }
+    $columns = array_merge($columns, [
+            [
             'attribute' => 'status',
             'value' => function ($data) {
                 return !isset($data['status']) ? '' : $data->statuses()[$data['status']]; 
@@ -66,10 +64,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter'=>HanziTask::statuses(),
             "headerOptions" => ["width" => "120"]
             ],
-            // 'remark',
-            // 'created_at',
-            // 'updated_at',
-
             [
                 'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
@@ -81,7 +75,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'title' => Yii::t('yii', '查看任务'),
                             'aria-label' => Yii::t('yii', '查看任务'),
                         ];
-                        $url = yii\helpers\Url::to(['hanzi-split/index', 'page' => $data->page]);
+                        $route = $data->task_type == HanziTask::TYPE_SPLIT ? 'hanzi-split/index' : 'hanzi-hyyt/index';
+                        $url = yii\helpers\Url::to([$route, 'page' => $data->page]);
                         return Html::a('<span>查看</span>&nbsp;', $url, $options);
                     },
                     'update' => function ($url, $data, $key) {
@@ -94,6 +89,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                 ],
             ],
-        ],
+        ]);
+    ?>
+
+    <?= GridView::widget([
+        'layout'=>"{summary}\n{items}\n{pager}",
+        'summary' => "您共有{totalCount}个任务，当前为第{begin}至{end}个。",
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => $columns
     ]); ?>
 </div>

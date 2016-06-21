@@ -8,10 +8,10 @@ use common\models\user;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\HanziTask */
-
-$this->title = Yii::t('frontend', 'Apply Hanzi Task');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzi Tasks'), 'url' => ['index']];
+$taskName = $model->task_type == 1 ? '拆字' : '录入';
+$this->title = Yii::t('frontend', "申请$taskName". "任务");
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="hanzi-task-apply">
 	
@@ -21,13 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- <?= $form->field($model, 'leader_id', ['enableClientValidation'=>false])->textInput(['readonly' => 'readonly', 'value' => Yii::$app->user->identity->username]) ?> -->
 
-    <?= $form->field($model, 'leader_id')->dropDownList([$model->leader->id => $model->leader->username], ['readonly' => true]) ?>
+    <?= $form->field($model, 'task_type')->dropDownList(HanziTask::types(), ['readonly' => true]) ?>
 
-    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['readonly' => true]) ?>
+    <?= $form->field($model, 'leader_id')->dropDownList([$model->leader->id => $model->leader->username], ['readonly' => true]) ?>
 
     <?= $form->field($model, 'user_id')->dropDownList([Yii::$app->user->id => Yii::$app->user->identity->username], ['readonly' => true]) ?>
 
-    <?= $form->field($model, 'page')->dropDownList(HanziTask::getIdlePages()) ?>
+    <?= $form->field($model, 'page')->dropDownList(HanziTask::getIdlePages($model->task_type)) ?>
 
     <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['readonly' => true]) ?>
 

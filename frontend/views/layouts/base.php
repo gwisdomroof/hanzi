@@ -24,9 +24,34 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             // ['label' => Yii::t('frontend', 'About'), 'url' => ['/page/view', 'slug'=>'about']],
             // ['label' => Yii::t('frontend', 'Articles'), 'url' => ['/article/index']],
             ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['/hanzi-set/search'],],
-            ['label' => Yii::t('frontend', '任务管理'), 'url' => ['/hanzi-task/admin'], 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id)],
-            ['label' => Yii::t('frontend', '我的任务'), 'url' => ['/hanzi-task/index'],],
-            // ['label' => Yii::t('frontend', '拆字'), 'url' => ['/hanzi-split/index'],],
+            [
+                'label' => Yii::t('frontend', '任务管理'),
+                'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id),
+                'items'=>[
+                    [
+                        'label' => Yii::t('frontend', '异体字拆字'),
+                        'url' => ['/hanzi-task/admin?type=1']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字录入'),
+                        'url' => ['/hanzi-task/admin?type=2']
+                    ]
+                ]
+            ],
+            [
+                'label' => Yii::t('frontend', '我的任务'),
+                'visible'=>!Yii::$app->user->isGuest,
+                'items'=>[
+                    [
+                        'label' => Yii::t('frontend', '异体字拆字'),
+                        'url' => ['/hanzi-task/index?type=1']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字录入'),
+                        'url' => ['/hanzi-task/index?type=2']
+                    ]
+                ]
+            ],
             [
                 'label' => Yii::t('frontend', '文档'),
                 'visible'=>!Yii::$app->user->isGuest,

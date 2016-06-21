@@ -38,7 +38,7 @@ class HanziSplitController extends Controller
 
         $currentPage = isset(Yii::$app->request->queryParams['page']) ? (int)Yii::$app->request->queryParams['page'] : 1;
 
-        $authority = HanziTask::checkPagePermission(Yii::$app->user->id, $currentPage);
+        $authority = HanziTask::checkPagePermission(Yii::$app->user->id, $currentPage, HanziTask::TYPE_SPLIT);
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
 
@@ -91,7 +91,7 @@ class HanziSplitController extends Controller
     public function actionUpdate($id)
     {
         $userId = Yii::$app->user->id;
-        $seq = HanziTask::getSeq($userId, $id);        
+        $seq = HanziTask::getSeq($userId, $id, HanziTask::TYPE_SPLIT);  
         if ($seq == 1) {
             $this->redirect(['first','id' => $id]);
         } elseif ($seq == 2) {
@@ -163,7 +163,7 @@ class HanziSplitController extends Controller
         $seq = 1; // 初次拆分
         $userId = Yii::$app->user->id;
         
-        if (!HanziTask::checkIdPermission($userId, $id, $seq)){
+        if (!HanziTask::checkIdPermission($userId, $id, $seq, HanziTask::TYPE_SPLIT)){
             throw new HttpException(401, '对不起，您无权访问。'); 
         }
 
@@ -197,7 +197,7 @@ class HanziSplitController extends Controller
         $seq = 2; // 二次拆分
         $userId = Yii::$app->user->id;
 
-        if (!HanziTask::checkIdPermission($userId, $id, $seq)){
+        if (!HanziTask::checkIdPermission($userId, $id, $seq, HanziTask::TYPE_SPLIT)){
             throw new HttpException(401, '对不起，您无权访问。'); 
         }
 
@@ -230,7 +230,7 @@ class HanziSplitController extends Controller
         $seq = 3; // 判取
         $userId = Yii::$app->user->id;
 
-        if (!HanziTask::checkIdPermission($userId, $id, $seq)){
+        if (!HanziTask::checkIdPermission($userId, $id, $seq, HanziTask::TYPE_SPLIT)){
             throw new HttpException(401, '对不起，您无权访问。'); 
         }
 

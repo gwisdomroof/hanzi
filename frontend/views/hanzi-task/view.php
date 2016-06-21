@@ -9,7 +9,8 @@ use common\models\HanziTask;
 /* @var $model common\models\HanziTask */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzi Tasks'), 'url' => ['index']];
+$label = HanziTask::types()[$model->task_type];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', "$label"), 'url' => ['index', 'type' => $model->task_type]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hanzi-task-view">
@@ -29,13 +30,23 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => '组长',
             'value' => User::findIdentity($model->leader_id)->username,
             ],
+            [                      
+            'label' => '任务类型',
+            'value' => HanziTask::types()[$model->task_type],
+            ],
             'page',
             [                      
-            'label' => '次数',
+            'label' => '阶段',
             'value' => HanziTask::seqs()[$model->seq],
             ],
-            'start_id',
-            'end_id',
+            [                      
+            'attribute' => 'start_id',
+            'visible' =>  $model->task_type == HanziTask::TYPE_SPLIT,
+            ],
+            [                      
+            'attribute' => 'end_id',
+            'visible' =>  $model->task_type == HanziTask::TYPE_SPLIT,
+            ],
             [                      
             'label' => '状态',
             'value' => HanziTask::statuses()[$model->status],

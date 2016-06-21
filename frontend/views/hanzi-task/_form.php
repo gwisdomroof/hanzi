@@ -15,19 +15,20 @@ use common\models\user;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <!-- <?= $form->field($model, 'leader_id', ['enableClientValidation'=>false])->textInput(['readonly' => 'readonly', 'value' => Yii::$app->user->identity->username]) ?> -->
+    <?= $form->field($model, 'task_type')->dropDownList(HanziTask::types(), ['readonly' => true]) ?>
 
     <?= $form->field($model, 'leader_id')->dropDownList([$model->leader->id => $model->leader->username], ['readonly' => true]) ?>
 
-    <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?>
+    <!-- <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?> -->
 
     <?= $form->field($model, 'user_id')->dropDownList($model->members(), ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
 
     <?php
-    $pageArr =  isset($model->page) ? [$model->page => $model->page] + HanziTask::getIdlePages() : HanziTask::getIdlePages();
+    $idlePages = HanziTask::getIdlePages($model->task_type);
+    $pageArr =  isset($model->page) ? [$model->page => $model->page] + $idlePages : $idlePages;
     echo $form->field($model, 'page')->dropDownList($pageArr, ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses(), ['prompt' => '']) ?>
+    <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses()) ?>
 
     <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 

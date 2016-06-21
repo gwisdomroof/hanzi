@@ -8,9 +8,11 @@ use yii\helpers\Html;
 $this->title = Yii::t('frontend', 'Update {modelClass}: ', [
     'modelClass' => 'Hanzi Task',
 ]) . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzi Tasks'), 'url' => ['index']];
+
+$taskName = $model->task_type == 1 ? '拆字' : '录入';
+
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('frontend', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('frontend', "更新$taskName". "任务");
 ?>
 
 <div class="hanzi-task-update">

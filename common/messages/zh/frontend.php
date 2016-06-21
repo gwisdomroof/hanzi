@@ -75,7 +75,7 @@ return [
     'Your account has been successfully saved' => '您的帐号保存成功',
     '{app-name} | Your login information' => '{app-name} | 您的登录信息',
     'Hanzis' => '汉字',
-    'Hanzi Tasks' => '汉字拆分',
+    'Hanzi Tasks' => '汉字任务',
     'hanzi-set' => '汉字',
     'Create Hanzi Task' => '创建',
     'Create {modelClass}' => '创建 {modelClass}',
