@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use common\models\MemberRelation;
+use common\models\HanziHyyt;
 
 /**
  * This is the model class for table "{{%hanzi_task}}".
@@ -19,9 +20,13 @@ use common\models\MemberRelation;
  * @property string $remark
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $task_type
  */
 class HanziTask extends \yii\db\ActiveRecord
 {
+    const TYPE_SPLIT = 1;
+    const TYPE_INPUT = 2;
+
     const STATUS_ASSIGNMENT = 0;
     const STATUS_ONGOING = 1;
     const STATUS_CANCEL = 2;
@@ -46,7 +51,7 @@ class HanziTask extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at', 'task_type'], 'integer'],
             [['page'], 'integer', 'max' => 10000],
             [['leader.username', 'member.username', 'created_at', 'updated_at'], 'safe'],
             [['remark'], 'string', 'max' => 128],
@@ -55,8 +60,8 @@ class HanziTask extends \yii\db\ActiveRecord
                     return true;
                 }
                 // 1. create, current page is not allowed duplicated except the record is canceled
-                $query = HanziTask::find()->where(['page' => $this->page])->andwhere(['!=', 'status', self::STATUS_CANCEL]);
-                // update
+                $query = HanziTask::find()->where(['page' => $this->page, 'task_type' => $this->task_type])->andwhere(['!=', 'status', self::STATUS_CANCEL]);
+                // 2. update, except current id
                 if (!empty($this->id)) {
                     $query->andFilterWhere(['!=', 'id', $this->id]);
                 }
@@ -77,17 +82,22 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
-     * 获取当前可分配的页码
+     * 根据任务类型，获取当前可分配的页码
      * @return [type] [description]
      */
-    public static function getIdlePages($count = 50)
+    public static function getIdlePages($type = self::TYPE_SPLIT, $count = 50)
     {
-        // 待拆分的记录
-        $countToSplit = Hanzi::find()->where(['duplicate' => 0])->count();
+        // 待处理的记录总数
+        $countToSplit = 0;
+        if ($type == self::TYPE_SPLIT) {
+          $countToSplit = Hanzi::find()->where(['duplicate' => 0])->count();
+        } else {
+          $countToSplit = HanziHyyt::find()->count();
+        }
 
+        // 已申请的任务页码
         $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false))+ 1;
-
-        $usedPages = HanziTask::find()->select('page')->orderBy('id')->where(['!=', 'status', self::STATUS_CANCEL])->asArray()->all();
+        $usedPages = HanziTask::find()->select('page')->orderBy('id')->where(['task_type'=>$type])->AndWhere(['!=', 'status', self::STATUS_CANCEL])->asArray()->all();
 
         $usedPagesArr = [];
         foreach ($usedPages as $page) {
@@ -134,6 +144,7 @@ class HanziTask extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'task_type' => Yii::t('app', '任务类型'),
             'leader_id' => Yii::t('app', '组长'),
             'user_id' => Yii::t('app', '组员'),
             'leader.username' => Yii::t('app', '组长'),
@@ -169,52 +180,68 @@ class HanziTask extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $idRange = Hanzi::getIdRangeByPage($this->page);
-            $this->start_id = $idRange['minId']; 
-            $this->end_id = $idRange['maxId'];
-            // $this->leader_id = Yii::$app->user->id;
+            // 如果是汉字拆分任务，则须保存id范围
+            if ($this->task_type == self::TYPE_SPLIT) {
+              $idRange = Hanzi::getIdRangeByPage($this->page);
+              $this->start_id = $idRange['minId']; 
+              $this->end_id = $idRange['maxId'];
+            }
             return true;
-
         } else {
             return false;
         }
     }
 
     /**
+     * 根据任务ID获取任务对应的阶段
      * @param string $id
      * @return mixed
      */
-    public static function getSeq($userId, $id)
+    public static function getSeq($userId, $id, $taskType=1)
     {       
-        $model = HanziTask::find()->where(['user_id'=>$userId])->andwhere(['<=', 'start_id', $id])->andwhere(['>=', 'end_id', $id])->one();
+        $model = HanziTask::find()->where(['user_id'=>$userId, 'task_type'=>$taskType])->andwhere(['<=', 'start_id', $id])->andwhere(['>=', 'end_id', $id])->OrderBy('seq')->one();
         return empty($model) ? null : $model->seq;
     }
 
     /**
+     * 根据任务ID获取任务对应的阶段
      * @param string $id
      * @return mixed
      */
-    public static function checkApplyPermission($userId)
+    public static function getSeqByPage($userId, $page, $taskType=1)
     {       
-        return HanziTask::find()->where(['user_id'=>$userId])->andwhere(['<=', 'status', self::STATUS_ONGOING])->exists();
+        $model = HanziTask::find()->where(['user_id'=>$userId, 'task_type'=>$taskType, 'page'=>$page])->OrderBy('seq')->one();
+        return empty($model) ? null : $model->seq;
     }
 
     /**
+     * 如果有未完成的任务，则不能继续申请
      * @param string $id
      * @return mixed
      */
-    public static function checkIdPermission($userId, $id, $seq)
+    public static function checkApplyPermission($userId, $taskType)
     {       
-        return HanziTask::find()->where(['user_id'=>$userId, 'seq'=>$seq])->andwhere(['<=', 'start_id', $id])->andwhere(['>=', 'end_id', $id])->exists();
+        return HanziTask::find()->where(['user_id'=>$userId, 'task_type'=>$taskType])->andwhere(['<=', 'status', self::STATUS_ONGOING])->exists();
     }
 
     /**
+     * 拆字任务，检查是否有对该字的拆分权限
      * @param string $id
      * @return mixed
      */
-    public static function checkPagePermission($userId, $page, $seq=0)
+    public static function checkIdPermission($userId, $id, $seq, $taskType=self::TYPE_SPLIT)
+    {       
+        return HanziTask::find()->where(['user_id'=>$userId, 'seq'=>$seq, 'task_type'=>$taskType])->andwhere(['<=', 'start_id', $id])->andwhere(['>=', 'end_id', $id])->exists();
+    }
+
+    /**
+     * 拆字任务，检查是否有对该页的拆分权限
+     * @param string $id
+     * @return mixed
+     */
+    public static function checkPagePermission($userId, $page, $seq=0, $taskType=self::TYPE_SPLIT)
     {
-        $query = HanziTask::find()->where(['user_id'=>$userId, 'page'=>$page]);
+        $query = HanziTask::find()->where(['user_id'=>$userId, 'page'=>$page, 'task_type'=>$taskType]);
         if ($seq !== 0) {
           $query->andwhere(['seq'=>$seq]);
         }
@@ -222,19 +249,21 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 阶段
      * Returns user statuses list
      * @return array|mixed
      */
     public static function seqs()
     {
         return [
-            self::SEQ_FIRST => Yii::t('common', '初次拆分'),
-            self::SEQ_SECOND => Yii::t('common', '二次拆分'),
+            self::SEQ_FIRST => Yii::t('common', '初次'),
+            self::SEQ_SECOND => Yii::t('common', '二次'),
             self::SEQ_THIRD => Yii::t('common', '审查'),
         ];
     }
 
     /**
+     * 状态类型
      * Returns user statuses list
      * @return array|mixed
      */
@@ -249,6 +278,19 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 任务类型
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function types()
+    {
+        return [
+            self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+            self::TYPE_INPUT => Yii::t('common', '异体字录入'),
+        ];
+    }
+      
+    /**
      * Returns user statuses list
      * @return array|mixed
      */
@@ -257,8 +299,6 @@ class HanziTask extends \yii\db\ActiveRecord
         $roles = Yii::$app->authManager->getRolesByUser($id);
         return array_key_exists('组长', $roles);
     }
-
-    
 
     /**
      * @param get members of leader

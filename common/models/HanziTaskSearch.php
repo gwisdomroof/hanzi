@@ -19,7 +19,7 @@ class HanziTaskSearch extends HanziTask
     public function rules()
     {
         return [
-            [['id', 'leader_id', 'user_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'leader_id', 'user_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at', 'task_type'], 'integer'],
             [['remark', 'member.username', 'leader.username'], 'safe'],
         ];
     }
@@ -74,12 +74,12 @@ class HanziTaskSearch extends HanziTask
             // $query->where('0=1');
             return $dataProvider;
         }
-
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             // 'leader_id' => $this->leader_id,
             // 'user_id' => $this->user_id,
+            'task_type' => $this->task_type,
             'page' => $this->page,
             'seq' => $this->seq,
             'start_id' => $this->start_id,
