@@ -165,4 +165,6 @@ return [
     'i18n Message' => '国际化信息',
     'i18n Source Message' => '国际化源信息',
     'RBAC Admin' => '权限管理',
+    'MemberRalations' => '成员关系',
+    'Comments' => '评论'
 ];

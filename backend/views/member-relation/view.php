@@ -38,7 +38,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => User::findIdentity($model->member_id)->username,
             ],
             [                      
-            'label' => '状态',
+            'attribute' => 'relation_type',
+            'value' => empty($model->relation_type) ? null : MemberRelation::types()[$model->relation_type],
+            ],
+            [                      
+            'attribute' => 'status',
             'value' => MemberRelation::statuses()[$model->status],
             ],
             'remark',

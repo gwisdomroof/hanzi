@@ -15,9 +15,11 @@ use common\models\MemberRelation;
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?php echo $form->field($model, 'leader_id')->dropDownList(MemberRelation::leaders(), ['prompt' => '请选择...']) ?>
+    <?php echo $form->field($model, 'leader_id')->dropDownList(MemberRelation::leaders(), ['prompt' => '']) ?>
 
-    <?php echo $form->field($model, 'member_id')->dropDownList(MemberRelation::members(), ['prompt' => '请选择...']) ?>
+    <?php echo $form->field($model, 'member_id')->dropDownList(MemberRelation::members(), ['prompt' => '']) ?>
+
+    <?php echo $form->field($model, 'relation_type')->dropDownList(MemberRelation::types()) ?>
 
     <?php echo $form->field($model, 'status')->dropDownList(MemberRelation::statuses()) ?>
 

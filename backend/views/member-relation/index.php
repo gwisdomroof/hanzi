@@ -22,26 +22,39 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             // ['class' => 'yii\grid\SerialColumn'],
             'id',
             [                     
-            'label' => '组长',
+            'attribute' => 'leader_id',
             'value' => function ($data) {
                 return User::findIdentity($data['leader_id'])->username; 
                 },
+            'filter'=>MemberRelation::leaders()
             ],
             [                     
-            'label' => '拆字员',
+            'attribute' => 'member_id',
             'value' => function ($data) {
                 return User::findIdentity($data['member_id'])->username; 
                 },
+            'filter'=>MemberRelation::members()
             ],
             [                     
-            'label' => '状态',
+            'attribute' => 'relation_type',
+            'value' => function ($data) {
+                    if (!empty($data['relation_type'])) {
+                        return MemberRelation::types()[$data['relation_type']]; 
+                    }
+                },
+            'filter'=>MemberRelation::types()
+            ],
+            [                     
+            'attribute' => 'status',
             'value' => function ($data) {
                 return MemberRelation::statuses()[$data['status']]; 
                 },
+            'filter'=>MemberRelation::statuses()
             ],
             'remark',
             // 'created_at',

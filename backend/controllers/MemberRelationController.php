@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\MemberRelation;
+use common\models\MemberRelationSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -32,11 +33,11 @@ class MemberRelationController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => MemberRelation::find(),
-        ]);
+        $searchModel = new MemberRelationSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

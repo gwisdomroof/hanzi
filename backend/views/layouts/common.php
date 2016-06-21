@@ -161,9 +161,15 @@ $bundle = BackendAsset::register($this);
                         ],
                         [
                             'label'=>Yii::t('backend', 'Users'),
-                            'icon'=>'<i class="fa fa-users"></i>',
-                            'url'=>['/user/index'],
-                            'visible'=>Yii::$app->user->can('administrator')
+                            'url' => '#',
+                            'icon'=>'<i class="fa fa-cogs"></i>',
+                            'options'=>['class'=>'treeview'],
+                            // 'url'=>['/user/index'],
+                            'visible'=>Yii::$app->user->can('administrator'),
+                            'items'=>[
+                                ['label'=>Yii::t('backend', 'Users'), 'url'=>['/user/index'], 'icon'=>'<i class="fa fa-angle-double-right"></i>'],
+                                ['label'=>Yii::t('backend', 'MemberRalations'), 'url'=>['member-relation/index'], 'icon'=>'<i class="fa fa-angle-double-right"></i>'],
+                            ],
                         ],
                         [
                             'label'=>Yii::t('backend', 'Other'),
