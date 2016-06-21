@@ -16,11 +16,15 @@ use common\models\User;
  * @property string $remark
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $relation_type
  */
 class MemberRelation extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 1;
     const STATUS_BLOCKED = 0;
+
+    const TYPE_SPLIT = 1;
+    const TYPE_INPUT = 2;
 
     /**
      * @inheritdoc
@@ -37,7 +41,7 @@ class MemberRelation extends \yii\db\ActiveRecord
     {
         return [
             [['member_id', 'leader_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'relation_type'], 'safe'],
             [['member_id', 'leader_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['remark'], 'string', 'max' => 128],
         ];
@@ -62,6 +66,7 @@ class MemberRelation extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'member_id' => Yii::t('app', '组员'),
             'leader_id' => Yii::t('app', '组长'),
+            'relation_type' => Yii::t('app', '类型'),
             'status' => Yii::t('app', '状态'),
             'remark' => Yii::t('app', '备注'),
             'created_at' => Yii::t('app', '创建时间'),
@@ -78,6 +83,18 @@ class MemberRelation extends \yii\db\ActiveRecord
         return [
             self::STATUS_ACTIVE => Yii::t('common', '启用'),
             self::STATUS_BLOCKED => Yii::t('common', '禁用'),
+        ];
+    }
+
+    /**
+     * Returns user types list
+     * @return array|mixed
+     */
+    public static function types()
+    {
+        return [
+            self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+            self::TYPE_INPUT => Yii::t('common', '异体字录入'),
         ];
     }
 
