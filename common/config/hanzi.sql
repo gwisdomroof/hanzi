@@ -38,6 +38,29 @@ CREATE TABLE IF NOT EXISTS hanzi_split (
 );
 
 
+CREATE TABLE IF NOT EXISTS hanzi_hy_yt (
+  id BIGSERIAL PRIMARY KEY,
+  volume varchar(8) DEFAULT NULL, -- '册' 
+  page int DEFAULT NULL, -- '页' 
+  num int DEFAULT NULL, -- '序号' 
+  picture varchar(32) DEFAULT NULL, -- '图片'
+  word1 varchar(8) DEFAULT NULL, -- '文字'  
+  type1 smallint DEFAULT NULL, -- '正异类型'
+  tong_word1 varchar(32) DEFAULT NULL, -- '所同正字'
+  zhushi1 varchar(64) DEFAULT NULL, -- '注释信息'
+  word2 varchar(8) DEFAULT NULL, -- '文字'  
+  type2 smallint DEFAULT NULL, -- '正异类型'
+  tong_word2 varchar(32) DEFAULT NULL, -- '所同正字'
+  zhushi2 varchar(64) DEFAULT NULL, -- '注释信息'
+  word3 varchar(8) DEFAULT NULL, -- '文字'  
+  type3 smallint DEFAULT NULL, -- '正异类型'
+  tong_word3 varchar(32) DEFAULT NULL, -- '所同正字'
+  zhushi3 varchar(64) DEFAULT NULL, -- '注释信息' 
+  remark varchar(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL 
+);
+
 CREATE TABLE IF NOT EXISTS hanzi_set (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'

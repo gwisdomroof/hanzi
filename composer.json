@@ -50,7 +50,8 @@
     "symfony/process": "^3.0",
     "mdmsoft/yii2-admin": "~2.0",
     "phpoffice/phpexcel": "1.8.1", 
-    "cyneek/yii2-comments": "*"
+    "cyneek/yii2-comments": "*",
+    "2amigos/yii2-gallery-widget": "~1.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.0.0",
