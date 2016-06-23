@@ -41,7 +41,7 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
 
 <div class="col-sm-6" style="margin-top: 33px; overflow:scroll; height: 520px;">
     <table class="table table-hover">
-        <tr style="background:#f9f9f9"><th width="15%">字头</th><th>类型</th><th width="15%">同某字</th><th>备注</th><th width="15%">操作</th></tr>
+        <tr style="background:#f9f9f9"><th width="15%">字头</th><th>类型</th><th width="15%">通行字</th><th>备注</th><th width="15%">操作</th></tr>
         
         <?php foreach ($models as $model): ?>
             <form id=<?="form".$model->id?> >

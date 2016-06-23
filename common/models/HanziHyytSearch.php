@@ -47,9 +47,14 @@ class HanziHyytSearch extends HanziHyyt
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 100,
+
+            ],
         ]);
 
         $this->load($params);
+
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

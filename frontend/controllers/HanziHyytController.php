@@ -37,7 +37,7 @@ class HanziHyytController extends Controller
     public function actionIndex($page=1)
     {
         $searchModel = new HanziHyytSearch();
-        $param['HanziHyytSearch']['page'] = $page;
+        $param['HanziHyytSearch']['page'] = (int)$page;
         $models = $searchModel->search($param)->getModels();
 
         $userId = Yii::$app->user->id;
