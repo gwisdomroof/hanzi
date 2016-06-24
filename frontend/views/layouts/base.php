@@ -69,6 +69,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/article/component-help']
                     ],
                     [
+                        'label' => Yii::t('frontend', '异体字录入介绍'),
+                        'url' => ['/article/variant-help']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '网站更新说明'),
                         'url' => ['/article/update-intro']
                     ]

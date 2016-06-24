@@ -39,7 +39,7 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     </div>
 </div> 
 
-<div class="col-sm-6" style="margin-top: 30px;">
+<div class="col-sm-6" style="margin-top: 33px; overflow:scroll; height: 520px;">
     <table class="table table-hover">
         <tr style="background:#f9f9f9"><th width="15%">字头</th><th>类型</th><th width="15%">同某字</th><th>备注</th></tr>
         
