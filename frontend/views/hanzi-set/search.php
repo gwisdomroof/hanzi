@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
         <div>
         <?php 
-        $view = '';
+        $view = '_searchWord';
         if ($hanziSearch->mode == HanziSetSearch::SEARCH_WORD) {
             $view = '_searchWord';
         } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_VARIANT) {
