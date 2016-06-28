@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            // ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'source',
@@ -32,9 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'word',
             'pic_name',
             // 'nor_var_type',
-            // 'belong_standard_word_code',
+            'belong_standard_word_code',
             // 'standard_word_code',
-            // 'position_code',
+            'position_code',
             // 'duplicate',
             // 'duplicate_id',
             // 'pinyin',

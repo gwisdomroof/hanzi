@@ -69,13 +69,21 @@ class HanziSet extends \yii\db\ActiveRecord
      */
     public static function getPicturePath($soure, $pic_name)
     {
-        $gapDir = substr($pic_name, 0, 2);
-        if ($soure = self::SOURCE_TAIWAN) {
+        
+        if ($soure == self::SOURCE_TAIWAN) {
+            $gapDir = substr($pic_name, 0, 2);
             return "/img/tw/$gapDir/$pic_name.png";
-        } elseif($soure = self::SOURCE_HANYU) {
+        } elseif($soure == self::SOURCE_HANYU) {
             return "/img/hy/$pic_name.png";
-        } elseif($soure = self::SOURCE_GAOLI) {
-            return "/img/gl/$gapDir/$pic_name.png";
+        } elseif($soure == self::SOURCE_GAOLI) {
+            if (strpos($pic_name, '1') !== false) {
+                return "/img/gl/variant1/$pic_name.png";
+            } elseif (strpos($pic_name, '2') !== false) {
+                return "/img/gl/variant2/$pic_name.png";
+            } else {
+                return "/img/gl/standard/$pic_name.png";
+            }
+            
         } else {
             return false;
         }

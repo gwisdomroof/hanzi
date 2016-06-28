@@ -12,7 +12,7 @@ class Unicode
     const SQUARE_E = 6;
 
     /**
-     * utf8字符转换成Unicode字符，little endian
+     * 判断汉字所属的Unicode平面
      * @param  [type] $utf8mb_str Utf-8字符
      * @return [type]           Unicode字符
      */

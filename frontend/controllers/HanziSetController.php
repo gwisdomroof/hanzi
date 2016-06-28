@@ -138,21 +138,22 @@ class HanziSetController extends Controller
             $this->redirect(['search', 'HanziSetSearch[param]' => $hanziSearch->param]);
         }
         
-        $data = array();
+        $data = [];
         $pagination = new \yii\data\Pagination(['totalCount' => 0]);
         $message = null;
 
         if ($hanziSearch->load(Yii::$app->request->get()) && $hanziSearch->validate()) {
-
-            $hanzi = $hanziSearch->regSearch($hanziSearch->param);
-
-            $count = $hanzi->count();
-
-            $message = $count == 0 ? "查询结果为空。" : "共检索到".$count."条数据。";
-
-            $pagination = new \yii\data\Pagination(['totalCount' => $count, 'pageSize' => 100]);
-
-            $data = $hanzi->orderBy('id')->offset($pagination->offset)->limit(100)->all();
+            $res = $hanziSearch->regSearch($hanziSearch->param);
+            if ($hanziSearch->mode == 1) {
+                $count = $res->count();
+                $message = $count == 0 ? "查询结果为空。" : "共检索到".$count."条数据。";
+                $pagination = new \yii\data\Pagination(['totalCount' => $count, 'pageSize' => 100]);
+                $data = $res->orderBy('id')->offset($pagination->offset)->limit(100)->all();
+            } elseif ($hanziSearch->mode == 2) {
+                $data = $res;
+            } elseif ($hanziSearch->mode == 3) {
+                $data = $res;
+            } 
         }
 
         return $this->render('search', [

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\bootstrap\ActiveForm;
+use common\models\HanziSetSearch;
 
 
 /* @var $this yii\web\View */
@@ -35,28 +36,23 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
         <br/>
 
-        <div class="summary" style="color:#808080; margin-left: 10px; font-style: italic;"><?=$message?></div>
-
-        <div style="word-wrap: break-word; word-break: normal; ">
-
-        <?php foreach ($data as $item) {
-            if (!empty($item->word)) {
-                echo "<span class='hanzi-item'>". $item->word . "</span>";
-            } elseif (!empty($item->pic_name)) {
-                $picPath = \common\models\HanziSet::getPicturePath($item->source, $item->pic_name);
-                echo "<img alt= '$item->pic_name' src='$picPath' class='hanzi-img'>";
-            }
-        } ?>
-
-        </div>
-
-        <div style="float:left;">
-        <?=\yii\widgets\LinkPager::widget([
-            'pagination' => $pagination,
-            'options' => [
-                'class' => 'pagination',
-                ]
-        ]);?>
+        <div>
+        <?php 
+        $view = '';
+        if ($hanziSearch->mode == HanziSetSearch::SEARCH_WORD) {
+            $view = '_searchWord';
+        } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_VARIANT) {
+            $view = '_searchVariant';
+        } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_REVERSE) {
+            $view = '_searchReverse';
+        }
+        echo $this->render($view, [
+                'hanziSearch' => $hanziSearch,
+                'data' => $data,
+                'pagination' => $pagination,
+                'message' => $message,
+            ]);
+        ?>
         </div>
 
     </div>
