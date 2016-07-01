@@ -75,9 +75,9 @@ $config = [
             'as afterLogin' => 'common\behaviors\LoginTimestampBehavior'
         ],
     ],
-    // 'as access' => [
-    //     'class' => 'mdm\admin\components\AccessControl',
-    //     'allowActions' => [
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        'allowActions' => [
     //         'user/sign-in/*',
     //         // 'site/*',
     //         // 'admin/*',
@@ -88,8 +88,8 @@ $config = [
     //         // But in the earlier stages of your development, you may probably want to
     //         // add a lot of actions here until you finally completed setting up rbac,
     //         // otherwise you may not even take a first step.
-    //     ]
-    // ],
+        ]
+    ],
 ];
 
 if (YII_ENV_DEV) {
