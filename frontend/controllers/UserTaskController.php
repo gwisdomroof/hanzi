@@ -75,7 +75,7 @@ class UserTaskController extends Controller
                 $seq = $task->seq;
                 foreach ($models as $model) {
                     if (!$model->isNew($seq)) {
-                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->task_seq, false);
+                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq, false);
                     }
                 }
 
@@ -85,7 +85,7 @@ class UserTaskController extends Controller
                 $seq = $task->seq;
                 foreach ($models as $model) {
                     if (!$model->isNew($seq)) {
-                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->task_seq, false);
+                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq, false);
                     }
                 }
             }
