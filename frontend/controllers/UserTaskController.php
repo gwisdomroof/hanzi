@@ -62,10 +62,10 @@ class UserTaskController extends Controller
      * 扫描任务表，计算已完成任务.
      * @return mixed
      */
-    public function actionScan()
+    public function actionScan($min, $max)
     {
         // 获取用户的任务列表
-        $tasks = HanziTask::find()->orderBy('page')->all();
+        $tasks = HanziTask::find()->orderBy('page')->andWhere(['>=', 'page', $min])->andWhere(['<=', 'page', $max])->all();
         foreach ($tasks as $task) {
             if ($task->task_type == HanziTask::TYPE_SPLIT) {
                 $pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
