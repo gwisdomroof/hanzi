@@ -20,6 +20,12 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     .hanzi-image {
         width:50px;
     }
+    .msg {
+       color: #777; 
+    }
+    .tips {
+        color: red;
+    }
     #image-page {
         width: 100%;
     }
@@ -39,7 +45,9 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     </div>
 </div> 
 
-<div class="col-sm-6" style="margin-top: 33px; overflow:scroll; height: 520px;">
+
+<div class="msg pull-right"><span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>当前积分：<span id="score"><?=Yii::$app->session->get('cur_scores')?></span></div>
+<div class="col-sm-6" style="margin-top: 13px; overflow:scroll; height: 520px;">
     <table class="table table-hover">
         <tr style="background:#f9f9f9"><th width="15%">字头</th><th>类型</th><th width="15%">通行字</th><th>备注</th><th width="15%">操作</th></tr>
         
@@ -96,6 +104,7 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
 <?php
 # 图片编号与urlPage编号一致
 $curPage = (int)$curPage;
+$seq = (int)$seq;
 
 $script = <<<SCRIPT
     var oTime;
@@ -127,10 +136,10 @@ $script = <<<SCRIPT
         curPage = nextPage;
     });
 
-    $(document).on('click', '.confirm', function() {
+    $(document).on('click', '.confirm', function() {  
         var id = $(this).attr('name');
         $.post( {
-            url: "/hanzi-hyyt/modify?id=" + id,
+            url: "/hanzi-hyyt/modify?id=" + id + "&seq=" + $seq,
             data: $('#form'+id).serialize(),
             dataType: 'json',
             success: function(result){
@@ -139,6 +148,13 @@ $script = <<<SCRIPT
                     $('#tp'+id).attr('disabled','disabled');
                     $('#tw'+id).attr('disabled','disabled');
                     $('#zs'+id).attr('disabled','disabled');
+                    var score = parseInt(result.score);
+                    if (score != 0) {
+                        var value = parseInt($('#score').text()) + score;
+                        $("#tips").fadeIn(50).fadeOut(500); 
+                        $('#score').text(value);
+                    }
+                    return;
                 }
             },
             error: function(result) {

@@ -33,7 +33,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/hanzi-task/admin?type=1']
                     ],
                     [
-                        'label' => Yii::t('frontend', '异体字录入'),
+                        'label' => Yii::t('frontend', '异体字识别'),
                         'url' => ['/hanzi-task/admin?type=2']
                     ]
                 ]
@@ -47,8 +47,12 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/hanzi-task/index?type=1']
                     ],
                     [
-                        'label' => Yii::t('frontend', '异体字录入'),
+                        'label' => Yii::t('frontend', '异体字识别'),
                         'url' => ['/hanzi-task/index?type=2']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '已完成任务'),
+                        'url' => ['/user-task/index']
                     ]
                 ]
             ],

@@ -60,6 +60,19 @@ class HanziHyyt extends \yii\db\ActiveRecord
     }
 
     /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
+    public function isNew($seq)
+    {
+        if (!empty($this->getAttribute("type$seq")) || !empty($this->getAttribute("tong_word$seq")) || !empty($this->getAttribute("zhushi$seq")) ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels()

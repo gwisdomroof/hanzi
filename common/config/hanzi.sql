@@ -125,3 +125,18 @@ CREATE TABLE IF NOT EXISTS hanzi_image (
   name VARCHAR(64) DEFAULT NULL, -- '图片名称'
   value TEXT NOT NULL -- '图片base64值'
 );
+
+
+# 用户已完成任务表。
+CREATE TABLE IF NOT EXISTS hanzi_user_task (
+  id BIGSERIAL PRIMARY KEY,
+  userid BIGSERIAL NOT NULL, 
+  taskid BIGSERIAL NOT NULL,
+  task_type SMALLINT DEFAULT NULL,
+  task_seq SMALLINT DEFAULT NULL,
+  task_status SMALLINT DEFAULT NULL,
+  quality SMALLINT DEFAULT NULL,
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL 
+);
+

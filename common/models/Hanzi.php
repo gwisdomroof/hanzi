@@ -175,6 +175,19 @@ class Hanzi extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
+    public function isNew($seq)
+    {
+        if (!empty($this->getAttribute("duplicate$seq" . "0")) || !empty($this->getAttribute("initial_split$seq" . "1")) || !empty($this->getAttribute("initial_split$seq" . "2")) || !empty($this->getAttribute("deform_split$seq" . "0")) || !empty($this->getAttribute("similar_stock$seq" . "0"))) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Returns user statuses list

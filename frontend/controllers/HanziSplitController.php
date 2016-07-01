@@ -6,6 +6,7 @@ use Yii;
 use common\models\Hanzi;
 use common\models\HanziSearch;
 use common\models\HanziTask;
+use common\models\HanziUserTask;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\HttpException;
@@ -173,6 +174,9 @@ class HanziSplitController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $nextId = $model->nextSplitId($model->id);
+            if (!$model->isNew($seq)) {
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, $seq);
+            }
             return $next == 'true' ? $this->redirect(['first', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
             // set default value
@@ -203,11 +207,14 @@ class HanziSplitController extends Controller
 
         $next = Yii::$app->request->post('next');
 
-
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $next == 'true' ?  $this->redirect(['second', 'id' => $model->id + 1]) : $this->redirect(['view', 'id' => $model->id]);
+            $nextId = $model->nextSplitId($model->id);
+            if (!$model->isNew($seq)) {
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, $seq);
+            }
+            return $next == 'true' ?  $this->redirect(['second', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
             // set default value
             if (!isset($model->hard20))
@@ -239,7 +246,11 @@ class HanziSplitController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $next == 'true' ? $this->redirect(['determine', 'id' => $model->id + 1]) : $this->redirect(['view', 'id' => $model->id]);
+            $nextId = $model->nextSplitId($model->id);
+            if (!$model->isNew($seq)) {
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, $seq);
+            }
+            return $next == 'true' ? $this->redirect(['determine', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
             // set default value
             if (!isset($model->hard30))

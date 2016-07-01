@@ -11,6 +11,7 @@ $this->title = Yii::t('frontend', '初次拆分', [
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzis'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = '当前积分：' . Yii::$app->session->get('cur_scores');
 ?>
 <style type="text/css">
 	#app input:focus {

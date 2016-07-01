@@ -6,6 +6,7 @@ use Yii;
 use common\models\HanziHyyt;
 use common\models\HanziTask;
 use common\models\HanziHyytSearch;
+use common\models\HanziUserTask;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -106,14 +107,7 @@ class HanziHyytController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+        return $this->redirect(['index', 'page' => $model->page]);
     }
 
     /**
@@ -122,15 +116,23 @@ class HanziHyytController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionModify($id)
+    public function actionModify($id, $seq = 1)
     {
         if (!Yii::$app->request->isAjax) {
             return false;
         }
 
+        $userId = Yii::$app->user->id;
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return '{"status":"success", "id": ' . $id. '}';
+            $addScore = 0;
+            if (!$model->isNew($seq)) {
+                $beforeScore = Yii::$app->session->get('cur_scores');
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_INPUT, $seq);
+                $afterScore = Yii::$app->session->get('cur_scores');
+                $addScore = $afterScore - $beforeScore;
+            }
+            return '{"status":"success", "id": ' . $id. ', "score": '. $addScore .'}';
         } else {
             return '{"status":"error", "id": ' . $id. '}';
         }
