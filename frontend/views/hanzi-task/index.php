@@ -8,7 +8,7 @@ use common\models\HanziTask;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$taskName = $type == 1 ? '拆字' : '录入';
+$taskName = $type == 1 ? '拆字' : '识别';
 
 $this->title = Yii::t('frontend', "我的$taskName"."任务");
 $this->params['breadcrumbs'][] = $this->title;

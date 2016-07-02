@@ -54,20 +54,25 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
         <?php foreach ($models as $model): ?>
             <form id=<?="form".$model->id?> >
             <tr><td>
+            <?php $bNew = $model->isNew($seq); ?>
             <?php if (!empty($model->word1)) {
-               echo Html::activeInput('text', $model, 'word'.$seq, ['class' => 'form-control', 'id' => 'wd'.$model->id]);
+               echo Html::activeInput('text', $model, 'word'.$seq, ['class' => 'form-control', 'id' => 'wd'.$model->id, 'disabled' => !$bNew]);
             } else {
-                echo Html::img("/img/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd'.$model->id]); 
+                echo Html::img("/img/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd'.$model->id, 'disabled' => !$bNew]); 
             }
             ?>
             </td><td>
-            <?= Html::activeDropDownList ($model, 'type'.$seq, HanziHyyt::types(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'tp'.$model->id] ); ?>
+            <?= Html::activeDropDownList ($model, 'type'.$seq, HanziHyyt::types(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'tp'.$model->id, 'disabled' => !$bNew] ); ?>
             </td><td>
-            <?= Html::activeInput('text', $model, 'tong_word'.$seq, ['class' => 'form-control', 'id' => 'tw'.$model->id]); ?>
+            <?= Html::activeInput('text', $model, 'tong_word'.$seq, ['class' => 'form-control', 'id' => 'tw'.$model->id, 'disabled' => !$bNew]); ?>
             </td><td>
-            <?= Html::activeInput('text', $model, 'zhushi'.$seq, ['class' => 'form-control', 'id' => 'zs'.$model->id]); ?>
+            <?= Html::activeInput('text', $model, 'zhushi'.$seq, ['class' => 'form-control', 'id' => 'zs'.$model->id, 'disabled' => !$bNew]); ?>
             </td><td>
-            <?php echo "<a title='确定' class='confirm' name='" . $model->id . "' ><span>确定</span></a><a title='修改' class='modify' name='" . $model->id . "' >&nbsp;<span>修改</span></a>";
+            <?php if ($bNew) { 
+                    echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
+                } else {
+                    echo "<a class='modify' name='" . $model->id . "' >修改</a>";
+                }
                 echo "<div class='clearfix'></div>";
             ?>
             </td></tr>
@@ -138,23 +143,26 @@ $script = <<<SCRIPT
 
     $(document).on('click', '.confirm', function() {  
         var id = $(this).attr('name');
+        var thisObj = $(this);
         $.post( {
             url: "/hanzi-hyyt/modify?id=" + id + "&seq=" + $seq,
             data: $('#form'+id).serialize(),
             dataType: 'json',
             success: function(result){
                 if (result.status == 'success') {
-                    $('#wd'+id).attr('disabled','disabled');
-                    $('#tp'+id).attr('disabled','disabled');
-                    $('#tw'+id).attr('disabled','disabled');
-                    $('#zs'+id).attr('disabled','disabled');
+                    $('#wd'+id).attr('disabled', true);
+                    $('#tp'+id).attr('disabled', true);
+                    $('#tw'+id).attr('disabled', true);
+                    $('#zs'+id).attr('disabled', true);
                     var score = parseInt(result.score);
                     if (score != 0) {
                         var value = parseInt($('#score').text()) + score;
                         $("#tips").fadeIn(50).fadeOut(500); 
                         $('#score').text(value);
                     }
-                    return;
+                    thisObj.attr('class', 'modify');
+                    thisObj.text('修改');
+                    return true;
                 }
             },
             error: function(result) {
@@ -165,10 +173,12 @@ $script = <<<SCRIPT
 
     $(document).on('click', '.modify', function() {
         var id = $(this).attr('name');
-        $('#wd'+id).removeAttr("disabled");
-        $('#tp'+id).removeAttr("disabled");
-        $('#tw'+id).removeAttr("disabled");
-        $('#zs'+id).removeAttr("disabled");
+        $('#wd'+id).attr('disabled', false);
+        $('#tp'+id).attr('disabled', false);
+        $('#tw'+id).attr('disabled', false);
+        $('#zs'+id).attr('disabled', false);
+        $(this).attr('class', 'confirm');
+        $(this).text('确定');
     });
 
 SCRIPT;

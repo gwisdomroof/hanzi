@@ -78,7 +78,7 @@ $config = [
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
-    //         'user/sign-in/*',
+            'user/sign-in/*',
     //         // 'site/*',
     //         // 'admin/*',
     //         // 'debug/default/toolbar',
