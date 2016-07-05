@@ -232,7 +232,7 @@ var hanziComponents = [
 	{'display' : '监-皿', 'input' : '⿰〢⿸𠂉丶', 'search' : '5ssphn'},
 	{'display' : '钅', 'input' : '钅', 'search' : '5phhhz'},
 	{'display' : '冋', 'input' : '冋', 'search' : '5szszh'},
-	{'display' : '雋-隹', 'input' : '冂', 'search' : '5szsz'},
+	{'display' : '雋-隹', 'input' : '⿰⿰⿰丨一凵𠃌', 'search' : '5szsz'},
 	{'display' : '𨈐', 'input' : '𨈐', 'search' : '5pszhp'},
 	{'display' : '叓-又', 'input' : '⿻一中', 'search' : '5hszhs'},
 	{'display' : '圥', 'input' : '圥', 'search' : '5hshpz'},

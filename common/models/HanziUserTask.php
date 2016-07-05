@@ -20,11 +20,14 @@ use yii\behaviors\TimestampBehavior;
  */
 class HanziUserTask extends \yii\db\ActiveRecord
 {
+    const TYPE_ALL = 0;
     const TYPE_SPLIT = 1;
     const TYPE_INPUT = 2;
 
     const SPLIT_WEIGHT = 1;
     const INPUT_WEIGHT = 1;
+
+    public $cnt;
 
     /**
      * @inheritdoc
@@ -50,7 +53,8 @@ class HanziUserTask extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_type', 'task_seq', 'task_status', 'quality', 'created_at', 'updated_at'], 'integer'],
+            [['task_type', 'task_seq', 'task_status', 'quality', 'created_at', 'updated_at', 'cnt'], 'integer'],
+            [['user.username'], 'safe'],
         ];
     }
 
@@ -88,6 +92,34 @@ class HanziUserTask extends \yii\db\ActiveRecord
 
     }
 
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'userid']);
+    }
+
+    public function attributes()
+    {
+        // 添加关联字段到可搜索特性
+        return array_merge(parent::attributes(), ['user.username']);
+    }
+
+    /**
+     * 任务类型
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function types()
+    {
+        return [
+            self::TYPE_ALL => Yii::t('common', '总积分'),
+            self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+            self::TYPE_INPUT => Yii::t('common', '异体字录入'),
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -104,6 +136,8 @@ class HanziUserTask extends \yii\db\ActiveRecord
             'quality' => Yii::t('common', '质量'),
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),
+            'cnt' => Yii::t('common', '积分'),
+            'user.username' => Yii::t('common', '用户名'),
         ];
     }
 }

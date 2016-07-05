@@ -32,6 +32,38 @@ class UserTaskController extends Controller
         ];
     }
 
+
+    /**
+     * Lists all HanziUserTask models.
+     * @return mixed
+     */
+    public function actionAdmin()
+    {
+        
+        $searchModel = new HanziUserTaskSearch();
+
+        $param = Yii::$app->request->queryParams;
+
+        $dataProvider = $searchModel->countScores($param);
+
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['cnt'] = [
+            'asc' => ['cnt' => SORT_ASC],
+            'desc' => ['cnt' => SORT_DESC],
+        ];
+
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['user.username'] = [
+            'asc' => ['user.username' => SORT_ASC],
+            'desc' => ['user.username' => SORT_DESC],
+        ];
+
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Lists all HanziUserTask models.
      * @return mixed
