@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $searchModel common\models\HanziUserTaskSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('frontend', 'My Completed Tasks');
+$this->title = Yii::t('frontend', '积分排名');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <style type="text/css">

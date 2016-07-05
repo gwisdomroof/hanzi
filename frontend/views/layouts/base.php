@@ -24,6 +24,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             // ['label' => Yii::t('frontend', 'About'), 'url' => ['/page/view', 'slug'=>'about']],
             // ['label' => Yii::t('frontend', 'Articles'), 'url' => ['/article/index']],
             ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['/hanzi-set/search'],],
+            ['label' => Yii::t('frontend', '积分排名'), 'url' => ['/user-task/admin'],],
             [
                 'label' => Yii::t('frontend', '任务管理'),
                 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id),
@@ -36,11 +37,6 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'label' => Yii::t('frontend', '异体字识别'),
                         'url' => ['/hanzi-task/admin?type=2']
                     ],
-                    [
-                        'label' => Yii::t('frontend', '积分统计'),
-                        'url' => ['/user-task/admin']
-                    ]
-                    
                 ]
             ],
             [
@@ -56,13 +52,13 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/hanzi-task/index?type=2']
                     ],
                     [
-                        'label' => Yii::t('frontend', '已完成任务'),
+                        'label' => Yii::t('frontend', '完成情况'),
                         'url' => ['/user-task/index']
                     ]
                 ]
             ],
             [
-                'label' => Yii::t('frontend', '文档'),
+                'label' => Yii::t('frontend', '帮助'),
                 'visible'=>!Yii::$app->user->isGuest,
                 'items'=>[
                     [
