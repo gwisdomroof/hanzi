@@ -35,7 +35,12 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '异体字识别'),
                         'url' => ['/hanzi-task/admin?type=2']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '积分统计'),
+                        'url' => ['/user-task/admin']
                     ]
+                    
                 ]
             ],
             [

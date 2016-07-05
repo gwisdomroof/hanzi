@@ -95,6 +95,7 @@ class HanziUserTaskSearch extends HanziUserTask
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['cnt'=>SORT_DESC]]
         ]);
         
         if (isset($params['HanziUserTaskSearch']['task_type']) && $params['HanziUserTaskSearch']['task_type'] === '0') {
