@@ -98,14 +98,14 @@ class HanziUserTaskSearch extends HanziUserTask
             'sort'=> ['defaultOrder' => ['cnt'=>SORT_DESC]]
         ]);
         
-        if (isset($params['HanziUserTaskSearch']['task_type']) && $params['HanziUserTaskSearch']['task_type'] === '0') {
-            $query->select(['userid, COUNT(*) AS cnt'])->groupBy(['userid']);
-            // unset($params['HanziUserTaskSearch']['task_type']);
-            $this->load($params);
-        } else {
+        if (isset($params['HanziUserTaskSearch']['task_type']) && $params['HanziUserTaskSearch']['task_type'] !== '0') {
             $query->select(['userid, task_type, COUNT(*) AS cnt'])->groupBy(['userid', 'task_type']);
             $this->load($params);
             $query->andFilterWhere(['task_type' => $this->task_type ]);
+        } else {
+            $query->select(['userid, COUNT(*) AS cnt'])->groupBy(['userid']);
+            // unset($params['HanziUserTaskSearch']['task_type']);
+            $this->load($params);
         }
         
         $query->joinWith(['user']);
