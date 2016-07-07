@@ -28,6 +28,21 @@ class HanziSetController extends Controller
         ];
     }
 
+    /**
+     * composite information.
+     * @return mixed
+     */
+    public function actionVariant($id)
+    {
+        $searchModel = new HanziSetSearch();
+        $dataProvider = $searchModel->searchVariant($id);
+
+        return $this->render('variant', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
 
     /**
      * Lists all HanziSet models.

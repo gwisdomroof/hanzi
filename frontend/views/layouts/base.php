@@ -66,6 +66,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/article/hanzi-search']
                     ],
                     [
+                        'label' => Yii::t('frontend', '部件补充说明'),
+                        'url' => ['/article/component-addition']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '拆字工作流程'),
                         'url' => ['/article/split-intro']
                     ],
