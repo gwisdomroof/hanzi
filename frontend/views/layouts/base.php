@@ -74,6 +74,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/article/split-intro']
                     ],
                     [
+                        'label' => Yii::t('frontend', '拆字实例'),
+                        'url' => ['/article/split-example']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '部件查找介绍'),
                         'url' => ['/article/component-help']
                     ],
