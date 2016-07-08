@@ -77,13 +77,14 @@ class HanziUserTask extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function addItem($userid, $taskid, $taskType, $taskSeq, $bUpdateSession = true)
+    public static function addItem($userid, $taskid, $taskType, $quality, $taskSeq, $bUpdateSession = true)
     {
         $userTask = new HanziUserTask();
         $userTask->userid = $userid;
         $userTask->taskid = $taskid;
         $userTask->task_type = $taskType;
         $userTask->task_seq = $taskSeq;
+        $userTask->quality = $quality;
         if (!HanziUserTask::find()->where(['userid'=>$userTask->userid, 'taskid'=>$userTask->taskid, 'task_type'=>$userTask->task_type, 'task_seq'=>$userTask->task_seq])->exists() && !$userTask->save()) {
             var_dump($userTask->getErrors());
             die;
