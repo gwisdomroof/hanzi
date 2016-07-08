@@ -198,7 +198,8 @@ class UserTaskController extends Controller
 
             if ($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
-        } 
+        }
+        $model->task_type = Yii::$app->request->get('type');
         return $this->render('create', [
             'model' => $model,
             'members' => $members,

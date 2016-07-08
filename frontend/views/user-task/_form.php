@@ -14,7 +14,7 @@ use yii\web\JsExpression;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <!-- <?= $form->field($model, 'userid')->textInput() ?> -->
+    <?= $form->field($model, 'task_type')->dropDownList(HanziUserTask::types(true), ['readonly' => true]) ?>
 
     <div class="form-group field-hanziusertask-userid">
         <label for="hanziusertask-userid" class="control-label col-sm-3">用户</label>
@@ -38,8 +38,6 @@ use yii\web\JsExpression;
     </div>
 
     <?= Html::activeHiddenInput($model, 'userid')?>
-
-    <?= $form->field($model, 'task_type')->dropDownList(HanziUserTask::types(true)) ?>
 
     <?= $form->field($model, 'quality')->textInput() ?>
 

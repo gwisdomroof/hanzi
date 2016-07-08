@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="hanzi-task-index">
     <p>
         <?php 
-        echo Html::a(Yii::t('frontend', "申请$taskName"."任务"), ['apply', 'type' => $type], ['class' => 'btn btn-success  pull-right']) 
+        echo Html::a(Yii::t('frontend', "申请$taskName"."任务"), ['apply', 'type' => $type], ['class' => 'btn btn-primary  pull-right']) 
         ?>
     </p>
 

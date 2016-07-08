@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title =  Yii::t('frontend', \common\models\HanziUserTask::types()[$type]);
+$this->title =  Yii::t('frontend', HanziUserTask::types()[$type]);
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <style type="text/css">
@@ -25,6 +25,19 @@ $this->params['breadcrumbs'][] = $this->title;
 </style>
 
 <div class="hanzi-user-task-index">
+
+    <p>
+        <?php
+        $label = '录入完成任务';
+        if ($type == HanziUserTask::TYPE_COLLATE) {
+            $label = '录入已完成图书校对';
+        } elseif ($type == HanziUserTask::TYPE_DOWNLOAD) {
+            $label = '录入已完成论文下载';
+        }
+        echo Html::a(Yii::t('frontend', $label), ['create', 'type'=> $type], ['class' => 'btn btn-primary']) 
+        ?>
+
+    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
