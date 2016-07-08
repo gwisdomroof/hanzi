@@ -22,7 +22,7 @@ use yii\web\JsExpression;
         <?php echo \yii\jui\AutoComplete::widget([
                 'name' => '用户',
                 'id' => 'user-auto',
-                'value' => \common\models\User::findIdentity($model->userid)->username,
+                'value' => empty($model->userid) ? '' : \common\models\User::findIdentity($model->userid)->username,
                 'options' => ['class' => 'form-control'],
                 'clientOptions' => [
                     'source' => $members,
