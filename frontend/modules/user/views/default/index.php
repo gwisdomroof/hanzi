@@ -2,7 +2,7 @@
 
 use trntv\filekit\widget\Upload;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\base\MultiModel */
@@ -13,9 +13,14 @@ $this->title = Yii::t('frontend', 'User Settings')
 
 <div class="user-profile-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <h2><?php echo Yii::t('frontend', 'Profile settings') ?></h2>
+    <div class="form-group">
+        <label class="control-label col-sm-3">ID</label>
+        <div class="control-label col-sm-6" style="text-align: left;"><?php echo Yii::$app->user->identity->id;?></div>
+    </div>
+
+    <hr>
 
     <?php echo $form->field($model->getModel('profile'), 'picture')->widget(
         Upload::classname(),
@@ -37,7 +42,7 @@ $this->title = Yii::t('frontend', 'User Settings')
         \common\models\UserProfile::GENDER_MALE => Yii::t('frontend', 'Male')
     ], ['prompt' => '']) ?>
 
-    <h2><?php echo Yii::t('frontend', 'Account Settings') ?></h2>
+    <hr>
 
     <?php echo $form->field($model->getModel('account'), 'username') ?>
 
@@ -48,7 +53,10 @@ $this->title = Yii::t('frontend', 'User Settings')
     <?php echo $form->field($model->getModel('account'), 'password_confirm')->passwordInput() ?>
 
     <div class="form-group">
+        <label class="control-label col-sm-3">&nbsp;</label>
+        <div class="col-sm-6">
         <?php echo Html::submitButton(Yii::t('frontend', 'Update'), ['class' => 'btn btn-primary']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
