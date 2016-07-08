@@ -24,7 +24,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             // ['label' => Yii::t('frontend', 'About'), 'url' => ['/page/view', 'slug'=>'about']],
             // ['label' => Yii::t('frontend', 'Articles'), 'url' => ['/article/index']],
             ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['/hanzi-set/search'],],
-            ['label' => Yii::t('frontend', '积分排名'), 'url' => ['/user-task/admin'],],
+            ['label' => Yii::t('frontend', '积分排名'), 'url' => ['/user-task/order'],],
             [
                 'label' => Yii::t('frontend', '任务管理'),
                 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id),

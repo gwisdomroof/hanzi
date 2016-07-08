@@ -8,6 +8,7 @@ use common\models\HanziUserTaskSearch;
 use common\models\HanziTask;
 use common\models\HanziHyyt;
 use common\models\Hanzi;
+use common\models\user;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -37,7 +38,7 @@ class UserTaskController extends Controller
      * Lists all HanziUserTask models.
      * @return mixed
      */
-    public function actionAdmin()
+    public function actionOrder()
     {
         
         $searchModel = new HanziUserTaskSearch();
@@ -58,7 +59,7 @@ class UserTaskController extends Controller
             'desc' => ['user.username' => SORT_DESC],
         ];
 
-        return $this->render('admin', [
+        return $this->render('order', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -150,13 +151,26 @@ class UserTaskController extends Controller
     {
         $model = new HanziUserTask();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        $members =  user::find()
+            ->select(['username as value', 'username as label','id'])
+            ->where(['status' => user::STATUS_ACTIVE])
+            ->asArray()
+            ->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            // 设置默认值
+            if (empty($model->task_seq)) {
+                $model->task_seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+            }
+
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
+        } 
+        return $this->render('create', [
+            'model' => $model,
+            'members' => $members,
+        ]);
+
     }
 
     /**
@@ -169,13 +183,25 @@ class UserTaskController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+        $members =  user::find()
+            ->select(['username as value', 'username as label','id'])
+            ->where(['status' => user::STATUS_ACTIVE])
+            ->asArray()
+            ->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            // 设置默认值
+            if (empty($model->task_seq)) {
+                $model->task_seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+            }
+
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
+        } 
+        return $this->render('update', [
+            'model' => $model,
+            'members' => $members,
+        ]);
     }
 
     /**

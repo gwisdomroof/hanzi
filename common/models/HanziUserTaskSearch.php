@@ -99,11 +99,11 @@ class HanziUserTaskSearch extends HanziUserTask
         ]);
         
         if (isset($params['HanziUserTaskSearch']['task_type']) && $params['HanziUserTaskSearch']['task_type'] !== '0') {
-            $query->select(['userid, task_type, COUNT(*) AS cnt'])->groupBy(['userid', 'task_type']);
+            $query->select(['userid, task_type, SUM(quality) AS cnt'])->groupBy(['userid', 'task_type']);
             $this->load($params);
             $query->andFilterWhere(['task_type' => $this->task_type ]);
         } else {
-            $query->select(['userid, COUNT(*) AS cnt'])->groupBy(['userid']);
+            $query->select(['userid, SUM(quality) AS cnt'])->groupBy(['userid']);
             // unset($params['HanziUserTaskSearch']['task_type']);
             $this->load($params);
         }
@@ -117,7 +117,7 @@ class HanziUserTaskSearch extends HanziUserTask
         }
 
         if (!empty($this->cnt)) {
-            $query->having(['count(*)' => $this->cnt]);
+            $query->having(['SUM(quality)' => $this->cnt]);
         }
 
         $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);

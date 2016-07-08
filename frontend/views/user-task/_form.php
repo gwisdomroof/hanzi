@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use common\models\HanziUserTask;
+use yii\bootstrap\ActiveForm;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\HanziUserTask */
@@ -10,22 +12,42 @@ use yii\widgets\ActiveForm;
 
 <div class="hanzi-user-task-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <?= $form->field($model, 'task_type')->textInput() ?>
+    <!-- <?= $form->field($model, 'userid')->textInput() ?> -->
 
-    <?= $form->field($model, 'task_seq')->textInput() ?>
+    <div class="form-group field-hanziusertask-userid">
+        <label for="hanziusertask-userid" class="control-label col-sm-3">用户</label>
+        <div class="col-sm-6">
+        <?php echo \yii\jui\AutoComplete::widget([
+                'name' => '用户',
+                'id' => 'user-auto',
+                'value' => \common\models\User::findIdentity($model->userid)->username,
+                'options' => ['class' => 'form-control'],
+                'clientOptions' => [
+                    'source' => $members,
+                    'autoFill'=>true,
+                    'select' => new JsExpression("function( event, ui ) {
+                        $('#hanziusertask-userid').val(ui.item.id);
+                     }")
+                ],
+             ]);
+        ?>
+        <div class="help-block help-block-error "></div>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'task_status')->textInput() ?>
+    <?= Html::activeHiddenInput($model, 'userid')?>
+
+    <?= $form->field($model, 'task_type')->dropDownList(HanziUserTask::types(true)) ?>
 
     <?= $form->field($model, 'quality')->textInput() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
     <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend', 'Create') : Yii::t('frontend', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

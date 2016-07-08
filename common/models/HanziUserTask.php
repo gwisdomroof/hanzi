@@ -23,6 +23,8 @@ class HanziUserTask extends \yii\db\ActiveRecord
     const TYPE_ALL = 0;
     const TYPE_SPLIT = 1;
     const TYPE_INPUT = 2;
+    const TYPE_COLLATE = 3;
+    const TYPE_DOWNLOAD = 4;
 
     const SPLIT_WEIGHT = 1;
     const INPUT_WEIGHT = 1;
@@ -53,7 +55,8 @@ class HanziUserTask extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_type', 'task_seq', 'task_status', 'quality', 'created_at', 'updated_at', 'cnt'], 'integer'],
+            [['userid', 'quality'], 'required'],
+            [['userid', 'taskid', 'task_type', 'task_seq', 'task_status', 'quality', 'created_at', 'updated_at', 'cnt'], 'integer'],
             [['user.username'], 'safe'],
         ];
     }
@@ -112,13 +115,23 @@ class HanziUserTask extends \yii\db\ActiveRecord
      * Returns user statuses list
      * @return array|mixed
      */
-    public static function types()
+    public static function types($exceptAll = false)
     {
+        if ($exceptAll) {
+            return [
+                self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+                self::TYPE_INPUT => Yii::t('common', '异体字录入'),
+                self::TYPE_COLLATE => Yii::t('common', '图书校对'),
+                self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
+            ];
+        }
         return [
             self::TYPE_ALL => Yii::t('common', '总积分'),
             self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
             self::TYPE_INPUT => Yii::t('common', '异体字录入'),
-        ];
+            self::TYPE_COLLATE => Yii::t('common', '图书校对'),
+            self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
+        ];        
     }
 
     /**
@@ -133,7 +146,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
             'task_type' => Yii::t('common', '任务类型'),
             'task_seq' => Yii::t('common', '任务阶段'),
             'task_status' => Yii::t('common', '任务状态'),
-            'quality' => Yii::t('common', '质量'),
+            'quality' => Yii::t('common', '分值'),
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),
             'cnt' => Yii::t('common', '积分'),

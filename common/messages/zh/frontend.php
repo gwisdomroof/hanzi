@@ -83,5 +83,6 @@ return [
     'Create And Next' => '创建后转下一条',
     'Hanzi Sets' => '汉字集',
     'Apply Hanzi Task' => '申请拆字任务',
-    'My Completed Tasks' => '已完成任务'
+    'My Completed Tasks' => '已完成任务',
+    'Hanzi User Tasks' => '完成任务'
 ];
