@@ -37,6 +37,14 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'label' => Yii::t('frontend', '异体字识别'),
                         'url' => ['/hanzi-task/admin?type=2']
                     ],
+                    [
+                        'label' => Yii::t('frontend', '图书校对'),
+                        'url' => ['/user-task/admin?type=3']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '论文下载'),
+                        'url' => ['/user-task/admin?type=4']
+                    ],
                 ]
             ],
             [

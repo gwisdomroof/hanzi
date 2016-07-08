@@ -37,14 +37,15 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'task_type',
             [                      
             'label' => '任务类型',
-            'value' => \common\models\HanziUserTask::types()[$model->task_type],
+            'value' => empty($model->task_type)? '' : \common\models\HanziUserTask::types()[$model->task_type],
             ],
             [                      
             'label' => '阶段',
-            'value' => \common\models\HanziTask::seqs()[$model->task_seq],
+            'value' => empty($model->task_seq)? '' : \common\models\HanziTask::seqs()[$model->task_seq],
             ],
             // 'task_status',
             'quality',
+            'remark',
             // 'created_at',
             // 'updated_at',
         ],

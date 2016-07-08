@@ -77,6 +77,9 @@ class HanziUserTaskSearch extends HanziUserTask
             'updated_at' => $this->updated_at,
         ]);
 
+        $query->joinWith(['user']);
+        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
+
         return $dataProvider;
     }
 

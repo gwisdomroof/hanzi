@@ -11,6 +11,7 @@ use common\models\Hanzi;
 use common\models\user;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\HttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -62,6 +63,38 @@ class UserTaskController extends Controller
         return $this->render('order', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all HanziUserTask models.
+     * @return mixed
+     */
+    public function actionAdmin($type = HanziUserTask::TYPE_COLLATE)
+    {
+        $searchModel = new HanziUserTaskSearch();
+
+        $param = Yii::$app->request->queryParams;
+
+        $param['HanziUserTaskSearch']['task_type'] = $type;
+
+        if ((int)$type  !== HanziUserTask::TYPE_COLLATE  && (int)$type  !== HanziUserTask::TYPE_DOWNLOAD) {
+           throw new HttpException('400', '参数有误：type');
+        }
+
+        $dataProvider = $searchModel->search($param);
+
+        $members =  user::find()
+            ->select(['username as value', 'username as label','id'])
+            ->where(['status' => user::STATUS_ACTIVE])
+            ->asArray()
+            ->all();
+
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'type' => $type,
+            'members' => $members,
         ]);
     }
 

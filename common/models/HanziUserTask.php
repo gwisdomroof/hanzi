@@ -57,7 +57,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
         return [
             [['userid', 'quality'], 'required'],
             [['userid', 'taskid', 'task_type', 'task_seq', 'task_status', 'quality', 'created_at', 'updated_at', 'cnt'], 'integer'],
-            [['user.username'], 'safe'],
+            [['remark', 'user.username'], 'safe'],
         ];
     }
 
@@ -115,12 +115,10 @@ class HanziUserTask extends \yii\db\ActiveRecord
      * Returns user statuses list
      * @return array|mixed
      */
-    public static function types($exceptAll = false)
+    public static function types($outOfSystem = false)
     {
-        if ($exceptAll) {
+        if ($outOfSystem) {
             return [
-                self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
-                self::TYPE_INPUT => Yii::t('common', '异体字录入'),
                 self::TYPE_COLLATE => Yii::t('common', '图书校对'),
                 self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
             ];
@@ -147,6 +145,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
             'task_seq' => Yii::t('common', '任务阶段'),
             'task_status' => Yii::t('common', '任务状态'),
             'quality' => Yii::t('common', '分值'),
+            'remark' => Yii::t('common', '备注'),
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),
             'cnt' => Yii::t('common', '积分'),

@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS hanzi_user_task (
   task_seq SMALLINT DEFAULT NULL,
   task_status SMALLINT DEFAULT NULL,
   quality SMALLINT DEFAULT NULL,
+  remark VARCHAR(128) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
 );

@@ -43,6 +43,8 @@ use yii\web\JsExpression;
 
     <?= $form->field($model, 'quality')->textInput() ?>
 
+    <?= $form->field($model, 'remark')->textArea() ?>
+
     <div class="form-group">
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
