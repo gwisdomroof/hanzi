@@ -33,14 +33,24 @@ $this->params['breadcrumbs'][] = $this->title;
             [                     
                 'attribute' => 'user.username',
                 'header' => '<span style="color:#337ab7;">用户名</span>',
-                'format' => 'raw',
+                'value' => function ($data) {
+                    $username = $data['user']['username'];
+                    if (!\common\models\HanziTask::isLeader(Yii::$app->user->id)) {
+                        $len = mb_strlen($username);
+                        $username = mb_substr($username, 0, 1, 'UTF-8');
+                        for ($i=1; $i < $len; $i++) { 
+                            $username = $username . '＊';
+                        }
+                    }
+                    return $username; 
+                },
             ],
             [                     
                 'attribute' => 'task_type',
                 'header' => '<span style="color:#337ab7;">任务类型</span>',
                 'value' => function ($data) {
                     return empty($data['task_type']) ? '总积分' : HanziUserTask::types()[$data['task_type']]; 
-                    },
+                },
                 'filter'=>HanziUserTask::types(),
             ],
             'cnt',
