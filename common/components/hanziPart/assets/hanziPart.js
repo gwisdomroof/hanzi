@@ -1,4 +1,4 @@
-var hanziComponents = [
+﻿var hanziComponents = [
 	{'display' : '⿰', 'input' : '⿰', 'search' : '0zy'},
 	{'display' : '⿱', 'input' : '⿱', 'search' : '0sx'},
 	{'display' : '⿴', 'input' : '⿴', 'search' : '0bw'},
@@ -303,7 +303,7 @@ var hanziComponents = [
 	{'display' : '襾', 'input' : '襾', 'search' : '6hszssh'},
 	{'display' : '焉-正', 'input' : '⿹⿺㇉一灬', 'search' : '6hznnnn'},
 	{'display' : '㫃', 'input' : '㫃', 'search' : '6nhzppn'},
-	{'display' : '𥥲-穴', 'input' : '⿻⿴丿一止', 'search' : '6phshsh'},
+	{'display' : '𥥲-穴', 'input' : '⿱丿⿻一止', 'search' : '6phshsh'},
 	{'display' : '乑', 'input' : '乑', 'search' : '6pspppn'},
 	{'display' : '𢆶', 'input' : '𢆶', 'search' : '6zznzzn'},
 	{'display' : '茰-艹', 'input' : '⿻⿻曰丿丶', 'search' : '6szhhpn'},

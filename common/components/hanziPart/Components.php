@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 namespace common\components\hanziPart;
 
 class Components {
@@ -322,7 +322,7 @@ public static function items() {
 			"襾" => "襾",
 			"焉-正" => "⿹⿺㇉一灬",
 			"㫃" => "㫃",
-			"𥥲-穴" => "⿻⿱丿一止",
+			"𥥲-穴" => "⿱丿⿻一止",
 			"乑" => "乑",
 			"𢆶" => "𢆶",
 			"茰-艹" => "⿻⿻曰丿乀",
