@@ -10,11 +10,11 @@ use yii\helpers\Html;
 <html lang="zh-TW">
 
 <head>
-    <!-- <META http-equiv="content-type" content="text/html; charset=big5"> -->
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <META http-equiv="content-type" content="text/html; charset=big5">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo Html::encode($this->title) ?></title>
-    <?php //$this->head() ?>
-    <?php //echo Html::csrfMetaTags() ?>
+    <?php $this->head() ?>
+    <?php echo Html::csrfMetaTags() ?>
 </head>
 
 <?php echo $content ?>
