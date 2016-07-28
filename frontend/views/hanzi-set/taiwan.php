@@ -2,8 +2,6 @@
 
 use yii\helpers\Html;
 
-header('Content-Type: text/html; charset=big5');
-
 /* @var $this yii\web\View */
 $this->title = $title;
 ?>

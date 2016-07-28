@@ -213,6 +213,10 @@ class HanziSetController extends Controller
             $down = $base . "yiti$type" . "/$type" . "_std/$normal.htm";
         }
 
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $headers = Yii::$app->response->headers;
+        $headers->add('Content-Type', 'text/html; charset=big5');
+        
         return $this->render('taiwan', [
             'title' => $normal,
             'up' => $up,
