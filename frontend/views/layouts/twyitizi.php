@@ -8,10 +8,10 @@ use yii\helpers\Html;
 
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?php echo Yii::$app->language ?>">
+<html lang="zh-TW">
 
 <head>
-    <meta charset="<?php echo Yii::$app->charset ?>"/>
+    <meta charset="big5"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo Html::encode($this->title) ?></title>
     <?php $this->head() ?>

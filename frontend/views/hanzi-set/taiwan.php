@@ -7,8 +7,7 @@ $this->title = $title;
 ?>
 <script type="text/javascript">
 	function test() {
-		var test = $(window.frames["down"].document).find("a[name='bm_021']").html()
-	    alert(test);
+		// var test = $(window.frames["down"].document).find("a[name='bm_021']").html()
     }
 
 </script>

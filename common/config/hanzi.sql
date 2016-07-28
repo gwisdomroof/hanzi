@@ -166,3 +166,11 @@ CREATE TABLE IF NOT EXISTS hanzi_user_task (
   updated_at INT NOT NULL 
 );
 
+# 高丽异体字待去重表
+CREATE TABLE IF NOT EXISTS hanzi_gaoli_dedup (
+  id BIGSERIAL PRIMARY KEY,
+  zhengma VARCHAR(128) NOT NULL, 
+  zmcnt SMALLINT NOT NULL,
+  page INT DEFAULT NULL
+);
+

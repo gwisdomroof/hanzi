@@ -27,8 +27,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'key',
-            'value',
-
+            [                     
+                'attribute' => 'value',
+                'value' => function ($data) {
+                        $value = $data['value'];
+                        if (mb_strlen($value, 'UTF-8') > 100) {
+                            $value = mb_substr($value, 0, 100) . '…';
+                        }
+                        return empty($value) ? '' : $value; 
+                    },
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template'=>'{update} {delete}'
