@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\bootstrap\Html;
@@ -40,7 +41,7 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     <div  style="float:left; overflow:scroll; height: 520px; border: 1px solid #eee;">
     <?php
     $imgName =  str_pad($curPage, 4, '0', STR_PAD_LEFT);
-    echo Html::img("/img/hypage/$imgName.png", ["id" => "image-page", "style" => "width: 100%;"]);
+    echo Html::img("/img/hydzd/$imgName.png", ["id" => "image-page", "style" => "width: 100%;"]);
     ?>
     </div>
 </div> 
@@ -128,7 +129,7 @@ $script = <<<SCRIPT
         lastPage = lastPage + "";
         var pad = "0000";
         var last = pad.substring(0, pad.length - lastPage.length) + lastPage;
-        document.getElementById('image-page').src = "/img/hypage/" + last +".png?r=" + Math.random();
+        document.getElementById('image-page').src = "/img/hydzd/" + last +".png?r=" + Math.random();
         curPage = lastPage;
     });
 
@@ -137,7 +138,7 @@ $script = <<<SCRIPT
         nextPage = nextPage + "";
         var pad = "0000";
         var next = pad.substring(0, pad.length - nextPage.length) + nextPage;
-        document.getElementById('image-page').src = "/img/hypage/" + next +".png?r=" + Math.random();
+        document.getElementById('image-page').src = "/img/hydzd/" + next +".png?r=" + Math.random();
         curPage = nextPage;
     });
 

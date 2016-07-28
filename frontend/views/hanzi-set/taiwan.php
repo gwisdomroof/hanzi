@@ -1,0 +1,24 @@
+<?php
+
+use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+$this->title = $title;
+?>
+<script type="text/javascript">
+	function test() {
+		var test = $(window.frames["down"].document).find("a[name='bm_021']").html()
+	    alert(test);
+    }
+
+</script>
+
+<frameset cols="70%,30%">
+	<frameset rows="20%,80%">
+		<frame src=<?=$up?> name="up">
+		<frame src=<?=$down?> name="down" onload='test()'>
+	</frameset>
+	<frame src=<?=$right?> name="right">
+</frameset>
+
+

@@ -13,11 +13,11 @@ use common\models\HanziSet;
 class HanziSetSearch extends HanziSet
 {
     const SEARCH_WORD = 1;   # 查字
-    const SEARCH_VARIANT = 2; # 查正异关系
-    const SEARCH_REVERSE = 3; # 反查内部编码
+    const SEARCH_REVERSE = 2; # 反查内部编码
 
     public $param;
     public $mode;
+
     /**
      * @inheritdoc
      */
@@ -32,80 +32,16 @@ class HanziSetSearch extends HanziSet
     }
 
     /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
-
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
-        $query = HanziSet::find();
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
-        ]);
-
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
-        }
-
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'source' => $this->source,
-            'type' => $this->type,
-            'nor_var_type' => $this->nor_var_type,
-            'duplicate' => $this->duplicate,
-            'stocks' => $this->stocks,
-            'bhard' => $this->bhard,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
-        $query->andFilterWhere(['like', 'word', $this->word])
-            ->andFilterWhere(['like', 'pic_name', $this->pic_name])
-            ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code])
-            ->andFilterWhere(['like', 'standard_word_code', $this->standard_word_code])
-            ->andFilterWhere(['like', 'position_code', $this->position_code])
-            ->andFilterWhere(['like', 'duplicate_id', $this->duplicate_id])
-            ->andFilterWhere(['like', 'pinyin', $this->pinyin])
-            ->andFilterWhere(['like', 'radical', $this->radical])
-            ->andFilterWhere(['like', 'zhengma', $this->zhengma])
-            ->andFilterWhere(['like', 'wubi', $this->wubi])
-            ->andFilterWhere(['like', 'structure', $this->structure])
-            ->andFilterWhere(['like', 'min_split', $this->min_split])
-            ->andFilterWhere(['like', 'deform_split', $this->deform_split])
-            ->andFilterWhere(['like', 'similar_stock', $this->similar_stock])
-            ->andFilterWhere(['like', 'max_split', $this->max_split])
-            ->andFilterWhere(['like', 'mix_split', $this->mix_split])
-            ->andFilterWhere(['like', 'stock_serial', $this->stock_serial])
-            ->andFilterWhere(['like', 'remark', $this->remark]);
-
-        return $dataProvider;
-    }
-
-    /**
-     * 检索有三种方式：IDS，总笔画，相似部件
+     * 部件笔画检字法
+     * 可查字，或反查内部编码
      * @param  [string] $params [检索表达式]
      * @return [integer]  $default     [缺省检索模式]
      */
-    public function regSearch($params, $mode = self::SEARCH_WORD)
+    public function bSearch($params, $mode = self::SEARCH_WORD)
     {
         $params = trim($params);
         if (preg_match("/-w/", $params)) {
             $mode = self::SEARCH_WORD;
-        } elseif (preg_match("/-v/", $params)) {
-            $mode = self::SEARCH_VARIANT;
         } elseif (preg_match("/!/", $params)) {
             $mode = self::SEARCH_REVERSE;
         }
@@ -115,13 +51,102 @@ class HanziSetSearch extends HanziSet
         switch ($mode) {
             case self::SEARCH_WORD:
               return $this->searchWord($params);
-            case self::SEARCH_VARIANT:
-              return $this->searchVariant($params);
             case self::SEARCH_REVERSE:
               return $this->searchReverse($params);
             default:
               return false;
         }
+    }
+
+    /**
+     * 查正异关系
+     * @param  [string] $params [检索表达式]
+     * @return 
+     */
+    public function ySearch($param)
+    {
+        $param = trim($param);
+
+        // unicode(basic, a, b, c, d, e, compatiable, gaoali-self-define) format
+        $regUni = "/^[\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}\x{E005}-\x{E3D6}]$/u";
+
+        // picture name format: taiwan, hanyu, gaoli
+        $regTw = "/^[0-9a-z]{4,5}|[ABCN][0-9]{5}(-[0-9]{1,3})?$/";
+        $regHy = "/^[0-9]{1,4}n[0-9]{1,2}$/";
+        $regGl = "/^[\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}][12]$/u";
+        
+        $twNormals = '';    # 所属台湾正字
+        $glNormals = '';    # 所属高丽正字
+        $hyPosition = null;    # 所属汉语大字典位置
+        $dhPosition = null;    # 所属敦煌俗字典位置
+        $variants = [];     # 检索结果
+        $result = null;     #返回结果
+        if (preg_match($regUni, $param, $matches) || preg_match($regTw, $param, $matches) || preg_match($regHy, $param, $matches) || preg_match($regGl, $param, $matches)) {
+            // 检索正字
+            $search = $matches[0];
+            $models = HanziSet::find()->orderBy('id')->orwhere(['word' => $search])->orwhere(['pic_name' => $search])->all();
+            foreach ($models as $model) {
+                switch ($model->source) {
+                    case HanziSet::SOURCE_TAIWAN:
+                        if ($model->nor_var_type == HanziSet::TYPE_NORMAL_PURE || $model->nor_var_type == HanziSet::TYPE_NORMAL_WIDE) {
+                            $twNormals .= $model->word;
+                        }
+                        $twNormals .= str_replace([';','#'], '', $model->belong_standard_word_code);
+                        break;
+                    case HanziSet::SOURCE_GAOLI:
+                        $glNormals .= str_replace(';', '', $model->belong_standard_word_code);
+                        break;
+                    case HanziSet::SOURCE_HANYU:
+                        $hyPosition = $model->position_code;
+                        break;
+                    case HanziSet::SOURCE_DUNHUANG:
+                        $dhPosition = $model->position_code;
+                        break;
+                }
+            }
+
+            // 查询异体字
+            $query = HanziSet::find()->orderBy(['nor_var_type'=>SORT_ASC, 'id'=>SORT_ASC]);
+            if (!empty($twNormals)) {
+                $query->orFilterWhere(["and",
+                    ["~", "belong_standard_word_code", "[$twNormals]|$search"],
+                    ["!=", "nor_var_type", 0],
+                    ["=", "source", HanziSet::SOURCE_TAIWAN]
+                    ]); 
+            }
+            if (!empty($glNormals)) {
+                $query->orFilterWhere(["and",
+                    ["~", "belong_standard_word_code", "[$glNormals]|$search"],
+                    ["!=", "nor_var_type", 0],
+                    ["=", "source", HanziSet::SOURCE_GAOLI]
+                    ]); 
+            }
+            
+            if (empty($glNormals) && empty($twNormals)) {
+                $query->andWhere("1!=1"); 
+            }
+            // echo $query->createCommand()->getRawSql(); die;
+            $variants = $query->all();
+
+            // 处理结果
+            $normalArr = preg_split('//u', $twNormals . $glNormals, -1, PREG_SPLIT_NO_EMPTY);
+            $normalArr = array_unique($normalArr);
+            foreach ($variants as $variant) {
+                foreach ($normalArr as $normal) {
+                    if (strpos($variant->belong_standard_word_code, $normal) !== false) {
+                        $result[$variant->source][$normal][] = $variant;
+                        continue;
+                    }
+                }
+            }
+            if (!empty($hyPosition)) {
+                $result[HanziSet::SOURCE_HANYU] = $hyPosition;
+            }
+            if (!empty($dhPosition)) {
+                $result[HanziSet::SOURCE_DUNHUANG] = $dhPosition;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -151,59 +176,6 @@ class HanziSetSearch extends HanziSet
 
     }
 
-    /**
-     * 正字查异体字，异体字查正字
-     * @param  [type] $params [description]
-     * @return [type]         [description]
-     */
-    public function searchVariant($params)
-    {
-        // unicode(basic, a, b, c, d, e, compatiable) format
-        $regUni = "/^([\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}])\s+(\-v)?$/u";
-
-        // picture name format: taiwan, hanyu, gaoli
-        $regTw = "/^([0-9a-z]{4,5}|[ABCN][0-9]{5}(-[0-9]{1,3})?)\s+(\-v)?$/";
-        $regHy = "/^([0-9]{1,4}n[0-9]{1,2})\s+(\-v)?$/";
-        $regGl = "/^([\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}][12])\s+(\-v)?$/u";
-
-        $variants = null;
-        $normals = '';
-        $search = preg_replace('/\s+(\-v)?/', '', $params);
-
-        if (preg_match($regUni, $params, $matches)) {
-            $models = HanziSet::find()->orderby('id')->where(['word' => $search])->all();
-            $normals = $search;
-            foreach ($models as $model) {
-                if (!empty($model->belong_standard_word_code)) {
-                    $normals .= str_replace(';', '', $model->belong_standard_word_code);
-                }
-            }
-            $variants = HanziSet::find()->where("belong_standard_word_code ~ '[$normals]'")->all();
-            
-        } elseif (preg_match($regTw, $params, $matches) || preg_match($regHy, $params, $matches) || preg_match($regGl, $params, $matches)) {
-            $models = HanziSet::find()->orderby('id')->where(['pic_name' => $search])->all();
-            foreach ($models as $model) {
-                if (!empty($model->belong_standard_word_code)) {
-                    $normals .= str_replace(';', '', $model->belong_standard_word_code);
-                }
-            }
-            $variants = HanziSet::find()->where("belong_standard_word_code ~ '[$normals]|$search'")->all();
-        }
-
-        $normalArr = preg_split('//u', $normals, -1, PREG_SPLIT_NO_EMPTY);
-        $normalArr = array_unique($normalArr);
-        $resArr = null;
-        foreach ($variants as $variant) {
-            foreach ($normalArr as $normal) {
-                if (strpos($variant->belong_standard_word_code, $normal) !== false) {
-                    $resArr[$variant->source][$normal][] = $variant;
-                    continue;
-                }
-            }
-        }
-
-        return $resArr;
-    }
 
     public function searchWord($params)
     {
@@ -289,6 +261,71 @@ class HanziSetSearch extends HanziSet
 
         return HanziSet::find()->where($sqlParam);
 
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
+    }
+
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = HanziSet::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
+        ]);
+
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'source' => $this->source,
+            'type' => $this->type,
+            'nor_var_type' => $this->nor_var_type,
+            'duplicate' => $this->duplicate,
+            'stocks' => $this->stocks,
+            'bhard' => $this->bhard,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'word', $this->word])
+            ->andFilterWhere(['like', 'pic_name', $this->pic_name])
+            ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code])
+            ->andFilterWhere(['like', 'standard_word_code', $this->standard_word_code])
+            ->andFilterWhere(['like', 'position_code', $this->position_code])
+            ->andFilterWhere(['like', 'duplicate_id', $this->duplicate_id])
+            ->andFilterWhere(['like', 'pinyin', $this->pinyin])
+            ->andFilterWhere(['like', 'radical', $this->radical])
+            ->andFilterWhere(['like', 'zhengma', $this->zhengma])
+            ->andFilterWhere(['like', 'wubi', $this->wubi])
+            ->andFilterWhere(['like', 'structure', $this->structure])
+            ->andFilterWhere(['like', 'min_split', $this->min_split])
+            ->andFilterWhere(['like', 'deform_split', $this->deform_split])
+            ->andFilterWhere(['like', 'similar_stock', $this->similar_stock])
+            ->andFilterWhere(['like', 'max_split', $this->max_split])
+            ->andFilterWhere(['like', 'mix_split', $this->mix_split])
+            ->andFilterWhere(['like', 'stock_serial', $this->stock_serial])
+            ->andFilterWhere(['like', 'remark', $this->remark]);
+
+        return $dataProvider;
     }
     
 }

@@ -92,6 +92,31 @@ CREATE TABLE IF NOT EXISTS hanzi_set (
   updated_at INT DEFAULT NULL 
 );
 
+CREATE TABLE IF NOT EXISTS hanzi_gaoli (
+  id BIGSERIAL PRIMARY KEY,
+  glyph varchar(16) DEFAULT NULL, -- '字形'
+  code varchar(16) DEFAULT NULL, -- 'Unicode'
+  busu_id smallint DEFAULT NULL, -- '部首ID'
+  totalstroke smallint DEFAULT NULL, -- '总笔画'
+  reststroke smallint DEFAULT NULL, -- '剩余笔画'
+  jungma varchar(64) DEFAULT NULL, -- '郑码'
+  standard varchar(16) DEFAULT NULL, -- '正字Unicode码'
+  ksound varchar(16) DEFAULT NULL, -- '韩文发音'
+  kmean varchar(128) DEFAULT NULL, -- '韩文含义'
+  banjul varchar(64) DEFAULT NULL, -- '反切'
+  csound varchar(64) DEFAULT NULL, -- '中文发音'
+  cmean varchar(128) DEFAULT NULL, -- '中文含义'
+  jsound varchar(64) DEFAULT NULL, -- '日文发音'
+  jmean varchar(128) DEFAULT NULL, -- '日文含义'
+  emean varchar(128) DEFAULT NULL -- '英文含义'
+);
+
+CREATE TABLE IF NOT EXISTS hanzi_busu (
+  busu_id smallint PRIMARY KEY, -- '部首ID'
+  glyph varchar(16) DEFAULT NULL, -- '字形'
+  busu_stroke smallint DEFAULT NULL -- '部首笔画'
+);
+
 CREATE TABLE IF NOT EXISTS hanzi_task (
   id BIGSERIAL PRIMARY KEY,
   leader_id INT NOT NULL, -- '组长'

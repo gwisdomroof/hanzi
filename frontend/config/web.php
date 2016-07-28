@@ -2,7 +2,7 @@
 $config = [
     'homeUrl'=>Yii::getAlias('@frontendUrl'),
     'controllerNamespace' => 'frontend\controllers',
-    'defaultRoute' => 'hanzi-set/search',
+    'defaultRoute' => 'hanzi-set/bsearch',
     'bootstrap' => ['maintenance'],
     'modules' => [
         'admin' => [

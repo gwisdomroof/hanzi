@@ -28,18 +28,288 @@ class HanziSetController extends Controller
         ];
     }
 
+
     /**
-     * composite information.
+     * 异体字综合信息页面
+     * @param  
+     * $param 当前检索参数
+     * $a 当前活动tab
      * @return mixed
      */
-    public function actionVariant($id)
+    public function actionVariant($param, $a='tw')
     {
-        $searchModel = new HanziSetSearch();
-        $dataProvider = $searchModel->searchVariant($id);
+        $models = HanziSet::find()->orderBy(['source' => SORT_ASC, 'id' => SORT_ASC])
+            ->andFilterWhere(['or',
+            ['word' => trim($param)],
+            ['pic_name' => trim($param)]])
+            ->all();
+
+        // 概要信息
+        $summary = array();
+        $zitouArr = [];
+        foreach ($models as $model) {
+            switch ($model->source) {
+                case HanziSet::SOURCE_TAIWAN:
+                    $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
+                    # 所属正字
+                    $standardWord = $model->belong_standard_word_code;
+                    if ($model->nor_var_type == HanziSet::TYPE_NORMAL_WIDE) {
+                        $standardWord =empty($model->word) ? $standardWord : $model->word . ';' . $standardWord;
+                    }
+                    # 原始位置
+                    $position = '';
+                    $posArr = explode(';', $model->position_code.';'.$model->standard_word_code);
+                    $posArr = array_unique($posArr);
+                    foreach ($posArr as $item) {
+                        $item = ltrim($item, "#");
+                        $position .= "<a class='tw' target='_blank' href='".$model->getOriginUrl($item)."' >$item</a>&nbsp;";
+                    }
+                    $summary[$model->id]['position']= $position;
+                    $summary[$model->id]['standardWord']= $standardWord;
+                    $summary[$model->id]['remark']= HanziSet::norVarTypes(false)[$model->nor_var_type];
+                    if (empty($zitouArr)) {
+                        $zitouArr['source'] = HanziSet::SOURCE_TAIWAN;
+                        $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
+                    }
+                    break;
+
+                case HanziSet::SOURCE_HANYU:
+                    $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
+                    $summary[$model->id]['position'] = "<a class='hy' href='#' >$model->position_code</a>";
+                    $summary[$model->id]['standardWord']= '';
+                    $posArr = explode('-', $model->position_code);
+                    $summary[$model->id]['remark']= '第' . $posArr[1] . '页 第' . $posArr[2] . '字';
+                    if (empty($zitouArr)) {
+                        $zitouArr['source'] = HanziSet::SOURCE_HANYU;
+                        $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
+                    }
+
+                    break;
+
+                case HanziSet::SOURCE_GAOLI:
+                    $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
+                    $summary[$model->id]['position']= "<a class='gl' target='_blank' href='".$model->getOriginUrl($model->belong_standard_word_code)."'>$model->belong_standard_word_code</a>";
+                    $summary[$model->id]['standardWord'] = "$model->belong_standard_word_code";
+                    $summary[$model->id]['remark']= '';
+                    if (empty($zitouArr)) {
+                        $zitouArr['source'] = HanziSet::SOURCE_GAOLI;
+                        $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
+                    }
+                    break;
+
+                case HanziSet::SOURCE_DUNHUANG:
+                    $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
+                    $summary[$model->id]['position']= "<a class='dh' href='#'>$model->position_code</a>";
+                    $summary[$model->id]['standardWord'] = empty($model->word) ? $model->pic_name : $model->word;
+                    $summary[$model->id]['remark']= "第".$model->position_code."页";
+                    if (empty($zitouArr)) {
+                        $zitouArr['source'] = HanziSet::SOURCE_DUNHUANG;
+                        $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
+                    }
+                    break;
+
+                case HanziSet::SOURCE_LONGQUAN:
+                    # code...
+                    break;
+            }
+        }
+
+        // 页面信息
+        $data = [];
+        $index = 1;
+        $active = 1;
+        $sourceMap = ['tw'=>HanziSet::SOURCE_TAIWAN, 'hy'=>HanziSet::SOURCE_HANYU, 'gl'=>HanziSet::SOURCE_GAOLI, 'dh'=>HanziSet::SOURCE_DUNHUANG];
+        $activeSource = $sourceMap[$a];
+        foreach ($models as $model) {
+            foreach ($model->getUrl() as $key => $url) {
+                $data[$index]["id"] = "variant" . $index;
+                $data[$index]["source"] = $model->source;
+                $data[$index]["key"] = $key;
+                $data[$index]["url"] = $url;
+                if ($activeSource == $model->source && $active == 0) {
+                    $active = $index;
+                }
+                $index++;
+            }
+        }
 
         return $this->render('variant', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'zitouArr' => $zitouArr,
+            'summary' => $summary,
+            'data' => $data,
+            'active' => $active
+        ]);
+    }
+
+    /**
+     * 汉语大字典页面
+     * @param $param 页码
+     * @return mixed
+     */
+    public function actionHanyu($param)
+    {
+        $this->layout = '_clear';
+
+        $maxPage = 5127;
+        $page =  str_pad($param, 4, '0', STR_PAD_LEFT);
+        return $this->render('hanyu', [
+            'url' => "/img/hydzd/$page.png",
+            'maxPage' => $maxPage,
+        ]);
+    }
+
+    /**
+     * 敦煌俗字典页面
+     * @param $param 页码
+     * @return mixed
+     */
+    public function actionDunhuang($param)
+    {
+        $this->layout = '_clear';
+        
+        $offset = 91;
+        $param = trim($param) + 91;
+        $page =  str_pad($param, 3, '0', STR_PAD_LEFT);
+        $maxPage = 680;
+        return $this->render('dunhuang', [
+            'url' => "/img/dhszd/$page.png",
+            'maxPage' => $maxPage,
+        ]);
+    }
+
+    /**
+     * 台湾异体字页面
+     * @param $param 异体字对应的ID号，如“A00002-001”
+     * @return mixed
+     */
+    public function actionTaiwan($param)
+    {
+        $this->layout = 'twyitizi';
+
+        $param = trim($param);
+        $positionArr = explode('-', $param);
+        $normal = strtolower($positionArr[0]);
+        $anchor = '';
+        if (count($positionArr) > 1) {
+            unset($positionArr[0]);
+            $anchor = '#bm_' . implode($positionArr, '-');
+        }
+
+        $base = '/yitizi/';           
+        $up = "";
+        $down = "";
+        $right = "";
+        $fuluzi = json_decode(Yii::$app->get('keyStorage')->get('frontend.tw-fuluzi', null, false));
+
+        $type = substr($normal, 0, 1);
+        $up = $base . "yiti$type" . "/w$type" . "/w$normal.htm";
+        $right = $base . "yiti$type" . "/s$type" . "/s$normal.htm";
+
+        if (in_array($param, $fuluzi)) {
+            $down = $base . "yiti$type" . "/fu$type" . "/fu$normal.htm";
+        } elseif (!empty($anchor)) {
+            $down = $base . "yiti$type" . "/yd$type" . "/yd$normal.htm" . $anchor;
+        } else {
+            $down = $base . "yiti$type" . "/$type" . "_std/$normal.htm";
+        }
+
+        return $this->render('taiwan', [
+            'title' => $normal,
+            'up' => $up,
+            'down' => $down,
+            'right' => $right
+        ]);
+
+    }
+
+
+    /**
+     * 高丽藏异体字页面
+     * @param $param 异体字对应的ID号，可以是数据库中的word，pic_name，
+     * belong_standard_word_code属性
+     * @return mixed
+     */
+    public function actionGaoli($param)
+    {
+        $this->layout = '_clear';
+
+        // 查param对应的正字
+        $normals = HanziSet::find()->select('belong_standard_word_code')->where(['source' => HanziSet::SOURCE_GAOLI])->andWhere(['or',
+                ['word' => trim($param)],
+                ['pic_name' => trim($param)]
+            ])->asArray()->all();
+
+        // 查正字对应的所有异体字
+        $models = HanziSet::find()->where(['source' => HanziSet::SOURCE_GAOLI, 'nor_var_type' => 1])
+            ->andWhere(['belong_standard_word_code' => $normals])->all();
+
+        return $this->render('gaoli', [
+            'models' => $models,
+        ]);
+    }
+
+    /**
+     * 部件笔画检字法
+     * @return mixed
+     */
+    public function actionBsearch()
+    {
+        $hanziSearch = new HanziSetSearch();
+
+        # 如果是post请求，则转为Get请求
+        if (Yii::$app->request->post()) {
+            $hanziSearch->load(Yii::$app->request->post());
+            $this->redirect(['bsearch', 'HanziSetSearch[param]' => $hanziSearch->param]);
+        }
+        
+        $data = [];
+        $pagination = new \yii\data\Pagination(['totalCount' => 0]);
+        $message = null;
+
+        if ($hanziSearch->load(Yii::$app->request->get()) && $hanziSearch->validate()) {
+            $res = $hanziSearch->bSearch($hanziSearch->param);
+            if ($hanziSearch->mode == HanziSetSearch::SEARCH_WORD) {
+                $count = $res->count();
+                $message = $count == 0 ? "查询结果为空。" : "共检索到".$count."条数据。";
+                $pagination = new \yii\data\Pagination(['totalCount' => $count, 'pageSize' => 100]);
+                $data = $res->orderBy('id')->offset($pagination->offset)->limit(100)->all();
+            } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_REVERSE) {
+                $data = $res;
+            } 
+        }
+
+        return $this->render('bsearch', [
+            'hanziSearch' => $hanziSearch,
+            'data' => $data,
+            'pagination' => $pagination,
+            'message' => $message,
+        ]);
+    }
+
+
+    /**
+     * 异体字检索
+     * @return mixed
+     */
+    public function actionYsearch()
+    {
+        $hanziSearch = new HanziSetSearch();
+
+        # 如果是post请求，则转为Get请求
+        if (Yii::$app->request->post()) {
+            $hanziSearch->load(Yii::$app->request->post());
+            $this->redirect(['ysearch', 'HanziSetSearch[param]' => $hanziSearch->param]);
+        }
+
+        $data = [];
+        if ($hanziSearch->load(Yii::$app->request->get()) && $hanziSearch->validate()) {
+            $data = $hanziSearch->ySearch($hanziSearch->param);
+        }
+
+        return $this->render('ysearch', [
+            'hanziSearch' => $hanziSearch,
+            'data' => $data,
+            'param' => $hanziSearch->param,
         ]);
     }
 
@@ -135,48 +405,6 @@ class HanziSetController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-
-
-    /**
-     * import from xls file.
-     * @return mixed
-     */
-    public function actionSearch()
-    {
-        $hanziSearch = new HanziSetSearch();
-
-        # 如果是post请求，则转为Get请求
-        if (Yii::$app->request->post()) {
-            $hanziSearch->load(Yii::$app->request->post());
-            $this->redirect(['search', 'HanziSetSearch[param]' => $hanziSearch->param]);
-        }
-        
-        $data = [];
-        $pagination = new \yii\data\Pagination(['totalCount' => 0]);
-        $message = null;
-
-        if ($hanziSearch->load(Yii::$app->request->get()) && $hanziSearch->validate()) {
-            $res = $hanziSearch->regSearch($hanziSearch->param);
-            if ($hanziSearch->mode == 1) {
-                $count = $res->count();
-                $message = $count == 0 ? "查询结果为空。" : "共检索到".$count."条数据。";
-                $pagination = new \yii\data\Pagination(['totalCount' => $count, 'pageSize' => 100]);
-                $data = $res->orderBy('id')->offset($pagination->offset)->limit(100)->all();
-            } elseif ($hanziSearch->mode == 2) {
-                $data = $res;
-            } elseif ($hanziSearch->mode == 3) {
-                $data = $res;
-            } 
-        }
-
-        return $this->render('search', [
-            'hanziSearch' => $hanziSearch,
-            'data' => $data,
-            'pagination' => $pagination,
-            'message' => $message,
-        ]);
     }
 
 }

@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 namespace common\components\hanziPart;
 
 class Components {
@@ -50,6 +50,7 @@ public static function items() {
 			"冂" => "冂",
 			"𠘨" => "𠘨",
 			"⺈" => "⺈",
+			"𪜊" => "𪜊",
 			"𠂊" => "𠂊",
 			"⺊" => "⺊",
 			"丷" => "丷",
@@ -78,6 +79,7 @@ public static function items() {
 			"亠" => "亠",
 			"㐅" => "㐅",
 			"丅" => "丅",
+			"丄" => "丄",
 			"㔾" => "㔾",
 			"讠" => "讠",
 			"𠂆" => "𠂆",
@@ -113,7 +115,7 @@ public static function items() {
 			"亽" => "亽",
 			"己" => "己",
 			"彐" => "彐",
-			"⺕" => "⺕",
+			"■⺕" => "⺕",
 			"疟-疒" => "⿻匚一",		
 			"彑" => "彑",
 			"纟" => "纟",

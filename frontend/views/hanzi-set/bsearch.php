@@ -10,14 +10,12 @@ use common\models\HanziSetSearch;
 /* @var $searchModel common\models\hanziSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('frontend', 'hanzi-set');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'hanzi-set'), 'url' => ['search']];
-$this->params['breadcrumbs'][] = '部件笔画检字法';
-
+$this->title = Yii::t('frontend', '部件笔画检字法');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', '部件笔画检字法'), 'url' => ['bsearch']];
 ?>
 
 <div class="hanzi-set-ids-index">
-    <div class="hanzi-set-ids-form col-sm-6">
+    <div class="search-form col-sm-6">
 
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
@@ -27,7 +25,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
         ]); ?>
 
         <?= $form->field($hanziSearch, 'param', ['template' => "{input}\n{hint}\n{error}", 'options' => ['class' => 'col-sm-8']])->textInput(['maxlength' => true]) ?> 
-        <a target="blank" href="/article/hanzi-search" title="帮助" style="font-size:16px; margin-right:8px; margin-left:-5px; z-index:100">?</a>
+        <a target="_blank" href="/article/hanzi-search" title="帮助" style="font-size:16px; margin-right:8px; margin-left:-5px; z-index:100">?</a>
 
         <?= Html::submitButton('检索', ['class' => 'btn btn-primary']) ?> 
         <?= Html::Button('清空', ['class' => 'btn btn-secondary ', 'id' => 'searchIds-clear']) ?>
@@ -36,13 +34,11 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
         <br/>
 
-        <div>
+        <div class="search-result">
         <?php 
         $view = '_searchWord';
         if ($hanziSearch->mode == HanziSetSearch::SEARCH_WORD) {
             $view = '_searchWord';
-        } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_VARIANT) {
-            $view = '_searchVariant';
         } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_REVERSE) {
             $view = '_searchReverse';
         }
@@ -57,7 +53,7 @@ $this->params['breadcrumbs'][] = '部件笔画检字法';
 
     </div>
 
-    <div class="col-sm-6">
+    <div class="components col-sm-6">
         <?= \common\components\hanziPart\HanziPart::widget() ?>
     </div>
 
