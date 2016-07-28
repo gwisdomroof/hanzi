@@ -213,7 +213,6 @@ class HanziSetController extends Controller
             $down = $base . "yiti$type" . "/$type" . "_std/$normal.htm";
         }
 
-        header('Content-Type: text/html; charset=big5');
         return $this->render('taiwan', [
             'title' => $normal,
             'up' => $up,
