@@ -66,7 +66,7 @@ class DeDupController extends Controller
      * 需要去重的郑码为后台参数“frontend.gl-dedup”存储的内容
      * @return mixed
      */
-    public function actionGaoli($page)
+    public function actionGaoli($page=1)
     {
         $page = (int)trim($page);
         $glDedup = \common\models\HanziGaoliDedup::find()->orderBy('id')->where(['page' => $page])->asArray()->all();
