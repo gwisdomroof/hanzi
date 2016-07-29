@@ -127,10 +127,8 @@ class HanziHyytController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $addScore = 0;
             if (!$model->isNew($seq)) {
-                $beforeScore = Yii::$app->session->get('cur_scores');
                 HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_INPUT, 1, $seq);
-                $afterScore = Yii::$app->session->get('cur_scores');
-                $addScore = $afterScore - $beforeScore;
+                $addScore = 1;  #每增一项加一分
             }
             return '{"status":"success", "id": ' . $id. ', "score": '. $addScore .'}';
         } else {

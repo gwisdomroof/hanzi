@@ -33,6 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             $label = '录入已完成图书校对';
         } elseif ($type == HanziUserTask::TYPE_DOWNLOAD) {
             $label = '录入已完成论文下载';
+        } elseif ($type == HanziUserTask::TYPE_INPUT) {
+            $label = '录入已完成异体字录入';
         }
         echo Html::a(Yii::t('frontend', $label), ['create', 'type'=> $type], ['class' => 'btn btn-primary']) 
         ?>

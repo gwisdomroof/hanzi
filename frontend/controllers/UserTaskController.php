@@ -78,7 +78,7 @@ class UserTaskController extends Controller
 
         $param['HanziUserTaskSearch']['task_type'] = $type;
 
-        if ((int)$type  !== HanziUserTask::TYPE_COLLATE  && (int)$type  !== HanziUserTask::TYPE_DOWNLOAD) {
+        if ((int)$type  !== HanziUserTask::TYPE_COLLATE  && (int)$type  !== HanziUserTask::TYPE_DOWNLOAD && (int)$type  !== HanziUserTask::TYPE_INPUT) {
            throw new HttpException('400', '参数有误：type');
         }
 
@@ -104,6 +104,7 @@ class UserTaskController extends Controller
      */
     public function actionIndex()
     {
+        $userid = Yii::$app->user->id;
         $searchModel = new HanziUserTaskSearch();
 
         $param = Yii::$app->request->queryParams;
@@ -141,7 +142,7 @@ class UserTaskController extends Controller
                 $seq = $task->seq;
                 foreach ($models as $model) {
                     if (!$model->isNew($seq)) {
-                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq, false);
+                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq);
                     }
                 }
 
@@ -151,7 +152,7 @@ class UserTaskController extends Controller
                 $seq = $task->seq;
                 foreach ($models as $model) {
                     if (!$model->isNew($seq)) {
-                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq, false);
+                        HanziUserTask::addItem($task->user_id, $model->id, $task->task_type, $task->seq);
                     }
                 }
             }

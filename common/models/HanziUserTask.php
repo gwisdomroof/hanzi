@@ -67,17 +67,15 @@ class HanziUserTask extends \yii\db\ActiveRecord
      */
     public static function getScore($userid)
     {
-        $splitIds = HanziUserTask::find()->where(['userid' => $userid, 'task_type' => self::TYPE_SPLIT])->count();
-
-        $inputIds = HanziUserTask::find()->where(['userid' => $userid, 'task_type' => self::TYPE_INPUT])->count();
-
-        return $splitIds * self::SPLIT_WEIGHT + $inputIds * self::INPUT_WEIGHT;
+        $count = HanziUserTask::find()->select('sum(quality) as count')->where(['userid' => $userid])->asArray()->one();
+        return (int)$count['count'];
     }
 
     /**
      * @inheritdoc
+     * 
      */
-    public static function addItem($userid, $taskid, $taskType, $quality, $taskSeq, $bUpdateSession = true)
+    public static function addItem($userid, $taskid, $taskType, $quality, $taskSeq)
     {
         $userTask = new HanziUserTask();
         $userTask->userid = $userid;
@@ -89,11 +87,6 @@ class HanziUserTask extends \yii\db\ActiveRecord
             var_dump($userTask->getErrors());
             die;
         }
-
-        if ($bUpdateSession) {
-            Yii::$app->session->set('cur_scores', self::getScore($userid));
-        }
-
     }
 
     /**
@@ -120,6 +113,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
     {
         if ($outOfSystem) {
             return [
+                self::TYPE_INPUT => Yii::t('common', '异体字录入'),
                 self::TYPE_COLLATE => Yii::t('common', '图书校对'),
                 self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
             ];

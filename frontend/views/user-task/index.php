@@ -24,7 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="hanzi-user-task-index">
     <div class="sum">
-        <?php $totalNum = $splitNum+$inputNum;
+        <?php 
+            $totalNum = \common\models\HanziUserTask::getScore(Yii::$app->user->id);
             echo "已完成拆字{$splitNum}条，录入{$inputNum}条，总计积分{$totalNum}分。";
         ?>
     </div>
@@ -60,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
             ],
             // 'task_seq',
+            'quality',
             [                     
                 'attribute' => 'task_seq',
                 'value' => function ($data) {
@@ -68,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'=>HanziTask::seqs(),
             ],
             // 'task_status',
-            // 'quality',
             // 'created_at',
             // 'updated_at',
 

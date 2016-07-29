@@ -94,8 +94,8 @@ class SignInController extends \yii\web\Controller
             return ActiveForm::validate($model);
         }
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            $userid = Yii::$app->user->id;
-            Yii::$app->session->set('cur_scores', \common\models\HanziUserTask::getScore($userid));
+            // $userid = Yii::$app->user->id;
+            // Yii::$app->session->set('cur_scores', \common\models\HanziUserTask::getScore($userid));
             return $this->goBack();
         } else {
             return $this->render('login', [
