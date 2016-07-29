@@ -91,9 +91,7 @@ $script = <<<SCRIPT
             data: $('#form'+id).serialize(),
             dataType: 'json',
             success: function(result){
-                alert(id);
                 if (result.status == 'success') {
-                    alert('success');
 					$('#cf'+id).attr('disabled', true);
                     thisObj.attr('class', 'modify');
                     thisObj.text('修改');
