@@ -49,7 +49,7 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
             <?php if (!empty($model->word1)) {
                echo Html::activeInput('text', $model, 'word1', ['class' => 'form-control', 'id' => 'wd'.$model->id, 'readonly' => true]);
             } else {
-                echo Html::img("/img/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd'.$model->id, 'readonly' => true]); 
+                echo Html::img("/img/hanzi/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd'.$model->id, 'readonly' => true]); 
             }
             ?>
             </td><td>
