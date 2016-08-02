@@ -88,17 +88,16 @@ class HanziTask extends \yii\db\ActiveRecord
     public static function getIdlePages($type = self::TYPE_SPLIT, $count = 50)
     {
         // 待处理的记录总数
-        $countToSplit = 0;
+        $maxPageNumber = 0;
         if ($type == self::TYPE_SPLIT) {
           $countToSplit = Hanzi::find()->where(['duplicate' => 0])->count();
+          $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false))+ 1;
         } else {
-          $countToSplit = HanziHyyt::find()->count();
+          $maxPageNumber = 5127; // 汉语大字典最大5127页
         }
 
         // 已申请的任务页码
-        $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false))+ 1;
         $usedPages = HanziTask::find()->select('page')->orderBy('id')->where(['task_type'=>$type])->AndWhere(['!=', 'status', self::STATUS_CANCEL])->asArray()->all();
-
         $usedPagesArr = [];
         foreach ($usedPages as $page) {
           if (!empty($page['page']))
