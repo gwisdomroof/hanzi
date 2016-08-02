@@ -117,9 +117,15 @@ class HanziTaskController extends Controller
     public function actionCreate($type=1)
     {
         $model = new HanziTask();
+        
+        if ($type == HanziTask::TYPE_SPLIT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false); 
+        } elseif($type == HanziTask::TYPE_INPUT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
+        } else {
+            throw new HttpException(403, 'type参数有误。');
+        }
 
-        // set current seq
-        $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
         $model->leader_id = Yii::$app->user->id;
         $model->task_type = $type;
 
@@ -141,6 +147,14 @@ class HanziTaskController extends Controller
     {
         $model = new HanziTask();
 
+        if ($type == HanziTask::TYPE_SPLIT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false); 
+        } elseif($type == HanziTask::TYPE_INPUT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
+        } else {
+            throw new HttpException(403, 'type参数有误。');
+        }
+
         // 如果有工作状态为“初分配”“进行中”或为空，则不能继续申请
         if (HanziTask::checkApplyPermission(Yii::$app->user->id, $type)) {
             throw new HttpException(403, '您有工作未完成，请先完成手头的工作。'); 
@@ -151,9 +165,6 @@ class HanziTaskController extends Controller
         $model->leader_id = $systemLeader['id'];
         $model->user_id = Yii::$app->user->id;
         $model->task_type = $type;
-
-        // set current seq
-        $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'type' => $model->task_type]);

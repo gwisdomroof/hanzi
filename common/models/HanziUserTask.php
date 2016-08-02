@@ -83,9 +83,12 @@ class HanziUserTask extends \yii\db\ActiveRecord
         $userTask->task_type = $taskType;
         $userTask->task_seq = $taskSeq;
         $userTask->quality = $quality;
-        if (!HanziUserTask::find()->where(['userid'=>$userTask->userid, 'taskid'=>$userTask->taskid, 'task_type'=>$userTask->task_type, 'task_seq'=>$userTask->task_seq])->exists() && !$userTask->save()) {
-            var_dump($userTask->getErrors());
-            die;
+
+        if (!HanziUserTask::find()->where(['userid'=>$userTask->userid, 'taskid'=>$userTask->taskid, 'task_type'=>$userTask->task_type, 'task_seq'=>$userTask->task_seq])->exists() && $userTask->save()) {
+            // 数据不存在且保存成功
+            return true;
+        } else {
+            return false;
         }
     }
 

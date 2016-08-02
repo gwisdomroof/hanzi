@@ -210,7 +210,7 @@ class HanziTask extends \yii\db\ActiveRecord
      */
     public static function getSeqByPage($userId, $page, $taskType=1)
     {       
-        $model = HanziTask::find()->where(['user_id'=>$userId, 'task_type'=>$taskType, 'page'=>$page])->OrderBy('seq')->one();
+        $model = HanziTask::find()->where(['user_id'=>$userId, 'task_type'=>$taskType, 'page'=>$page])->OrderBy(['created_at'=>SORT_DESC])->one();
         return empty($model) ? null : $model->seq;
     }
 

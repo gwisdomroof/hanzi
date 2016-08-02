@@ -31,25 +31,27 @@ class HanziHyytController extends Controller
         ];
     }
 
+
     /**
      * Lists all HanziHyyt models.
      * @return mixed
      */
-    public function actionIndex($page=1)
+    public function actionIndex($page=1, $seq=1)
     {
         $searchModel = new HanziHyytSearch();
         $param['HanziHyytSearch']['page'] = (int)$page;
         $models = $searchModel->search($param)->getModels();
 
         $userId = Yii::$app->user->id;
-        $seq = HanziTask::getSeqByPage($userId, $page, HanziTask::TYPE_INPUT); 
-
-        $view = !empty($seq) ? 'index' : 'read';
+        $writeSeq = HanziTask::getSeqByPage($userId, $page, HanziTask::TYPE_INPUT); 
+        $writeable = $writeSeq == $seq;
+        $view  = $seq == 3 ? 'determine' : 'input';
        
         return $this->render($view, [
             'models' => $models,
             'curPage' => $page,
-            'seq' => $seq
+            'seq' => $seq,
+            'writeable' => $writeable
         ]);
     }
 
@@ -127,8 +129,9 @@ class HanziHyytController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $addScore = 0;
             if (!$model->isNew($seq)) {
-                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_INPUT, 1, $seq);
-                $addScore = 1;  #每增一项加一分
+                if (HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_INPUT, 1, $seq)) {
+                    $addScore = 1;  #每增一项加一分
+                }
             }
             return '{"status":"success", "id": ' . $id. ', "score": '. $addScore .'}';
         } else {
