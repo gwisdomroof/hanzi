@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use common\models\HanziTask;
+use common\models\HanziUserTask;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
@@ -25,8 +26,29 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="hanzi-user-task-index">
     <div class="sum">
         <?php 
-            $totalNum = \common\models\HanziUserTask::getScore(Yii::$app->user->id);
-            echo "已完成拆字{$splitNum}条，录入{$inputNum}条，总计积分{$totalNum}分。";
+            $msg = "积分情况：";
+            $totalScore = 0;
+            foreach ($groupScore as $item) {
+                switch ($item['task_type']) {
+                    case HanziUserTask::TYPE_SPLIT:
+                        $msg .= "异体字拆字". $item['score'] . "分，";
+                        $totalScore += (int)$item['score'];
+                        break;
+                    case HanziUserTask::TYPE_INPUT:
+                        $msg .= "异体字录入". $item['score'] . "分，";
+                        $totalScore += (int)$item['score'];
+                        break;
+                    case HanziUserTask::TYPE_COLLATE:
+                        $msg .= "图书校对". $item['score'] . "分，";
+                        $totalScore += (int)$item['score'];
+                        break;
+                    case HanziUserTask::TYPE_DOWNLOAD:
+                        $msg .= "论文下载". $item['score'] . "分，";
+                        $totalScore += (int)$item['score'];
+                        break;
+                }
+            }
+            echo $msg . "合计：" . $totalScore . "分。";
         ?>
     </div>
 

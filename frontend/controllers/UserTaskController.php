@@ -112,16 +112,15 @@ class UserTaskController extends Controller
             $param['HanziUserTaskSearch']['userid'] = Yii::$app->user->id;
         }
 
-        $splitNum = HanziUserTask::find()->where(['userid'=>Yii::$app->user->id, 'task_type'=>HanziUserTask::TYPE_SPLIT])->count();
-        $inputNum = HanziUserTask::find()->where(['userid'=>Yii::$app->user->id, 'task_type'=>HanziUserTask::TYPE_INPUT])->count();
+        $userid = Yii::$app->user->id;
+        $groupScore = HanziUserTask::find()->select('task_type, sum(quality) as score')->where(['userid' => $userid])->groupBy(['task_type'])->asArray()->all();
 
         $dataProvider = $searchModel->search($param);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'splitNum' => $splitNum,
-            'inputNum' => $inputNum,
+            'groupScore' => $groupScore,
         ]);
     }
 

@@ -174,3 +174,15 @@ CREATE TABLE IF NOT EXISTS hanzi_gaoli_dedup (
   page INT DEFAULT NULL
 );
 
+# 积分兑换
+CREATE TABLE IF NOT EXISTS score_exchange (
+  id BIGSERIAL PRIMARY KEY,
+  userid int NOT NULL, -- '用户id' 
+  type smallint DEFAULT NULL, -- '兑换类型'
+  score int DEFAULT NULL, -- '所用积分'  
+  status smallint DEFAULT NULL, -- '申请状态'
+  remark varchar(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL 
+);
+

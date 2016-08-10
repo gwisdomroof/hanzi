@@ -26,6 +26,8 @@ class HanziTask extends \yii\db\ActiveRecord
 {
     const TYPE_SPLIT = 1;
     const TYPE_INPUT = 2;
+    const TYPE_COLLATE = 3;
+    const TYPE_DOWNLOAD = 4;
 
     const STATUS_ASSIGNMENT = 0;
     const STATUS_ONGOING = 1;
@@ -286,6 +288,8 @@ class HanziTask extends \yii\db\ActiveRecord
         return [
             self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
             self::TYPE_INPUT => Yii::t('common', '异体字录入'),
+            self::TYPE_COLLATE => Yii::t('common', '图书校对'),
+            self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
         ];
     }
       

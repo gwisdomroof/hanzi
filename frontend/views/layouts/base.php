@@ -46,6 +46,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'label' => Yii::t('frontend', '论文下载'),
                         'url' => ['/user-task/admin?type=4']
                     ],
+                    [
+                        'label' => Yii::t('frontend', '积分兑换'),
+                        'url' => ['/score-exchange/admin']
+                    ],
                 ]
             ],
             [
@@ -63,6 +67,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '完成情况'),
                         'url' => ['/user-task/index']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '积分兑换'),
+                        'url' => ['/score-exchange/index']
                     ]
                 ]
             ],

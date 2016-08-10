@@ -84,5 +84,6 @@ return [
     'Hanzi Sets' => '汉字集',
     'Apply Hanzi Task' => '申请拆字任务',
     'My Completed Tasks' => '已完成任务',
-    'Hanzi User Tasks' => '完成任务'
+    'Hanzi User Tasks' => '完成任务',
+    'Score Exchanges' => '积分兑换'
 ];
