@@ -175,7 +175,7 @@ class HanziSplitController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $nextId = $model->nextSplitId($model->id);
             if (!$model->isNew($seq)) {
-                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, 1,  $seq);
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, HanziUserTask::SPLIT_WEIGHT,  $seq);
             }
             return $next == 'true' ? $this->redirect(['first', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -212,7 +212,7 @@ class HanziSplitController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $nextId = $model->nextSplitId($model->id);
             if (!$model->isNew($seq)) {
-                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, 1, $seq);
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, HanziUserTask::SPLIT_WEIGHT, $seq);
             }
             return $next == 'true' ?  $this->redirect(['second', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -248,7 +248,7 @@ class HanziSplitController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $nextId = $model->nextSplitId($model->id);
             if (!$model->isNew($seq)) {
-                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, 1, $seq);
+                HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, HanziUserTask::SPLIT_WEIGHT, $seq);
             }
             return $next == 'true' ? $this->redirect(['determine', 'id' => $nextId]) : $this->redirect(['view', 'id' => $model->id]);
         } else {

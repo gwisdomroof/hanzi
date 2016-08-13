@@ -70,7 +70,7 @@ class DeDupController extends Controller
     {
         $page = (int)trim($page);
         $glDedup = \common\models\HanziGaoliDedup::find()->orderBy('id')->where(['page' => $page])->asArray()->all();
-        $models = HanziSet::find()->orderBy('zhengma')->where(['source'=>HanziSet::SOURCE_GAOLI, 'zhengma'=>$glDedup])->all();
+        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source'=>HanziSet::SOURCE_GAOLI, 'zhengma'=>$glDedup])->all();
 
         return $this->render('glDedup', [
             'models' => $models,
@@ -97,13 +97,22 @@ class DeDupController extends Controller
         }
 
         if (isset(Yii::$app->request->post()['HanziSet']['duplicate_id'])) {
-            $model->duplicate_id = Yii::$app->request->post()['HanziSet']['duplicate_id'];
-            $dupModel = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
-            $dupModel->duplicate_id = empty($dupModel->duplicate_id) ? $model->pic_name : $dupModel->duplicate_id . ';' . $model->pic_name;
-            $dupArr = explode(';', $dupModel->duplicate_id);
-            $dupModel->duplicate_id = implode(';', array_unique($dupArr));
-            if ($dupModel !== null && $model->save() && $dupModel->save())
-                return '{"status":"success", "dupId": "' .  $dupModel->id. '", "dupValue": "' . $dupModel->duplicate_id . '"}';
+            $score = Yii::$app->request->post()['HanziSet']['duplicate_id'];
+            if (!empty($score)) {
+                $model->duplicate_id = Yii::$app->request->post()['HanziSet']['duplicate_id'];
+                $dupModel = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
+                $dupModel->duplicate_id = empty($dupModel->duplicate_id) ? $model->pic_name : $dupModel->duplicate_id . ';' . $model->pic_name;
+                $dupArr = explode(';', $dupModel->duplicate_id);
+                $dupModel->duplicate_id = implode(';', array_unique($dupArr));
+                if ($dupModel !== null && $model->save() && $dupModel->save())
+                    return '{"status":"success", "dupId": "' .  $dupModel->id. '", "dupValue": "' . $dupModel->duplicate_id . '"}';
+            } else {
+                $dupModel = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
+                $dupModel->duplicate_id = preg_replace('/'.$model->pic_name.';?/', '', $dupModel->duplicate_id);
+                $model->duplicate_id = '';
+                if ($dupModel !== null && $model->save() && $dupModel->save())
+                    return '{"status":"success", "dupId": "' .  $dupModel->id. '", "dupValue": "' . $dupModel->duplicate_id . '"}';
+            }
         } 
         
         return '{"status":"error"}';
