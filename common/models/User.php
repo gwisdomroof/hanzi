@@ -214,6 +214,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function isFrontManager($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('前台管理员', $roles);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getId()

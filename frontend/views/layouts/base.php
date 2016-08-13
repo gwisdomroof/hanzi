@@ -72,7 +72,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             ],
             [
                 'label' => Yii::t('frontend', '管理员'),
-                'visible' => Yii::$app->user->can('manager'),
+                'visible' => \common\models\User::isFrontManager(Yii::$app->user->id),
                 'items'=>[
                     [
                         'label' => Yii::t('frontend', '积分兑换'),
