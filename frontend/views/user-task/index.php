@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         break;
                 }
             }
-            echo $msg . "合计：" . $totalScore . "分。";
+            echo $msg . "合计" . $totalScore . "分。";
         ?>
     </div>
 

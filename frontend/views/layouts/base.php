@@ -46,10 +46,6 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'label' => Yii::t('frontend', '论文下载'),
                         'url' => ['/user-task/admin?type=4']
                     ],
-                    [
-                        'label' => Yii::t('frontend', '积分兑换'),
-                        'url' => ['/score-exchange/admin']
-                    ],
                 ]
             ],
             [
@@ -71,6 +67,20 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '积分兑换'),
                         'url' => ['/score-exchange/index']
+                    ]
+                ]
+            ],
+            [
+                'label' => Yii::t('frontend', '管理员'),
+                'visible' => Yii::$app->user->can('manager'),
+                'items'=>[
+                    [
+                        'label' => Yii::t('frontend', '积分兑换'),
+                        'url' => ['/score-exchange/admin']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '用户信息'),
+                        'url' => ['/user-admin/index']
                     ]
                 ]
             ],
