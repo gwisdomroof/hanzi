@@ -49,7 +49,7 @@ foreach ($models as $variant) {
         echo "<span class='hanzi-item'>". $variant->word . "</span>";
     } elseif (!empty($variant->pic_name)) {
         $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-        echo "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'>";
+        echo "<img alt='$variant->pic_name' title='$variant->pic_name' src='$picPath' class='hanzi-img'>";
     }
 }  ?>
 </div>

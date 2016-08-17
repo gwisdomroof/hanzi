@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
@@ -20,10 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 </style>
 
-<div class="lq-variant-check-index col-sm-offset-1 col-sm-10">
+<div class="lq-variant-check-index col-sm-offset-2 col-sm-8">
 
     <table class="table table-hover">
-        <tr style="background:#f9f9f9; color:#337ab7;"><th>异体字</th><th>图片名</th><th>正字</th><th>异体字编号</th><th>正异类型</th><th>难易等级</th><th>操作</th></tr>
+        <tr style="background:#f9f9f9; color:#337ab7;"><th>异体字</th><th>图片名</th><th>查字典</th><th width="15%">正字</th><th width="15%">异体字编号</th><th>正异类型</th><th>难易等级</th><th>操作</th></tr>
         
          <?php foreach ($dataProvider->getModels() as $model): ?>
             <form id=<?="form".$model->id?> >
@@ -34,6 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
             }?>
             </td><td>
             <?=str_replace('.jpg', '', $model->pic_name);?>
+            </td><td>
+            <?php echo "<a target='_blank' href='" . Url::toRoute(['hanzi-set/ysearch', 'HanziSetSearch[param]' => $model->belong_standard_word_code2]) ."'>". $model->belong_standard_word_code2 . "</a>";
+            ?>
             </td><td>
             <?= Html::activeInput('text', $model, 'belong_standard_word_code2', ['class' => 'form-control', 'id' => 'sw'.$model->id, 'disabled' => !$bNew]); ?>
             </td><td>

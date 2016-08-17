@@ -53,6 +53,7 @@ class HanziSet extends \yii\db\ActiveRecord
     const TYPE_VARIANT_NARROW = 1; # 狭义异体字
     const TYPE_NORMAL_WIDE = 2;  # 广义且正字
     const TYPE_VARIANT_WIDE = 3;    # 广义非正字
+    const TYPE_VARIANT_NORMAL = 4;    # 狭义且正字
 
     // 是否难字
     const HARD_TRUE = 1;
@@ -243,15 +244,17 @@ class HanziSet extends \yii\db\ActiveRecord
             return [
                 self::TYPE_NORMAL_PURE => Yii::t('frontend', '正字'),
                 self::TYPE_VARIANT_NARROW => Yii::t('frontend', '狭义异体字'),
-                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义且正字'),
-                self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义非正字')
+                self::TYPE_VARIANT_NORMAL => Yii::t('frontend', '狭义且正字'),
+                self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
+                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义且正字')
             ];
         } else {
             return [
                 self::TYPE_NORMAL_PURE => Yii::t('frontend', '正字'),
                 self::TYPE_VARIANT_NARROW => Yii::t('frontend', '狭义异体字'),
-                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义异体字兼正字'),
-                self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字')
+                self::TYPE_VARIANT_NORMAL => Yii::t('frontend', '狭义异体字兼正字'),
+                self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
+                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义异体字兼正字')
             ];
         }
     }
