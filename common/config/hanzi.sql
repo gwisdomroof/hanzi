@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS hanzi_set (
   belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
   standard_word_code varchar(64) DEFAULT NULL, -- '兼正字号'
   position_code varchar(128) DEFAULT NULL, -- '位置编号'
-  bDuplicate smallint DEFAULT NULL, -- '是否重复'
+  duplicate smallint DEFAULT NULL, -- '是否重复'
   duplicate_id varchar(128) DEFAULT NULL, -- '重复ID'
   frequence INT DEFAULT 0, -- '字频'
   pinyin varchar(64) DEFAULT NULL, -- '拼音'
@@ -186,3 +186,29 @@ CREATE TABLE IF NOT EXISTS score_exchange (
   updated_at INT NOT NULL 
 );
 
+# 龙泉异体字简表
+CREATE TABLE IF NOT EXISTS lq_variant (
+  id BIGSERIAL PRIMARY KEY,
+  source smallint DEFAULT NULL, -- '来源'
+  pic_name varchar(64) DEFAULT NULL, -- '图片'
+  variant_code varchar(64) DEFAULT NULL, -- '对应异体字的编号'
+  belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
+  nor_var_type smallint DEFAULT NULL  -- '正异类型'
+);
+
+# 龙泉异体字工作表
+CREATE TABLE IF NOT EXISTS lq_variant_check (
+  id BIGSERIAL PRIMARY KEY,
+  source smallint DEFAULT NULL, -- '来源'
+  pic_name varchar(64) DEFAULT NULL, -- '图片'
+  variant_code1 varchar(64) DEFAULT NULL, -- '对应异体字的编号'
+  belong_standard_word_code1 varchar(64) DEFAULT NULL, -- '所属正字'
+  nor_var_type1 smallint DEFAULT NULL, -- '正异类型'
+  level1 smallint DEFAULT NULL, -- '难易等级'
+  variant_code2 varchar(64) DEFAULT NULL, -- '对应异体字的编号'
+  belong_standard_word_code2 varchar(64) DEFAULT NULL, -- '所属正字'
+  nor_var_type2 smallint DEFAULT NULL, -- '正异类型'
+  level2 smallint DEFAULT NULL, -- '难易等级'
+  bConfirm smallint DEFAULT NULL, -- '是否确认'
+  remark varchar(128) DEFAULT NULL -- '备注'
+);
