@@ -54,7 +54,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'nor_var_type1', 'nor_var_type2', 'bconfirm'], 'integer'],
+            [['source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm'], 'integer'],
             [['pic_name', 'variant_code1', 'belong_standard_word_code1', 'variant_code2', 'belong_standard_word_code2'], 'string', 'max' => 64],
             [['remark'], 'string', 'max' => 128],
         ];
@@ -72,9 +72,11 @@ class LqVariantCheck extends \yii\db\ActiveRecord
             'variant_code1' => Yii::t('common', '异体字编号'),
             'belong_standard_word_code1' => Yii::t('common', '所属正字'),
             'nor_var_type1' => Yii::t('common', '正异类型'),
+            'level1' => Yii::t('common', '等级'),
             'variant_code2' => Yii::t('common', '异体字编号'),
             'belong_standard_word_code2' => Yii::t('common', '所属正字'),
             'nor_var_type2' => Yii::t('common', '正异类型'),
+            'level2' => Yii::t('common', '等级'),
             'bconfirm' => Yii::t('common', '是否确定'),
             'remark' => Yii::t('common', '备注'),
         ];
