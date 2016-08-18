@@ -123,7 +123,7 @@ class HanziSetSearch extends HanziSet
             }
             
             if (empty($glNormals) && empty($twNormals)) {
-                $query->andWhere("1!=1"); 
+                $query->andWhere("0=1"); 
             }
             // echo $query->createCommand()->getRawSql(); die;
             $variants = $query->all();

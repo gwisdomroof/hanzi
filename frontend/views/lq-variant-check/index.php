@@ -19,11 +19,18 @@ $this->params['breadcrumbs'][] = $this->title;
     .hanzi-image {
         width:40px;
     }
+    .container {
+        width: 100%;
+    }
+    .normal {
+        color:#337ab7;
+        cursor:pointer;
+    }
 </style>
 
-<div class="lq-variant-check-index col-sm-offset-2 col-sm-8">
+<div class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
 
-    <table class="table table-hover">
+    <table class="table table-hover" >
         <tr style="background:#f9f9f9; color:#337ab7;"><th>异体字</th><th>图片名</th><th>查字典</th><th width="15%">正字</th><th width="15%">异体字编号</th><th>正异类型</th><th>难易等级</th><th>操作</th></tr>
         
          <?php foreach ($dataProvider->getModels() as $model): ?>
@@ -36,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </td><td>
             <?=str_replace('.jpg', '', $model->pic_name);?>
             </td><td>
-            <?php echo "<a target='_blank' href='" . Url::toRoute(['hanzi-set/ysearch', 'HanziSetSearch[param]' => $model->belong_standard_word_code2]) ."'>". $model->belong_standard_word_code2 . "</a>";
+            <?php echo "<div class='normal'>". $model->belong_standard_word_code2 . "</div>";
             ?>
             </td><td>
             <?= Html::activeInput('text', $model, 'belong_standard_word_code2', ['class' => 'form-control', 'id' => 'sw'.$model->id, 'disabled' => !$bNew]); ?>
@@ -78,10 +85,15 @@ $this->params['breadcrumbs'][] = $this->title;
     } 
     if ($curPage < $maxPage) {
         $nextPage = $curPage+1;
-        echo "<li class='next'><a href='/halq-variant-check/index?page=$nextPage'>»</a></li>";
+        echo "<li class='next'><a href='/lq-variant-check/index?page=$nextPage'>»</a></li>";
     }
     ?>
     </ul>
+
+</div>
+
+<div class="lq-variant-search col-sm-5">
+<iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>" src="<?=Url::toRoute(['hanzi-set/hsearch']);?>"></iframe>
 
 </div>
 
@@ -121,6 +133,12 @@ $script = <<<SCRIPT
         $('#lv'+id).attr('disabled', false);
         $(this).attr('class', 'confirm');
         $(this).text('确定');
+    });
+
+    $(document).on('click', '.normal', function() {
+        var url = '/hanzi-set/hsearch?HanziSetSearch[param]=' + $(this).text();
+        $('#search-result').attr('src', url);
+
     });
 
 SCRIPT;

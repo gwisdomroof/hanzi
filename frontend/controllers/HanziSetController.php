@@ -317,6 +317,32 @@ class HanziSetController extends Controller
         ]);
     }
 
+    /**
+     * 异体字检索
+     * @return mixed
+     */
+    public function actionHsearch()
+    {
+        $this->layout = '_clear';
+        $hanziSearch = new HanziSetSearch();
+
+        # 如果是post请求，则转为Get请求
+        if (Yii::$app->request->post()) {
+            $hanziSearch->load(Yii::$app->request->post());
+            $this->redirect(['ysearch', 'HanziSetSearch[param]' => $hanziSearch->param]);
+        }
+
+        $data = [];
+        if ($hanziSearch->load(Yii::$app->request->get()) && $hanziSearch->validate()) {
+            $data = $hanziSearch->ySearch($hanziSearch->param);
+        }
+
+        return $this->render('hsearch', [
+            'hanziSearch' => $hanziSearch,
+            'data' => $data,
+            'param' => $hanziSearch->param,
+        ]);
+    }
 
     /**
      * Lists all HanziSet models.
