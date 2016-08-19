@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
 
     <table class="table table-hover" >
-        <tr style="background:#f9f9f9; color:#337ab7;"><th>异体字</th><th>图片名</th><th>查字典</th><th width="15%">正字</th><th width="15%">异体字编号</th><th>正异类型</th><th>难易等级</th><th>操作</th></tr>
+        <tr style="background:#f9f9f9; color:#337ab7;"><th>异体字</th><th>查字典</th><th width="15%">正字</th><th width="15%">异体字编号</th><th>正异类型</th><th>难易等级</th><th>操作</th></tr>
         
          <?php foreach ($dataProvider->getModels() as $model): ?>
             <form id=<?="form".$model->id?> >
@@ -40,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php if (!empty($model->pic_name)) {
                 echo Html::img("/img/FontImage/".$model->belong_standard_word_code1."/$model->pic_name", ['class' => 'hanzi-image']);
             }?>
-            </td><td>
-            <?=str_replace('.jpg', '', $model->pic_name);?>
             </td><td>
             <?php echo "<div class='normal'>". $model->belong_standard_word_code2 . "</div>";
             ?>

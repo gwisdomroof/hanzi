@@ -58,6 +58,14 @@ class LqVariantCheckController extends Controller
         ]);
     }
 
+    /**
+     * Lists all LqVariantCheck models.
+     * @return mixed
+     */
+    public function actionPages()
+    {
+        return $this->render('pages');
+    }
    /**
      * @param string $id
      * @return mixed
