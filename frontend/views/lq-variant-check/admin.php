@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </td><td>
             <?= Html::activeDropDownList ($model, 'level2', \common\models\LqVariantCheck::levels(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'lv'.$model->id, 'disabled' => !$bNew] ); ?>
              </td><td>
-            <?= Html::activeRadioList ($model, 'bconfirm', [1 => '是', 0 => '否'], ['prompt'=>'', 'id' => 'bc'.$model->id, 'disabled' => !$bNew] ); ?>
+            <?= Html::activeRadioList ($model, 'bconfirm', [1 => '是', 0 => '否'], ['prompt'=>'', 'alt'=>$model->id, 'class'=>'choose', 'id' => 'bc'.$model->id, 'disabled' => !$bNew] ); ?>
             </td><td>
             <?php if($bNew) { 
                 echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
@@ -149,6 +149,31 @@ $script = <<<SCRIPT
         $('#search-result').attr('src', url);
 
     });
+
+    $(document).on('click', '.choose', function() {
+        var id = $(this).attr('alt');
+        var thisObj = $(this);
+        $.post( {
+            url: "/lq-variant-check/modify?id=" + id,
+            data: $('#form'+id).serialize(),
+            dataType: 'json',
+            success: function(result){
+                if (result.status == 'success') {
+                    $('#sw'+id).attr('disabled', true);
+                    $('#vc'+id).attr('disabled', true);
+                    $('#nv'+id).attr('disabled', true);
+                    $('#lv'+id).attr('disabled', true);
+                    $('#bc'+id).attr('disabled', true);
+                    return true;
+                }
+            },
+            error: function(result) {
+                alert(result.msg)
+            }
+        });
+    });
+
+    
 
 SCRIPT;
 
