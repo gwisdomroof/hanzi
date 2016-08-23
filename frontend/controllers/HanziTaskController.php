@@ -2,11 +2,11 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\models\HanziTask;
-use common\models\HanziTaskSearch;
+use common\models\search\HanziTaskSearch;
 use common\models\User;
 use common\models\Hanzi;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -208,15 +208,16 @@ class HanziTaskController extends Controller
     {
         
         $model =  $this->findModel($id);
+        $type = $model->task_type;
 
         $userId = Yii::$app->user->id;
         if ($model->leader_id !== $userId) {
             throw new HttpException(401, '对不起，您无权删除。'); 
         }
-
+        
         $model->delete();
 
-        return $this->redirect(['admin']);
+        return $this->redirect(['admin', 'type'=>$type]);
     }
 
 

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\LqVariantSearch */
+/* @var $searchModel common\models\search\LqVariantSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', 'Lq Variants');
@@ -26,10 +26,34 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'source',
+            'type',
+            'word',
             'pic_name',
-            'variant_code',
-            'belong_standard_word_code',
             // 'nor_var_type',
+            // 'belong_standard_word_code',
+            // 'standard_word_code',
+            // 'position_code',
+            // 'duplicate',
+            // 'duplicate_id',
+            // 'frequence',
+            // 'sutra_ids',
+            // 'bconfirm',
+            // 'pinyin',
+            // 'radical',
+            // 'stocks',
+            // 'zhengma',
+            // 'wubi',
+            // 'structure',
+            // 'bhard',
+            // 'min_split',
+            // 'deform_split',
+            // 'similar_stock',
+            // 'max_split',
+            // 'mix_split',
+            // 'stock_serial',
+            // 'remark',
+            // 'created_at',
+            // 'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

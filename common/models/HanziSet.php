@@ -46,7 +46,7 @@ class HanziSet extends \yii\db\ActiveRecord
     const SOURCE_HANYU = 3;
     const SOURCE_GAOLI = 4;
     const SOURCE_DUNHUANG = 5;
-    const SOURCE_LONGQUAN = 6;
+    const SOURCE_OTHER = 6;
 
     // 正异类型
     const TYPE_NORMAL_PURE = 0; # 纯正字
@@ -162,8 +162,8 @@ class HanziSet extends \yii\db\ActiveRecord
             case self::SOURCE_DUNHUANG:
                 return "/img/hanzi/dh/$pic_name.png";
             
-            case self::SOURCE_LONGQUAN:
-                return "/img/hanzi/lq/$pic_name.png";
+            case self::SOURCE_OTHER:
+                return "/img/hanzi/th/$pic_name.png";
 
             default:
                 return false;
@@ -272,7 +272,7 @@ class HanziSet extends \yii\db\ActiveRecord
             self::SOURCE_HANYU => Yii::t('frontend', '汉语大字典'),
             self::SOURCE_GAOLI => Yii::t('frontend', '高丽异体字'),
             self::SOURCE_DUNHUANG => Yii::t('frontend', '敦煌俗字典'),
-            self::SOURCE_LONGQUAN => Yii::t('frontend', '龙泉异体字')
+            self::SOURCE_OTHER => Yii::t('frontend', '其他')
         ];
     }
 

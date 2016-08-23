@@ -62,6 +62,63 @@ class DeDupController extends Controller
     }
 
     /**
+     * 去重后，需要设置duplicate两个字段
+     * duplicate为1，表示这条记录属于从数据。
+     * 同时修改这一组异体字的nor_var_type和belong_standard_word_code。
+     * @return mixed
+     */
+    public function actionSetDup()
+    {
+        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source'=>HanziSet::SOURCE_GAOLI])->andWhere(['!=', 'duplicate_id', ''])->all();
+
+        $handledIds = [];
+        foreach ($models as $model) {
+            if (in_array($model->id, $handledIds)) {
+                continue;
+            }
+
+            $mainModel = $model;
+            $subModels = [];
+            $standardWords = [];
+            $subIds = [];
+            if (strpos($model->duplicate_id, ';') == false) {
+                $glDedup = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
+                if (!empty($glDedup->duplicate_id) && strpos($glDedup->duplicate_id, ';') !== false) {
+                    $mainModel = $glDedup;
+                    $picNames = explode(';', $glDedup->duplicate_id);
+                    $subModels = HanziSet::find()->where(['pic_name'=>$picNames, 'source'=>HanziSet::SOURCE_GAOLI])->all();
+                } else {
+                    $subModels[] = $glDedup;
+                }
+            } else {
+                $picNames = explode(';', $model->duplicate_id);
+                $subModels = HanziSet::find()->where(['pic_name'=>$picNames, 'source'=>HanziSet::SOURCE_GAOLI])->all();
+            }
+
+            $handledIds[] = $mainModel->id;
+            $standardWords[] = $mainModel->belong_standard_word_code;
+            foreach ($subModels as $subModel) {
+                    $standardWords[] = $subModel->belong_standard_word_code;
+                    $handledIds[] = $subModel->id;
+                    $subIds[] = $subModel->id;
+            }
+
+            # 主model
+            $mainModel->nor_var_type = HanziSet::TYPE_VARIANT_WIDE;
+            $mainModel->belong_standard_word_code = implode(';', $standardWords);
+            if (!$mainModel->save()) {
+                var_dump($mainModel->getErrors());
+            }
+
+            # 从model
+            Yii::$app->db->createCommand()->update('hanzi_set', ['duplicate' => 1, 'nor_var_type' => HanziSet::TYPE_VARIANT_WIDE, 'belong_standard_word_code' => implode(';', $standardWords)], ['id' => $subIds])->execute();
+        }
+
+        echo 'finished!';
+        die;
+    }
+
+    /**
      * 高丽藏内部，按照郑码去重
      * 需要去重的郑码为后台参数“frontend.gl-dedup”存储的内容
      * @return mixed

@@ -2,18 +2,18 @@
 
 namespace frontend\controllers;
 
-use Yii;
-use common\models\Hanzi;
-use common\models\HanziSearch;
+use common\models\HanziSplit;
+use common\models\search\HanziSplitSearch;
 use common\models\HanziTask;
 use common\models\HanziUserTask;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\HttpException;
 use yii\filters\VerbFilter;
 
 /**
- * HanziController implements the CRUD actions for Hanzi model.
+ * HanziController implements the CRUD actions for HanziSplit model.
  */
 class HanziSplitController extends Controller
 {
@@ -30,12 +30,12 @@ class HanziSplitController extends Controller
     }
 
     /**
-     * Lists all Hanzi models.
+     * Lists all HanziSplit models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new HanziSearch();
+        $searchModel = new HanziSplitSearch();
 
         $currentPage = isset(Yii::$app->request->queryParams['page']) ? (int)Yii::$app->request->queryParams['page'] : 1;
 
@@ -54,7 +54,7 @@ class HanziSplitController extends Controller
 
  
     /**
-     * Displays a single Hanzi model.
+     * Displays a single HanziSplit model.
      * @param string $id
      * @return mixed
      */
@@ -66,13 +66,13 @@ class HanziSplitController extends Controller
     }
 
     /**
-     * Creates a new Hanzi model.
+     * Creates a new HanziSplit model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Hanzi();
+        $model = new HanziSplit();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -84,7 +84,7 @@ class HanziSplitController extends Controller
     }
 
     /**
-     * Updates an existing Hanzi model.
+     * Updates an existing HanziSplit model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -105,7 +105,7 @@ class HanziSplitController extends Controller
     }
 
     /**
-     * Updates an existing Hanzi model.
+     * Updates an existing HanziSplit model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -123,18 +123,6 @@ class HanziSplitController extends Controller
         }
     }
 
-    /**
-     * Deletes an existing Hanzi model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     */
-    private function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
 
     /**
      * Finds the Hanzi model based on its primary key value.
@@ -145,7 +133,7 @@ class HanziSplitController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Hanzi::findOne($id)) !== null) {
+        if (($model = HanziSplit::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -154,8 +142,6 @@ class HanziSplitController extends Controller
 
 
     /**
-     * Updates an existing Hanzi model.
-     * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
      */
@@ -191,8 +177,6 @@ class HanziSplitController extends Controller
 
 
     /**
-     * Updates an existing Hanzi model.
-     * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
      */
@@ -227,8 +211,6 @@ class HanziSplitController extends Controller
     }
 
     /**
-     * Updates an existing Hanzi model.
-     * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
      */
@@ -260,16 +242,6 @@ class HanziSplitController extends Controller
                 'seq' => $seq,
             ]);
         }
-    }
-
-    /**
-     * Help.
-     * @return mixed
-     */
-    public function actionHelp()
-    {
-        return $this->render('help');
-
     }
 
 }

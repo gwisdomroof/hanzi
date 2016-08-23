@@ -10,7 +10,7 @@ use common\models\HanziTask;
 
 $this->title = $model->id;
 $label = HanziTask::types()[$model->task_type];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', "$label"), 'url' => ['index', 'type' => $model->task_type]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', "$label")];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hanzi-task-view">

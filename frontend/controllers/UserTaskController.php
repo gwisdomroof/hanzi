@@ -2,13 +2,13 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\models\HanziUserTask;
-use common\models\HanziUserTaskSearch;
+use common\models\search\HanziUserTaskSearch;
 use common\models\HanziTask;
 use common\models\HanziHyyt;
 use common\models\Hanzi;
 use common\models\user;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\HttpException;

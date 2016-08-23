@@ -12,16 +12,18 @@ $taskName = $type == 1 ? '拆字' : '录入';
 $this->title = Yii::t('frontend', $taskName. "任务管理");
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="hanzi-task-index">
 
+<div class="hanzi-task-index">
     <p>
         <?php if (\common\models\HanziTask::isLeader(Yii::$app->user->id))
            echo Html::a(Yii::t('frontend', "创建" . $taskName . "任务"), ['create', 'type'=>$type], ['class' => 'btn btn-primary']) 
         ?>
     </p>
 
-    <?php
-    $columns = [
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
                 "headerOptions" => ["width" => "30"]
@@ -43,14 +45,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             'format' => 'raw',
             ],
-        ];
-    if ($type == 1) {
-        $columns = array_merge($columns, [
-            'start_id',
-            'end_id',
-        ]);
-    }
-    $columns = array_merge($columns, [
+            [
+            'attribute' => 'start_id',
+            'visible' => $type == 1 ? true : false,
+            ],
+            [
+            'attribute' => 'end_id',
+            'visible' => $type == 1 ? true : false,
+            ],
             [                     
             'attribute' => 'status',
             'value' => function ($data) {
@@ -59,16 +61,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter'=>HanziTask::statuses(),
             ],
             [
-                'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
-                "headerOptions" => ["width" => "100"]
-            ],
-        ]);
-    ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $columns
+                "headerOptions" => ["width" => "100"],
+            ]
+        ],
     ]); ?>
+
 </div>

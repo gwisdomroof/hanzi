@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\bootstrap\ActiveForm;
-use common\models\HanziSetSearch;
+use common\models\search\HanziSetSearch;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\hanziSearch */
+/* @var $searchModel common\models\search\hanziSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', '部件笔画检字法');

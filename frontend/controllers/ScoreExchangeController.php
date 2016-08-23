@@ -2,9 +2,9 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\models\ScoreExchange;
-use common\models\ScoreExchangeSearch;
+use common\models\search\ScoreExchangeSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\HttpException;

@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\LqVariant;
-use common\models\LqVariantSearch;
+use common\models\search\LqVariantSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

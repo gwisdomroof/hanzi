@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\bootstrap\ActiveForm;
-use common\models\HanziSetSearch;
+use common\models\search\HanziSetSearch;
 
 
 /* @var $this yii\web\View */

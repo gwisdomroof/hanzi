@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\LqVariantCheckSearch */
+/* @var $searchModel common\models\search\LqVariantCheckSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', '异体字审核');

@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\bootstrap\ActiveForm;
 use common\models\HanziSet;
-use common\models\HanziSetSearch;
+use common\models\search\HanziSetSearch;
 
 ?>
 

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\HanziSetSearch */
+/* @var $model common\models\search\HanziSetSearch */
 /* @var $form yii\bootstrap\ActiveForm */
 ?>
 

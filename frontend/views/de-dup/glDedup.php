@@ -5,7 +5,6 @@ use yii\grid\GridView;
 use common\models\HanziSet;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\HanziSetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', '高丽藏去重');
