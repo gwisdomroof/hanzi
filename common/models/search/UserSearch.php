@@ -1,16 +1,16 @@
 <?php
 
-namespace common\models;
+namespace common\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\LqVariant;
+use common\models\User;
 
 /**
- * LqVariantSearch represents the model behind the search form about `common\models\LqVariant`.
+ * UserSearch represents the model behind the search form about `common\models\User`.
  */
-class LqVariantSearch extends LqVariant
+class UserSearch extends User
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class LqVariantSearch extends LqVariant
     public function rules()
     {
         return [
-            [['id', 'source', 'nor_var_type'], 'integer'],
-            [['pic_name', 'variant_code', 'belong_standard_word_code'], 'safe'],
+            [['id', 'status', 'created_at', 'updated_at', 'logged_at'], 'integer'],
+            [['username', 'auth_key', 'access_token', 'password_hash', 'oauth_client', 'oauth_client_user_id', 'email'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class LqVariantSearch extends LqVariant
      */
     public function search($params)
     {
-        $query = LqVariant::find();
+        $query = User::find();
 
         // add conditions that should always apply here
 
@@ -60,13 +60,19 @@ class LqVariantSearch extends LqVariant
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'source' => $this->source,
-            'nor_var_type' => $this->nor_var_type,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'logged_at' => $this->logged_at,
         ]);
 
-        $query->andFilterWhere(['like', 'pic_name', $this->pic_name])
-            ->andFilterWhere(['like', 'variant_code', $this->variant_code])
-            ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code]);
+        $query->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            ->andFilterWhere(['like', 'access_token', $this->access_token])
+            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
+            ->andFilterWhere(['like', 'oauth_client', $this->oauth_client])
+            ->andFilterWhere(['like', 'oauth_client_user_id', $this->oauth_client_user_id])
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }
