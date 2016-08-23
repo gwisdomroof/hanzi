@@ -106,7 +106,7 @@ class HanziSetController extends Controller
                     }
                     break;
 
-                case HanziSet::SOURCE_LONGQUAN:
+                case HanziSet::SOURCE_OTHER:
                     # code...
                     break;
             }
