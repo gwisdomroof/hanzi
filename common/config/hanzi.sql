@@ -1,4 +1,4 @@
--- 来源：unicode，汉语大字典，台湾异体字字典，高丽异体字字典，敦煌俗字典
+-- 异体字拆字用表
 CREATE TABLE IF NOT EXISTS hanzi_split (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS hanzi_split (
   updated_at INT NOT NULL 
 );
 
-
+-- 异体字识别用表
 CREATE TABLE IF NOT EXISTS hanzi_hy_yt (
   id BIGSERIAL PRIMARY KEY,
   volume varchar(8) DEFAULT NULL, -- '册' 
@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS hanzi_hy_yt (
   updated_at INT NOT NULL 
 );
 
+-- 汉字集
 CREATE TABLE IF NOT EXISTS hanzi_set (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
@@ -92,6 +93,7 @@ CREATE TABLE IF NOT EXISTS hanzi_set (
   updated_at INT NOT NULL 
 );
 
+-- 高丽异体字
 CREATE TABLE IF NOT EXISTS hanzi_gaoli (
   id BIGSERIAL PRIMARY KEY,
   glyph varchar(16) DEFAULT NULL, -- '字形'
@@ -111,12 +113,22 @@ CREATE TABLE IF NOT EXISTS hanzi_gaoli (
   emean varchar(128) DEFAULT NULL -- '英文含义'
 );
 
+-- 汉字部首，高丽异体字关联表
 CREATE TABLE IF NOT EXISTS hanzi_busu (
   busu_id smallint PRIMARY KEY, -- '部首ID'
   glyph varchar(16) DEFAULT NULL, -- '字形'
   busu_stroke smallint DEFAULT NULL -- '部首笔画'
 );
 
+-- 高丽异体字待去重表
+CREATE TABLE IF NOT EXISTS hanzi_gaoli_dedup (
+  id BIGSERIAL PRIMARY KEY,
+  zhengma VARCHAR(128) NOT NULL, 
+  zmcnt SMALLINT NOT NULL,
+  page INT DEFAULT NULL
+);
+
+-- 异体字拆字、识别等任务分配表
 CREATE TABLE IF NOT EXISTS hanzi_task (
   id BIGSERIAL PRIMARY KEY,
   leader_id INT NOT NULL, -- '组长'
@@ -131,6 +143,7 @@ CREATE TABLE IF NOT EXISTS hanzi_task (
   updated_at INT NOT NULL 
 );
 
+-- 组长组员关系表
 CREATE TABLE IF NOT EXISTS member_relation (
   id BIGSERIAL PRIMARY KEY,
   member_id INT NOT NULL, -- '成员ID'
@@ -143,16 +156,7 @@ CREATE TABLE IF NOT EXISTS member_relation (
   updated_at INT NOT NULL 
 );
 
-# source：1，台湾异体字；2、汉语大字典；3、高丽异体字。
-CREATE TABLE IF NOT EXISTS hanzi_image (
-  id BIGSERIAL PRIMARY KEY,
-  source SMALLINT DEFAULT NULL, -- '来源'
-  name VARCHAR(64) DEFAULT NULL, -- '图片名称'
-  value TEXT NOT NULL -- '图片base64值'
-);
-
-
-# 用户已完成任务表。
+-- 用户已完成任务表
 CREATE TABLE IF NOT EXISTS hanzi_user_task (
   id BIGSERIAL PRIMARY KEY,
   userid BIGSERIAL NOT NULL, 
@@ -166,15 +170,7 @@ CREATE TABLE IF NOT EXISTS hanzi_user_task (
   updated_at INT NOT NULL 
 );
 
-# 高丽异体字待去重表
-CREATE TABLE IF NOT EXISTS hanzi_gaoli_dedup (
-  id BIGSERIAL PRIMARY KEY,
-  zhengma VARCHAR(128) NOT NULL, 
-  zmcnt SMALLINT NOT NULL,
-  page INT DEFAULT NULL
-);
-
-# 积分兑换
+-- 积分兑换表
 CREATE TABLE IF NOT EXISTS score_exchange (
   id BIGSERIAL PRIMARY KEY,
   userid int NOT NULL, -- '用户id' 
@@ -186,17 +182,7 @@ CREATE TABLE IF NOT EXISTS score_exchange (
   updated_at INT NOT NULL 
 );
 
-# 龙泉异体字简表
-CREATE TABLE IF NOT EXISTS lq_variant (
-  id BIGSERIAL PRIMARY KEY,
-  source smallint DEFAULT NULL, -- '来源'
-  pic_name varchar(64) DEFAULT NULL, -- '图片'
-  variant_code varchar(64) DEFAULT NULL, -- '对应异体字的编号'
-  belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
-  nor_var_type smallint DEFAULT NULL  -- '正异类型'
-);
-
-# 龙泉异体字工作表
+-- 龙泉异体字工作表
 CREATE TABLE IF NOT EXISTS lq_variant_check (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
@@ -213,6 +199,7 @@ CREATE TABLE IF NOT EXISTS lq_variant_check (
   remark varchar(128) DEFAULT NULL -- '备注'
 );
 
+-- 龙泉异体字表，继承于汉字集
 CREATE TABLE IF NOT EXISTS lq_variant (
   id BIGSERIAL PRIMARY KEY,
   source smallint DEFAULT NULL, -- '来源'
@@ -226,6 +213,8 @@ CREATE TABLE IF NOT EXISTS lq_variant (
   duplicate smallint DEFAULT NULL, -- '是否重复'
   duplicate_id varchar(128) DEFAULT NULL, -- '重复ID'
   frequence INT DEFAULT 0, -- '字频'
+  sutra_ids varchar(256) DEFAULT NULL, -- '新增经字号'
+  bConfirm smallint DEFAULT NULL, -- '新增是否存疑'
   pinyin varchar(64) DEFAULT NULL, -- '拼音'
   radical varchar(8) DEFAULT NULL, -- '部首'
   stocks smallint DEFAULT NULL, -- '笔画'
@@ -240,8 +229,6 @@ CREATE TABLE IF NOT EXISTS lq_variant (
   mix_split varchar(256) DEFAULT NULL, -- '混合拆分'
   stock_serial varchar(256) DEFAULT NULL, -- '部件序列'
   remark varchar(256) DEFAULT NULL, -- '备注'
-  sutra_ids varchar(256) DEFAULT NULL, -- '经字号'
-  bConfirm smallint DEFAULT NULL, -- '是否存疑'
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
 );
