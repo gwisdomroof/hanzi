@@ -1,11 +1,11 @@
 <?php
 
-use common\models\Hanzi;
+use common\models\HanziSplit;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\HanziSearch */
+/* @var $model common\models\HanziSplitSearch */
 /* @var $form yii\bootstrap\ActiveForm */
 ?>
 
@@ -21,7 +21,7 @@ use yii\bootstrap\ActiveForm;
 
     <?php echo $form->field($model, 'source') ?>
 
-    <?php echo $form->field($model, 'hanzi_type')->dropDownList(Hanzi::types(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'hanzi_type')->dropDownList(HanziSplit::types(), ['prompt' => '']) ?>
 
     <?php echo $form->field($model, 'word') ?>
 

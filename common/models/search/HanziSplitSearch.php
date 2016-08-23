@@ -1,16 +1,16 @@
 <?php
 
-namespace common\models;
+namespace common\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Hanzi;
+use common\models\HanziSplit;
 
 /**
  * HanziSearch represents the model behind the search form about `common\models\Hanzi`.
  */
-class HanziSearch extends Hanzi
+class HanziSplitSearch extends HanziSplit
 {
     /**
      * @inheritdoc
@@ -37,13 +37,13 @@ class HanziSearch extends Hanzi
     /**
      * Creates data provider instance with search query applied
      *
-     * @param duplicate 查找数据时，是否包含重复
+     * @param bExceptDuplicate 查找数据时，是否包含重复
      *
      * @return ActiveDataProvider
      */
     public function search($params, $bExceptDuplicate = true)
     {
-        $query = Hanzi::find();
+        $query = HanziSplit::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

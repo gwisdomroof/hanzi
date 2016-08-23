@@ -2,10 +2,10 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use common\models\Hanzi;
+use common\models\HanziSplit;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Hanzi */
+/* @var $model common\models\HanziSplit */
 /* @var $form yii\bootstrap\ActiveForm */
 ?>
 
@@ -17,15 +17,15 @@ use common\models\Hanzi;
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?php echo $form->field($model, 'source')->dropDownList(Hanzi::sources(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'source')->dropDownList(HanziSplit::sources(), ['prompt' => '']) ?>
 
-    <?php echo $form->field($model, 'hanzi_type')->dropDownList(Hanzi::types(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'hanzi_type')->dropDownList(HanziSplit::types(), ['prompt' => '']) ?>
 
     <?php echo $form->field($model, 'word')->textInput(['maxlength' => true]) ?>
 
     <?php echo $form->field($model, 'picture')->textInput(['maxlength' => true]) ?>
 
-    <?php echo $form->field($model, 'nor_var_type')->dropDownList(Hanzi::norVarTypes(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'nor_var_type')->dropDownList(HanziSplit::norVarTypes(), ['prompt' => '']) ?>
 
     <?php echo $form->field($model, 'standard_word')->textInput(['maxlength' => true]) ?>
 

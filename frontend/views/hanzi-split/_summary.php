@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Hanzi;
+use common\models\HanziSplit;
 
 
 /* @var $this yii\web\View */
@@ -23,9 +23,9 @@ use common\models\Hanzi;
 	</tr>
 	<tr>
 		<td>是否难字</td>
-		<td><?php echo empty($model->hard10) ?null : Hanzi::hards()[$model->hard10]; ?></td>
-		<td><?php echo empty($model->hard20) ?null : Hanzi::hards()[$model->hard20]; ?></td>
-		<td><?php echo empty($model->hard30) ?null : Hanzi::hards()[$model->hard30]; ?></td>
+		<td><?php echo empty($model->hard10) ?null : HanziSplit::hards()[$model->hard10]; ?></td>
+		<td><?php echo empty($model->hard20) ?null : HanziSplit::hards()[$model->hard20]; ?></td>
+		<td><?php echo empty($model->hard30) ?null : HanziSplit::hards()[$model->hard30]; ?></td>
 	</tr>
 	<tr>
 		<td>初步拆分1</td>

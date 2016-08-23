@@ -92,7 +92,7 @@ class HanziTask extends \yii\db\ActiveRecord
         // 待处理的记录总数
         $maxPageNumber = 0;
         if ($type == self::TYPE_SPLIT) {
-          $countToSplit = Hanzi::find()->where(['duplicate' => 0])->count();
+          $countToSplit = HanziSplit::find()->where(['duplicate' => 0])->count();
           $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false))+ 1;
         } else {
           $maxPageNumber = 5127; // 汉语大字典最大5127页
@@ -183,7 +183,7 @@ class HanziTask extends \yii\db\ActiveRecord
         if (parent::beforeSave($insert)) {
             // 如果是汉字拆分任务，则须保存id范围
             if ($this->task_type == self::TYPE_SPLIT) {
-              $idRange = Hanzi::getIdRangeByPage($this->page);
+              $idRange = HanziSplit::getIdRangeByPage($this->page);
               $this->start_id = $idRange['minId']; 
               $this->end_id = $idRange['maxId'];
             }

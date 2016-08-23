@@ -4,12 +4,12 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Hanzi */
+/* @var $model common\models\HanziSplit */
 
 $this->title = Yii::t('frontend', '初次拆分', [
-	'modelClass' => 'Hanzi',
+	'modelClass' => 'HanziSplit',
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Hanzis'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'HanziSplits'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['breadcrumbs'][] = '当前积分：' . \common\models\HanziUserTask::getScore(Yii::$app->user->id);
 ?>
@@ -28,35 +28,6 @@ $this->params['breadcrumbs'][] = '当前积分：' . \common\models\HanziUserTas
 		'seq' => $seq,
 	]) ?>
 
-	
-	<!-- <div id="app">
-		<form class="form-horizontal">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">是否难字</label>
-				<div class="radio col-sm-6">
-					<label>
-						<input type="radio" name="optionsRadios" value="option1">是
-					</label>
-					<label>
-						<input type="radio" value="option1">否
-					</label>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">初步拆分1</label>
-				<div class="col-sm-6">
-					<check-child></check-child>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">初步拆分2</label>
-				<div class="col-sm-6">
-					<check-child></check-child>
-				</div>
-			</div>
-		</form>
-	</div> -->
-	
 </div>
 
 <!-- <template id="check-tmpl">

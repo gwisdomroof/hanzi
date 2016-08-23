@@ -6,7 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "{{%hanzi}}".
+ * This is the model class for table "{{%hanzi_split}}".
  *
  * @property string $id
  * @property integer $source
@@ -40,7 +40,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class Hanzi extends \yii\db\ActiveRecord
+class HanziSplit extends \yii\db\ActiveRecord
 {
     const SOURCE_UNICODE = 1;
     const SOURCE_TAIWAN = 2;
@@ -100,7 +100,7 @@ class Hanzi extends \yii\db\ActiveRecord
         if (!isset($curId)) 
             return false;
 
-        $query = Hanzi::find()->OrderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
+        $query = HanziSplit::find()->OrderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
 
         return $query->one()->id;
 
@@ -112,50 +112,41 @@ class Hanzi extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'source' => Yii::t('app', '来源'),
-            'hanzi_type' => Yii::t('app', '类型'),
-            'word' => Yii::t('app', '文字'),
-            'picture' => Yii::t('app', '图片'),
-            'nor_var_type' => Yii::t('app', '正异类型'),
-            'standard_word' => Yii::t('app', '所属正字'),
-            'position_code' => Yii::t('app', '位置'),
-            'radical' => Yii::t('app', '部首'),
-            'stocks' => Yii::t('app', '笔画'),
-            'structure' => Yii::t('app', '结构'),
-            'corners' => Yii::t('app', '四角'),
-            'attach' => Yii::t('app', '附码'),
-            'duplicate10' => Yii::t('app', '重复值'),
-            'hard10' => Yii::t('app', '是否难字'),
-            'initial_split11' => Yii::t('app', '初步拆分1'),
-            'initial_split12' => Yii::t('app', '初步拆分2'),
-            'deform_split10' => Yii::t('app', '调笔拆分'),
-            'similar_stock10' => Yii::t('app', '相似部件'),
-            'duplicate20' => Yii::t('app', '重复值'),
-            'hard20' => Yii::t('app', '是否难字'),
-            'initial_split21' => Yii::t('app', '初步拆分1'),
-            'initial_split22' => Yii::t('app', '初步拆分2'),
-            'deform_split20' => Yii::t('app', '调笔拆分'),
-            'similar_stock20' => Yii::t('app', '相似部件'),
-            'duplicate30' => Yii::t('app', '重复值'),
-            'hard30' => Yii::t('app', '是否难字'),
-            'initial_split31' => Yii::t('app', '初步拆分1'),
-            'initial_split32' => Yii::t('app', '初步拆分2'),
-            'deform_split30' => Yii::t('app', '调笔拆分'),
-            'similar_stock30' => Yii::t('app', '相似部件'),
-            'remark' => Yii::t('app', '备注'),
-            'created_at' => Yii::t('app', '创建时间'),
-            'updated_at' => Yii::t('app', '修改时间'),
+            'id' => Yii::t('common', 'ID'),
+            'source' => Yii::t('common', '来源'),
+            'hanzi_type' => Yii::t('common', '类型'),
+            'word' => Yii::t('common', '文字'),
+            'picture' => Yii::t('common', '图片'),
+            'nor_var_type' => Yii::t('common', '正异类型'),
+            'standard_word' => Yii::t('common', '所属正字'),
+            'position_code' => Yii::t('common', '位置'),
+            'radical' => Yii::t('common', '部首'),
+            'stocks' => Yii::t('common', '笔画'),
+            'structure' => Yii::t('common', '结构'),
+            'corners' => Yii::t('common', '四角'),
+            'attach' => Yii::t('common', '附码'),
+            'duplicate10' => Yii::t('common', '重复值'),
+            'hard10' => Yii::t('common', '是否难字'),
+            'initial_split11' => Yii::t('common', '初步拆分1'),
+            'initial_split12' => Yii::t('common', '初步拆分2'),
+            'deform_split10' => Yii::t('common', '调笔拆分'),
+            'similar_stock10' => Yii::t('common', '相似部件'),
+            'duplicate20' => Yii::t('common', '重复值'),
+            'hard20' => Yii::t('common', '是否难字'),
+            'initial_split21' => Yii::t('common', '初步拆分1'),
+            'initial_split22' => Yii::t('common', '初步拆分2'),
+            'deform_split20' => Yii::t('common', '调笔拆分'),
+            'similar_stock20' => Yii::t('common', '相似部件'),
+            'duplicate30' => Yii::t('common', '重复值'),
+            'hard30' => Yii::t('common', '是否难字'),
+            'initial_split31' => Yii::t('common', '初步拆分1'),
+            'initial_split32' => Yii::t('common', '初步拆分2'),
+            'deform_split30' => Yii::t('common', '调笔拆分'),
+            'similar_stock30' => Yii::t('common', '相似部件'),
+            'remark' => Yii::t('common', '备注'),
+            'created_at' => Yii::t('common', '创建时间'),
+            'updated_at' => Yii::t('common', '修改时间'),
         ];
-    }
-
-    /**
-     * @inheritdoc
-     * @return HanziQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new HanziQuery(get_called_class());
     }
 
     /**
@@ -167,7 +158,7 @@ class Hanzi extends \yii\db\ActiveRecord
     {
         $pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
 
-        $dataset = Hanzi::find()->orderBy('id')->where(['duplicate' => 0])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
+        $dataset = HanziSplit::find()->orderBy('id')->where(['duplicate' => 0])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
 
         return  [
             'minId' => (int)$dataset[0]['id'],

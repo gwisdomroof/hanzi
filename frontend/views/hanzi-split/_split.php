@@ -1,11 +1,11 @@
 <?php
-use common\models\Hanzi;
+use common\models\HanziSplit;
 use common\models\HanziImage;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Hanzi */
+/* @var $model common\models\HanziSplit */
 /* @var $form yii\bootstrap\ActiveForm */
 ?>
 
@@ -61,7 +61,9 @@ use yii\bootstrap\ActiveForm;
 
     <?php  } ?>
 
-    <?php if($seq == 3) { ?>
+    <?php if($seq == 3) { 
+        $readonly = $seq == 3 ? false : true;
+        ?>
 
     <?php echo $this->render('_splitTable', [
         'model' => $model,
@@ -82,10 +84,6 @@ use yii\bootstrap\ActiveForm;
     <?php echo $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
     <?php  } ?>
-
-    <!-- <?php echo $form->field($model, 'created_at')->textInput() ?>
-
-    <?php echo $form->field($model, 'updated_at')->textInput() ?> -->
 
     <input type="hidden" id="next" name="next" value='false'> 
 

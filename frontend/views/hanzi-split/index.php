@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Hanzi;
+use common\models\HanziSplit;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -15,12 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <!-- <?php echo Html::a(Yii::t('frontend', 'Create {modelClass}', [
-            'modelClass' => 'Hanzi',
-        ]), ['create'], ['class' => 'btn btn-success']) ?> -->
-    </p>
-    
 
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -51,9 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '', # 取消排序
                 'attribute'=>'source',
                 'value'=>function ($model) {
-                    return empty($model->source) ? null: Hanzi::sources()[$model->source];
+                    return empty($model->source) ? null: HanziSplit::sources()[$model->source];
                 },
-                'filter'=>Hanzi::sources(),
+                'filter'=>HanziSplit::sources(),
             ],
             [
                 'header' => '', # 取消排序
@@ -71,9 +65,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '', # 取消排序
                 'attribute'=>'hard10',
                 'value'=>function ($model) {
-                    return empty($model->hard10) ? null:  \common\models\Hanzi::hards()[$model->hard10];
+                    return empty($model->hard10) ? null:  \common\models\HanziSplit::hards()[$model->hard10];
                 },
-                'filter'=>Hanzi::hards()
+                'filter'=>HanziSplit::hards()
             ],
             [
                 'header' => '', # 取消排序
