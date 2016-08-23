@@ -12,11 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lq-variant-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('frontend', 'Create Lq Variant'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('frontend', 'Create'), ['create'], ['class' => 'btn btn-primary']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -24,20 +23,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'source',
-            'type',
-            'word',
+            // 'id',
             'pic_name',
-            // 'nor_var_type',
-            // 'belong_standard_word_code',
+            'source',
+            // 'type',
+            // 'word',
+            'nor_var_type',
+            'belong_standard_word_code',
             // 'standard_word_code',
             // 'position_code',
             // 'duplicate',
             // 'duplicate_id',
             // 'frequence',
             // 'sutra_ids',
-            // 'bconfirm',
+            'bconfirm',
             // 'pinyin',
             // 'radical',
             // 'stocks',

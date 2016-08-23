@@ -196,7 +196,9 @@ CREATE TABLE IF NOT EXISTS lq_variant_check (
   nor_var_type2 smallint DEFAULT NULL, -- '正异类型'
   level2 smallint DEFAULT NULL, -- '难易等级'
   bConfirm smallint DEFAULT NULL, -- '是否确认'
-  remark varchar(128) DEFAULT NULL -- '备注'
+  remark varchar(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL 
 );
 
 -- 龙泉异体字表，继承于汉字集

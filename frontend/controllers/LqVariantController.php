@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\LqVariant;
 use common\models\search\LqVariantSearch;
+use common\models\HanziSet;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -27,6 +28,40 @@ class LqVariantController extends Controller
                 ],
             ],
         ];
+    }
+
+    /**
+     * Import LqVariants from lq-variant-check.
+     * @return mixed
+     */
+    public function actionImport()
+    {
+        $lastImportTime = Yii::$app->get('keyStorage')->get('frontend.last-lq-variant-import-time', null, false);
+        $models = \common\models\LqVariantCheck::find()->where(['bconfirm' => 1])->andwhere(['>=', 'updated_at', $lastImportTime])->orderBy('id')->all();
+
+        $curImportTime = $lastImportTime;
+        $sqls = [];
+        foreach ($models as $model) {
+            $source = HanziSet::SOURCE_OTHER;
+            if (stripos($model->pic_name, "TW-") !== false) {
+                $source = HanziSet::SOURCE_TAIWAN;
+            } elseif (stripos($model->pic_name, "GL-") !== false) {
+                $source = HanziSet::SOURCE_GAOLI;
+            } 
+            $time = time();
+            $sqls[] = "INSERT INTO lq_variant(source, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ($model->source, '$model->variant_code2', '$model->belong_standard_word_code2', $model->nor_var_type2, $time, $time);";
+
+            if ($curImportTime < $model->updated_at) {
+                $curImportTime = $model->updated_at;
+            }
+        }
+
+        $contents = implode("\r\n", $sqls);
+        file_put_contents('d:\Inbox\import-lq-variant-'.date('Y-m-d-H-i-s', time()).'.txt', $contents);
+
+        Yii::$app->get('keyStorage')->set('frontend.last-lq-variant-import-time', $curImportTime);
+        echo 'success!';
+        die;
     }
 
     /**
