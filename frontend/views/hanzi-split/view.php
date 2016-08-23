@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'id',
             [
                 'attribute' => 'source',
-                'value' =>  empty($model->source) ? '' : HanziSplit::sources()[$model->source],
+                'value' =>  empty($model->source) ? '' : \common\models\HanziSet::sources()[$model->source],
             ],
             'word',
             [
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'nor_var_type',
-                'value' => empty($model->nor_var_type) ? '' : HanziSplit::norVarTypes()[$model->nor_var_type],
+                'value' => empty($model->nor_var_type) ? '' : \common\models\HanziSet::norVarTypes()[$model->nor_var_type],
             ],
             'standard_word',
             'position_code',
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'structure',
             // [
             //     'attribute' => 'hard10',
-            //     'value' => empty($model->hard10) ? '' : HanziSplit::hards()[$model->hard10],
+            //     'value' => empty($model->hard10) ? '' : HanziSet::hards()[$model->hard10],
             // ],
             // 'initial_split11',
             // 'initial_split12',
@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'similar_stock10',
             // [
             //     'attribute' => 'hard20',
-            //     'value' => empty($model->hard20) ? '' : HanziSplit::hards()[$model->hard20],
+            //     'value' => empty($model->hard20) ? '' : HanziSet::hards()[$model->hard20],
             // ],
             // 'initial_split21',
             // 'initial_split22',
@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'similar_stock20',
             // [
             //     'attribute' => 'hard30',
-            //     'value' => empty($model->hard30) ? '' : HanziSplit::hards()[$model->hard30],
+            //     'value' => empty($model->hard30) ? '' : HanziSet::hards()[$model->hard30],
             // ],
             // 'initial_split31',
             // 'initial_split32',

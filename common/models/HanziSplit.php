@@ -42,22 +42,9 @@ use yii\behaviors\TimestampBehavior;
  */
 class HanziSplit extends \yii\db\ActiveRecord
 {
-    const SOURCE_UNICODE = 1;
-    const SOURCE_TAIWAN = 2;
-    const SOURCE_HANYU = 3;
-    const SOURCE_GAOLI = 4;
-
     const TYPE_WORD = 1;
     const TYPE_PICTURE = 2;
     const TYPE_WORD_PICTURE = 3; 
-
-    const TYPE_NORMAL_PURE = 0; # 纯正字
-    const TYPE_VARIANT_NARROW = 1; # 狭义异体字
-    const TYPE_NORMAL_WIDE = 2;  # 广义且正字
-    const TYPE_VARIANT_WIDE = 3;    # 广义非正字
-
-    const HARD_TRUE = 1;
-    const HARD_FALSE = 0;
 
     /**
      * @inheritdoc
@@ -184,20 +171,6 @@ class HanziSplit extends \yii\db\ActiveRecord
      * Returns user statuses list
      * @return array|mixed
      */
-    public static function norVarTypes()
-    {
-        return [
-            self::TYPE_NORMAL_PURE => Yii::t('common', '纯正字'),
-            self::TYPE_VARIANT_NARROW => Yii::t('common', '狭义异体字'),
-            self::TYPE_NORMAL_WIDE => Yii::t('common', '广义且正字'),
-            self::TYPE_VARIANT_WIDE => Yii::t('common', '广义非正字')
-        ];
-    }
-
-    /**
-     * Returns user statuses list
-     * @return array|mixed
-     */
     public static function types()
     {
         return [
@@ -207,30 +180,4 @@ class HanziSplit extends \yii\db\ActiveRecord
         ];
     }
 
-
-    /**
-     * Returns user statuses list
-     * @return array|mixed
-     */
-    public static function sources()
-    {
-        return [
-            self::SOURCE_UNICODE => Yii::t('common', 'Unicode'),
-            self::SOURCE_TAIWAN => Yii::t('common', '台湾异体字'),
-            self::SOURCE_HANYU => Yii::t('common', '汉语大字典'),
-            self::SOURCE_GAOLI => Yii::t('common', '高丽异体字')
-        ];
-    }
-
-    /**
-     * Returns user statuses list
-     * @return array|mixed
-     */
-    public static function hards()
-    {
-        return [
-            self::HARD_TRUE => Yii::t('common', '是'),
-            self::HARD_FALSE => Yii::t('common', '否'),
-        ];
-    }
 }

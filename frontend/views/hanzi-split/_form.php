@@ -17,7 +17,7 @@ use common\models\HanziSplit;
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?php echo $form->field($model, 'source')->dropDownList(HanziSplit::sources(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'source')->dropDownList(\common\models\HanziSet::sources(), ['prompt' => '']) ?>
 
     <?php echo $form->field($model, 'hanzi_type')->dropDownList(HanziSplit::types(), ['prompt' => '']) ?>
 
@@ -25,7 +25,7 @@ use common\models\HanziSplit;
 
     <?php echo $form->field($model, 'picture')->textInput(['maxlength' => true]) ?>
 
-    <?php echo $form->field($model, 'nor_var_type')->dropDownList(HanziSplit::norVarTypes(), ['prompt' => '']) ?>
+    <?php echo $form->field($model, 'nor_var_type')->dropDownList(\common\models\HanziSet::norVarTypes(), ['prompt' => '']) ?>
 
     <?php echo $form->field($model, 'standard_word')->textInput(['maxlength' => true]) ?>
 

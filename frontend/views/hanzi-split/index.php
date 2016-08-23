@@ -1,6 +1,7 @@
 <?php
 
 use common\models\HanziSplit;
+use common\models\HanziSet;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -45,9 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '', # 取消排序
                 'attribute'=>'source',
                 'value'=>function ($model) {
-                    return empty($model->source) ? null: HanziSplit::sources()[$model->source];
+                    return empty($model->source) ? null: \common\models\HanziSet::sources()[$model->source];
                 },
-                'filter'=>HanziSplit::sources(),
+                'filter'=>\common\models\HanziSet::sources(),
             ],
             [
                 'header' => '', # 取消排序
@@ -65,9 +66,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '', # 取消排序
                 'attribute'=>'hard10',
                 'value'=>function ($model) {
-                    return empty($model->hard10) ? null:  \common\models\HanziSplit::hards()[$model->hard10];
+                    return empty($model->hard10) ? null:  HanziSet::hards()[$model->hard10];
                 },
-                'filter'=>HanziSplit::hards()
+                'filter'=>HanziSet::hards()
             ],
             [
                 'header' => '', # 取消排序
