@@ -7,7 +7,7 @@ use yii\bootstrap\ActiveForm;
 use common\models\HanziHyyt;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\HanziHyytSearch */
+/* @var $searchModel common\models\search\HanziHyytSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', 'Hanzi Hyyts');

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\HanziSearch */
+/* @var $searchModel common\models\search\HanziSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', '拆字');

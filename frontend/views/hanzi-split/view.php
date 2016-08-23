@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <!-- <div id="commentWrap"  class="col-lg-10"></div> -->
-<!-- <?php
+<?php
 $username = Yii::$app->user->identity['username'];
 $script = <<<SCRIPT
     new Comment({
@@ -99,4 +99,3 @@ $script = <<<SCRIPT
     })
 SCRIPT;
 $this->registerJs($script, \yii\web\View::POS_END);
- -->

@@ -6,7 +6,7 @@ use yii\grid\GridView;
 use common\models\ScoreExchange;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\ScoreExchangeSearch */
+/* @var $searchModel common\models\search\ScoreExchangeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('frontend', 'Score Exchanges');

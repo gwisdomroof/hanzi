@@ -2,9 +2,9 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\models\User;
-use common\models\UserSearch;
+use common\models\search\UserSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

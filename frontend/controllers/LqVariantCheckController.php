@@ -2,9 +2,9 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\models\LqVariantCheck;
-use common\models\LqVariantCheckSearch;
+use common\models\search\LqVariantCheckSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

@@ -6,7 +6,7 @@ use common\models\HanziUserTask;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\HanziUserTaskSearch */
+/* @var $searchModel common\models\search\HanziUserTaskSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
