@@ -26,14 +26,15 @@ class LqVariantSearch extends LqVariant
         if (empty($param)) {
             return [];
         }
-        $normals = '';
+        $normals = $param;  # param对应正字，包括param本身
         $models = LqVariant::find()->orderBy('id')->where(['or', ['word' => $param], ['pic_name' => $param]])->all();
         foreach ($models as $model) {
             $normals .= str_replace(';', '', $model->belong_standard_word_code);
         }
         # 根据正字查异体字
         $data = [];
-        $variants = LqVariant::find()->where(['~', 'belong_standard_word_code', "[$normals.$param]"])->orderBy('belong_standard_word_code')->all();
+        $variants = LqVariant::find()->where(['~', 'belong_standard_word_code', "[$normals]"])
+            ->orderBy(['nor_var_type'=>SORT_ASC, 'belong_standard_word_code'=>SORT_ASC])->all();
         foreach ($variants as $variant) {
             $standardWords = explode(';', $variant->belong_standard_word_code);
             foreach ($standardWords as $standardWord) {
