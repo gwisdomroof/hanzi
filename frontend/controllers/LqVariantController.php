@@ -37,7 +37,7 @@ class LqVariantController extends Controller
     public function actionImport()
     {
         $lastImportTime = Yii::$app->get('keyStorage')->get('frontend.last-lq-variant-import-time', null, false);
-        $models = \common\models\LqVariantCheck::find()->where(['bconfirm' => 1])->andwhere(['>=', 'updated_at', $lastImportTime])->orderBy('id')->all();
+        $models = \common\models\LqVariantCheck::find()->where(['bconfirm' => 1])->andwhere(['>', 'updated_at', $lastImportTime])->orderBy('id')->all();
 
         $curImportTime = $lastImportTime;
         $sqls = [];
