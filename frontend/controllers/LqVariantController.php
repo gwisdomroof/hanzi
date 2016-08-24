@@ -47,9 +47,11 @@ class LqVariantController extends Controller
                 $source = HanziSet::SOURCE_TAIWAN;
             } elseif (stripos($model->pic_name, "GL-") !== false) {
                 $source = HanziSet::SOURCE_GAOLI;
-            } 
+            }
+            $word = mb_strlen($model->variant_code2) == 1 ? $model->variant_code2 : null;
+            $pic_name = mb_strlen($model->variant_code2) == 1 ? null : $model->variant_code2;
             $time = time();
-            $sqls[] = "INSERT INTO lq_variant(source, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ($model->source, '$model->variant_code2', '$model->belong_standard_word_code2', $model->nor_var_type2, $time, $time);";
+            $sqls[] = "INSERT INTO lq_variant(source, word, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ($source, '$word', '$pic_name', '$model->belong_standard_word_code2', $model->nor_var_type2, $time, $time);";
 
             if ($curImportTime < $model->updated_at) {
                 $curImportTime = $model->updated_at;

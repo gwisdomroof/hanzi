@@ -4,8 +4,7 @@ namespace frontend\controllers;
 
 use common\models\HanziSet;
 use common\models\search\HanziSetSearch;
-use common\models\LqVariant;
-use common\models\search\LqVariantSetSearch;
+use common\models\search\LqVariantSearch;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -43,20 +42,19 @@ class HanziDictController extends Controller
         $param = trim(Yii::$app->request->get('param'));
         $hanziSearch = new HanziSetSearch();
         $hanziSearch->param = $param;
-//        $lqVariantSearch = new LqVariantSearch();
-//        $lqVariantSearch->param = $param;
+        $lqVariantSearch = new LqVariantSearch();
+        $lqVariantSearch->param = $param;
         $hanziSet = [];
-//        $lqVariants = [];
-//        if ($hanziSearch->validate()&& $lqVariantSearch->validate()) {
-        if ($hanziSearch->validate()) {
+        $lqVariants = [];
+        if ($hanziSearch->validate() && $lqVariantSearch->validate()) {
             $hanziSet = $hanziSearch->vsearch();
-//            $lqVariants = $LqVariantSearch->ySearch($hanziSearch->param);
+            $lqVariants = $lqVariantSearch->vsearch();
         }
-        
+
         return $this->render('search', [
             'hanziSearch' => $hanziSearch,
             'hanziSet' => $hanziSet,
-            // 'lqVariants' => $lqVariants,
+            'lqVariants' => $lqVariants,
             'param' => $param,
         ]);
     }
@@ -90,17 +88,17 @@ class HanziDictController extends Controller
 
     /**
      * 异体字综合信息页面
-     * @param  
+     * @param
      * $param 当前检索参数
      * $a 当前活动tab
      * @return mixed
      */
-    public function actionVariant($param, $a='tw')
+    public function actionVariant($param, $a = 'tw')
     {
         $models = HanziSet::find()->orderBy(['source' => SORT_ASC, 'id' => SORT_ASC])
             ->andFilterWhere(['or',
-            ['word' => trim($param)],
-            ['pic_name' => trim($param)]])
+                ['word' => trim($param)],
+                ['pic_name' => trim($param)]])
             ->all();
 
         // 概要信息
@@ -113,19 +111,19 @@ class HanziDictController extends Controller
                     # 所属正字
                     $standardWord = $model->belong_standard_word_code;
                     if ($model->nor_var_type == HanziSet::TYPE_NORMAL_WIDE) {
-                        $standardWord =empty($model->word) ? $standardWord : $model->word . ';' . $standardWord;
+                        $standardWord = empty($model->word) ? $standardWord : $model->word . ';' . $standardWord;
                     }
                     # 原始位置
                     $position = '';
-                    $posArr = explode(';', $model->position_code.';'.$model->standard_word_code);
+                    $posArr = explode(';', $model->position_code . ';' . $model->standard_word_code);
                     $posArr = array_unique($posArr);
                     foreach ($posArr as $item) {
                         $item = ltrim($item, "#");
-                        $position .= "<a class='tw' target='_blank' href='".$model->getOriginUrl($item)."' >$item</a>&nbsp;";
+                        $position .= "<a class='tw' target='_blank' href='" . $model->getOriginUrl($item) . "' >$item</a>&nbsp;";
                     }
-                    $summary[$model->id]['position']= $position;
-                    $summary[$model->id]['standardWord']= $standardWord;
-                    $summary[$model->id]['remark']= HanziSet::norVarTypes(false)[$model->nor_var_type];
+                    $summary[$model->id]['position'] = $position;
+                    $summary[$model->id]['standardWord'] = $standardWord;
+                    $summary[$model->id]['remark'] = HanziSet::norVarTypes(false)[$model->nor_var_type];
                     if (empty($zitouArr)) {
                         $zitouArr['source'] = HanziSet::SOURCE_TAIWAN;
                         $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
@@ -135,9 +133,9 @@ class HanziDictController extends Controller
                 case HanziSet::SOURCE_HANYU:
                     $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
                     $summary[$model->id]['position'] = "<a class='hy' href='#' >$model->position_code</a>";
-                    $summary[$model->id]['standardWord']= '';
+                    $summary[$model->id]['standardWord'] = '';
                     $posArr = explode('-', $model->position_code);
-                    $summary[$model->id]['remark']= '第' . $posArr[1] . '页 第' . $posArr[2] . '字';
+                    $summary[$model->id]['remark'] = '第' . $posArr[1] . '页 第' . $posArr[2] . '字';
                     if (empty($zitouArr)) {
                         $zitouArr['source'] = HanziSet::SOURCE_HANYU;
                         $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
@@ -147,9 +145,9 @@ class HanziDictController extends Controller
 
                 case HanziSet::SOURCE_GAOLI:
                     $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
-                    $summary[$model->id]['position']= "<a class='gl' target='_blank' href='".$model->getOriginUrl($model->belong_standard_word_code)."'>$model->belong_standard_word_code</a>";
+                    $summary[$model->id]['position'] = "<a class='gl' target='_blank' href='" . $model->getOriginUrl($model->belong_standard_word_code) . "'>$model->belong_standard_word_code</a>";
                     $summary[$model->id]['standardWord'] = "$model->belong_standard_word_code";
-                    $summary[$model->id]['remark']= '';
+                    $summary[$model->id]['remark'] = '';
                     if (empty($zitouArr)) {
                         $zitouArr['source'] = HanziSet::SOURCE_GAOLI;
                         $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
@@ -158,9 +156,9 @@ class HanziDictController extends Controller
 
                 case HanziSet::SOURCE_DUNHUANG:
                     $summary[$model->id]['source'] = HanziSet::sources()[$model->source];
-                    $summary[$model->id]['position']= "<a class='dh' href='#'>$model->position_code</a>";
+                    $summary[$model->id]['position'] = "<a class='dh' href='#'>$model->position_code</a>";
                     $summary[$model->id]['standardWord'] = empty($model->word) ? $model->pic_name : $model->word;
-                    $summary[$model->id]['remark']= "第".$model->position_code."页";
+                    $summary[$model->id]['remark'] = "第" . $model->position_code . "页";
                     if (empty($zitouArr)) {
                         $zitouArr['source'] = HanziSet::SOURCE_DUNHUANG;
                         $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
@@ -177,7 +175,7 @@ class HanziDictController extends Controller
         $data = [];
         $index = 1;
         $active = 1;
-        $sourceMap = ['tw'=>HanziSet::SOURCE_TAIWAN, 'hy'=>HanziSet::SOURCE_HANYU, 'gl'=>HanziSet::SOURCE_GAOLI, 'dh'=>HanziSet::SOURCE_DUNHUANG];
+        $sourceMap = ['tw' => HanziSet::SOURCE_TAIWAN, 'hy' => HanziSet::SOURCE_HANYU, 'gl' => HanziSet::SOURCE_GAOLI, 'dh' => HanziSet::SOURCE_DUNHUANG];
         $activeSource = $sourceMap[$a];
         foreach ($models as $model) {
             foreach ($model->getUrl() as $key => $url) {
@@ -210,7 +208,7 @@ class HanziDictController extends Controller
         $this->layout = '_clear';
 
         $maxPage = 5127;
-        $page =  str_pad($param, 4, '0', STR_PAD_LEFT);
+        $page = str_pad($param, 4, '0', STR_PAD_LEFT);
         return $this->render('hanyu', [
             'url' => "/img/hydzd/$page.png",
             'maxPage' => $maxPage,
@@ -225,10 +223,10 @@ class HanziDictController extends Controller
     public function actionDunhuang($param)
     {
         $this->layout = '_clear';
-        
+
         $offset = 91;
         $param = trim($param) + 91;
-        $page =  str_pad($param, 3, '0', STR_PAD_LEFT);
+        $page = str_pad($param, 3, '0', STR_PAD_LEFT);
         $maxPage = 680;
         return $this->render('dunhuang', [
             'url' => "/img/dhszd/$page.png",
@@ -254,7 +252,7 @@ class HanziDictController extends Controller
             $anchor = '#bm_' . implode($positionArr, '-');
         }
 
-        $base = '/yitizi/';           
+        $base = '/yitizi/';
         $up = "";
         $down = "";
         $right = "";
@@ -275,7 +273,7 @@ class HanziDictController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         $headers = Yii::$app->response->headers;
         $headers->add('Content-Type', 'text/html; charset=big5');
-        
+
         return $this->render('taiwan', [
             'title' => $normal,
             'up' => $up,
@@ -297,9 +295,9 @@ class HanziDictController extends Controller
 
         // 查param对应的正字
         $normals = HanziSet::find()->select('belong_standard_word_code')->where(['source' => HanziSet::SOURCE_GAOLI])->andWhere(['or',
-                ['word' => trim($param)],
-                ['pic_name' => trim($param)]
-            ])->asArray()->all();
+            ['word' => trim($param)],
+            ['pic_name' => trim($param)]
+        ])->asArray()->all();
 
         // 查正字对应的所有异体字
         $models = HanziSet::find()->where(['source' => HanziSet::SOURCE_GAOLI, 'nor_var_type' => 1])

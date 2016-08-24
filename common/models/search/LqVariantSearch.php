@@ -12,6 +12,38 @@ use common\models\LqVariant;
  */
 class LqVariantSearch extends LqVariant
 {
+    public $param;  # 异体字检索，查询参数
+
+    /**
+     * 正字查异体字
+     *
+     * @return array
+     */
+    public function vsearch()
+    {
+        # 查param对应的正字
+        $param = trim($this->param);
+        if (empty($param)) {
+            return [];
+        }
+        $normals = '';
+        $models = LqVariant::find()->orderBy('id')->where(['or', ['word' => $param], ['pic_name' => $param]])->all();
+        foreach ($models as $model) {
+            $normals .= str_replace(';', '', $model->belong_standard_word_code);
+        }
+        # 根据正字查异体字
+        $data = [];
+        $variants = LqVariant::find()->where(['~', 'belong_standard_word_code', "[$normals.$param]"])->orderBy('belong_standard_word_code')->all();
+        foreach ($variants as $variant) {
+            $standardWords = explode(';', $variant->belong_standard_word_code);
+            foreach ($standardWords as $standardWord) {
+                if (strpos($normals, $standardWord) !== false)
+                    $data[$standardWord][] = $variant;
+            }
+        }
+        return $data;
+    }
+
     /**
      * @inheritdoc
      */

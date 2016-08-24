@@ -25,22 +25,22 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', '异体字检索
             'enableClientValidation' => false
         ]); ?>
 
-        <?= $form->field($hanziSearch, 'param', ['template' => "{input}\n{hint}\n{error}", 'options' => ['class' => 'col-sm-4']])->textInput(['maxlength' => true, 'placeholder' => "请输入文字或图片字编号…"]) ?> 
+        <?= $form->field($hanziSearch, 'param', ['template' => "{input}\n{hint}\n{error}", 'options' => ['class' => 'col-sm-4']])->textInput(['maxlength' => true, 'placeholder' => "请输入文字或图片字编号…"]) ?>
 
-        <?= Html::submitButton('检索', ['class' => 'btn btn-primary']) ?> 
+        <?= Html::submitButton('检索', ['class' => 'btn btn-primary']) ?>
 
-        <?php ActiveForm::end(); ?>  
+        <?php ActiveForm::end(); ?>
 
         <br/>
 
         <div class="search-result">
-        <?php echo $this->render('_search', [
+            <?php echo $this->render('_search', [
                 'hanziSearch' => $hanziSearch,
                 'hanziSet' => $hanziSet,
-                // 'lqVariants' => $lqVariants,
+                'lqVariants' => $lqVariants,
                 'param' => $hanziSearch->param
             ]);
-        ?>
+            ?>
         </div>
 
     </div>

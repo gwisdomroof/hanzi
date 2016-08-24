@@ -43,7 +43,7 @@ class HanziSetSearch extends HanziSet
         if (preg_match($regUni, $param, $matches) || preg_match($regTw, $param, $matches) || preg_match($regHy, $param, $matches) || preg_match($regGl, $param, $matches)) {
             // 检索正字
             $search = $matches[0];
-            $models = HanziSet::find()->orderBy('id')->orwhere(['word' => $search])->orwhere(['pic_name' => $search])->all();
+            $models = HanziSet::find()->orderBy('id')->where(['word' => $search])->orWhere(['pic_name' => $search])->all();
             foreach ($models as $model) {
                 switch ($model->source) {
                     case HanziSet::SOURCE_TAIWAN:
