@@ -52,9 +52,11 @@ class HanziSet extends \yii\db\ActiveRecord
     const TYPE_NORMAL_PURE = 0; # 纯正字
     const TYPE_VARIANT_NARROW = 1; # 狭义异体字
     const TYPE_NORMAL_WIDE = 2;  # 广义且正字
-    const TYPE_VARIANT_WIDE = 3;    # 广义非正字
+    const TYPE_VARIANT_WIDE = 3;    # 广义异体字
     const TYPE_VARIANT_NORMAL = 4;    # 狭义且正字
-
+    const TYPE_SPECIAL_VARIANT = 5;    # 特定异体字
+    const TYPE_SPECIAL_NORMAL = 6;    # 特定且正字
+    #
     // 是否难字
     const HARD_TRUE = 1;
     const HARD_FALSE = 0;
@@ -76,8 +78,8 @@ class HanziSet extends \yii\db\ActiveRecord
         if ($this->source == self::SOURCE_TAIWAN) {
             $type = strtolower(substr($position, 0, 1)); 
             $fuluzi = json_decode(Yii::$app->get('keyStorage')->get('frontend.tw-fuluzi', null, false));
+            $position0 = explode('-', $position)[0];
             if (!in_array($position, $fuluzi)) {    # 附录字
-                $position0 = explode('-', $position)[0];
                 return "http://dict.variants.moe.edu.tw/yiti".$type."/fr".$type."/fr".$position0.".htm";
             } else {
                 return "http://dict.variants.moe.edu.tw/yiti".$type."/ur".$type."/ur".$position0.".htm";
@@ -117,21 +119,21 @@ class HanziSet extends \yii\db\ActiveRecord
             $positions = explode(';', $positions);
             foreach ($positions as $position) {
                 $position = ltrim($position, "#");
-                $urls[$position] = Url::toRoute(['/hanzi-set/taiwan', 'param' => $position]);
+                $urls[$position] = Url::toRoute(['/hanzi-dict/taiwan', 'param' => $position]);
             }
 
         } elseif($this->source == self::SOURCE_HANYU) {
             $position = $this->position_code;
             $page = explode('-', $position)[1];
             $page =  str_pad($page, 4, '0', STR_PAD_LEFT);
-            $urls[$position] = Url::toRoute(['/hanzi-set/hanyu', 'param' => $page]);
+            $urls[$position] = Url::toRoute(['/hanzi-dict/hanyu', 'param' => $page]);
 
         } elseif($this->source == self::SOURCE_GAOLI) {
             $position = $this->belong_standard_word_code;
-            $urls[$position] = Url::toRoute(['/hanzi-set/gaoli', 'param' => $this->belong_standard_word_code]);
+            $urls[$position] = Url::toRoute(['/hanzi-dict/gaoli', 'param' => $this->belong_standard_word_code]);
         } elseif($this->source == self::SOURCE_DUNHUANG) {
             $position = (int)$this->position_code;
-            $urls[$position] = Url::toRoute(['/hanzi-set/dunhuang', 'param' => $position]);
+            $urls[$position] = Url::toRoute(['/hanzi-dict/dunhuang', 'param' => $position]);
             
         } 
         return $urls;
@@ -246,7 +248,9 @@ class HanziSet extends \yii\db\ActiveRecord
                 self::TYPE_VARIANT_NARROW => Yii::t('frontend', '狭义异体字'),
                 self::TYPE_VARIANT_NORMAL => Yii::t('frontend', '狭义且正字'),
                 self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
-                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义且正字')
+                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义且正字'),
+                self::TYPE_SPECIAL_VARIANT => Yii::t('frontend', '特定异体字'),
+                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字')
             ];
         } else {
             return [
@@ -254,7 +258,9 @@ class HanziSet extends \yii\db\ActiveRecord
                 self::TYPE_VARIANT_NARROW => Yii::t('frontend', '狭义异体字'),
                 self::TYPE_VARIANT_NORMAL => Yii::t('frontend', '狭义异体字兼正字'),
                 self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
-                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义异体字兼正字')
+                self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义异体字兼正字'),
+                self::TYPE_SPECIAL_VARIANT => Yii::t('frontend', '特定异体字'),
+                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字')
             ];
         }
     }

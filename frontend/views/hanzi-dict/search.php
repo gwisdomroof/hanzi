@@ -34,10 +34,11 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', '异体字检索
         <br/>
 
         <div class="search-result">
-        <?php echo $this->render('_searchVariant', [
+        <?php echo $this->render('_search', [
                 'hanziSearch' => $hanziSearch,
-                'data' => $data,
-                'param' => $param,
+                'hanziSet' => $hanziSet,
+                // 'lqVariants' => $lqVariants,
+                'param' => $hanziSearch->param
             ]);
         ?>
         </div>

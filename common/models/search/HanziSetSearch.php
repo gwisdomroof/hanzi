@@ -15,57 +15,16 @@ class HanziSetSearch extends HanziSet
     const SEARCH_WORD = 1;   # 查字
     const SEARCH_REVERSE = 2; # 反查内部编码
 
-    public $param;
-    public $mode;
+    public $param;  # 异体字检索，查询参数
 
     /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
-            [['param'], 'trim'],
-            [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark', 'mode'], 'safe'],
-            
-        ];
-    }
-
-    /**
-     * 部件笔画检字法
-     * 可查字，或反查内部编码
+     * 异体字检索，查正异关系
      * @param  [string] $params [检索表达式]
-     * @return [integer]  $default     [缺省检索模式]
+     * @return
      */
-    public function bSearch($params, $mode = self::SEARCH_WORD)
+    public function vsearch()
     {
-        $params = trim($params);
-        if (preg_match("/-w/", $params)) {
-            $mode = self::SEARCH_WORD;
-        } elseif (preg_match("/!/", $params)) {
-            $mode = self::SEARCH_REVERSE;
-        }
-
-        $this->mode = $mode;
-
-        switch ($mode) {
-            case self::SEARCH_WORD:
-              return $this->searchWord($params);
-            case self::SEARCH_REVERSE:
-              return $this->searchReverse($params);
-            default:
-              return false;
-        }
-    }
-
-    /**
-     * 查正异关系
-     * @param  [string] $params [检索表达式]
-     * @return 
-     */
-    public function ySearch($param)
-    {
-        $param = trim($param);
+        $param = trim($this->param);
 
         // unicode(basic, a, b, c, d, e, compatiable, gaoali-self-define) format
         $regUni = "/^[\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}\x{E005}-\x{E3D6}]$/u";
@@ -74,7 +33,7 @@ class HanziSetSearch extends HanziSet
         $regTw = "/^[0-9a-z]{4,5}|[ABCN][0-9]{5}(-[0-9]{1,3})?$/";
         $regHy = "/^[0-9]{1,4}n[0-9]{1,2}$/";
         $regGl = "/^[\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}][12]$/u";
-        
+
         $twNormals = '';    # 所属台湾正字
         $glNormals = '';    # 所属高丽正字
         $hyPosition = null;    # 所属汉语大字典位置
@@ -91,7 +50,7 @@ class HanziSetSearch extends HanziSet
                         if ($model->nor_var_type == HanziSet::TYPE_NORMAL_PURE || $model->nor_var_type == HanziSet::TYPE_NORMAL_WIDE) {
                             $twNormals .= $model->word;
                         }
-                        $twNormals .= str_replace([';','#'], '', $model->belong_standard_word_code);
+                        $twNormals .= str_replace([';', '#'], '', $model->belong_standard_word_code);
                         break;
                     case HanziSet::SOURCE_GAOLI:
                         $glNormals .= str_replace(';', '', $model->belong_standard_word_code);
@@ -106,24 +65,24 @@ class HanziSetSearch extends HanziSet
             }
 
             // 查询异体字
-            $query = HanziSet::find()->orderBy(['nor_var_type'=>SORT_ASC, 'id'=>SORT_ASC]);
+            $query = HanziSet::find()->orderBy(['nor_var_type' => SORT_ASC, 'id' => SORT_ASC]);
             if (!empty($twNormals)) {
                 $query->orFilterWhere(["and",
                     ["~", "belong_standard_word_code", "[$twNormals]|$search"],
                     ["!=", "nor_var_type", 0],
                     ["=", "source", HanziSet::SOURCE_TAIWAN]
-                    ]); 
+                ]);
             }
             if (!empty($glNormals)) {
                 $query->orFilterWhere(["and",
                     ["~", "belong_standard_word_code", "[$glNormals]|$search"],
                     ["!=", "nor_var_type", 0],
                     ["=", "source", HanziSet::SOURCE_GAOLI]
-                    ]); 
+                ]);
             }
-            
+
             if (empty($glNormals) && empty($twNormals)) {
-                $query->andWhere("0=1"); 
+                $query->andWhere("0=1");
             }
             // echo $query->createCommand()->getRawSql(); die;
             $variants = $query->all();
@@ -150,12 +109,13 @@ class HanziSetSearch extends HanziSet
     }
 
     /**
-     * 反向查找文字的内码
+     * 反向查找汉字对应的内部拆分序列
      * @param  [type] $params [description]
      * @return [type]         [description]
      */
-    public function searchReverse($params)
+    public function rsearch()
     {
+
         // unicode(basic, a, b, c, d, e, compatiable) format
         $regUni = "/^\!([\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}])$/u";
 
@@ -164,6 +124,7 @@ class HanziSetSearch extends HanziSet
         $regHy = "/^\!([0-9]{1,4}n[0-9]{1,2})$/";
         $regGl = "/^\!([\x{4E00}-\x{9FD5}\x{3400}-\x{4DB5}\x{20000}-\x{2A6D6}\x{2A700}-\x{2B734}\x{2B740}-\x{2B81D}\x{2B820}-\x{2CEA1}\x{2F800}-\x{2FA1D}][12])$/u";
 
+        $params = $this->param;
         $search = preg_replace('/\!/', '', $params);
 
         if (preg_match($regUni, $params, $matches)) {
@@ -176,8 +137,12 @@ class HanziSetSearch extends HanziSet
 
     }
 
-
-    public function searchWord($params)
+    /**
+     * 部件笔画检字法查字
+     * @param  [type] $params [description]
+     * @return [type]         [description]
+     */
+    public function wsearch()
     {
         $sqlParam = '';
         $minStockNum = null;
@@ -186,11 +151,13 @@ class HanziSetSearch extends HanziSet
         $ids = '';  # IDS 序列
         $stocks = ''; # IDS 部件集
         $similarStock = []; # 相似部件集
-        
+
+        $params = $this->param;
+
         # 计算表示范围的剩余笔画
         $params = str_replace("，", ",", $params);
         preg_match_all('/(\d+)\s*,\s*(\d+)/', $params, $nums);
-        if(!empty($nums[0])) {
+        if (!empty($nums[0])) {
             $minStockNum = (int)$nums[1][0];
             $maxStockNum = (int)$nums[2][0];
             $params = preg_replace('/(\d+)\s*,\s*(\d+)/', '', $params);
@@ -206,43 +173,44 @@ class HanziSetSearch extends HanziSet
         # IDS 和 相似部件
         $components = preg_split('//u', $params, -1, PREG_SPLIT_NO_EMPTY);
 
-        for ($i=0; $i < count($components); $i++) {
-            if('~' == $components[$i]) {
+        for ($i = 0; $i < count($components); $i++) {
+            if ('~' == $components[$i]) {
                 $similarStock[] .= $components[++$i];
             } else {
                 $str = mb_ereg_replace("[①-⑳，？⿰-⿻0-9a-zA-Z]", "", $components[$i]);
-                if(mb_strlen($str) == 0) {
+                if (mb_strlen($str) == 0) {
                     $ids .= $components[$i];
                 } else {
-                    $ids .= $components[$i].".*";
+                    $ids .= $components[$i] . ".*";
                     $stocks .= ",'$components[$i]'";
                 }
             }
         }
 
-        // echo $stockNum.'|'.$minStockNum.'|'.$maxStockNum.'<br/>';
-        // echo $stocks. '|' .$ids.'|'.$similarStock.'<br/>';
+//        echo $minStockNum . '|' . $maxStockNum . '<br/>';
+//        echo $stocks . '|' . $ids . '|' . $similarStock . '<br/>';
 
         # 笔画数
-        if($minStockNum !== null || $maxStockNum !== null || $restStockNum !== null) {
+        if ($minStockNum !== null || $maxStockNum !== null || $restStockNum !== null) {
             # 查询各部件笔画，累加得到部件总笔画
             if (!empty($stocks)) {
-                $stockNumRows = HanziSet::find()->where("word in (" . substr($stocks, 1). ")" )->all();
+                $stockNumRows = HanziSet::find()->where(['source' => HanziSet::SOURCE_UNICODE])->andWhere("word in (" . substr($stocks, 1) . ")")->all();
                 foreach ($stockNumRows as $item) {
-                        $restStockNum += $item->stocks;
+                    echo $item->stocks.'<br/>';
+                    $restStockNum += (int)$item->stocks;
                 }
             }
 
             # 计算总的剩余笔画范围
             $minStockNum += $restStockNum;
             $maxStockNum += $restStockNum;
-            
-            if($minStockNum == $maxStockNum) {
+
+            if ($minStockNum == $maxStockNum) {
                 $sqlParam .= "stocks = $minStockNum ";
             } else {
                 $sqlParam .= "stocks >= $minStockNum AND stocks <= $maxStockNum ";
             }
-        } 
+        }
 
         # 相似部件
         if (!empty($similarStock)) {
@@ -252,7 +220,7 @@ class HanziSetSearch extends HanziSet
         }
 
         # IDS
-        if($ids != '') {
+        if ($ids != '') {
             $sqlParam .= $sqlParam == '' ? "mix_split ~ '$ids'" : " AND mix_split ~ '$ids'";
         }
 
@@ -263,6 +231,19 @@ class HanziSetSearch extends HanziSet
 
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['param'], 'trim'],
+            // [['param'], 'string', 'max' => 1],
+            [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
+
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -287,7 +268,7 @@ class HanziSetSearch extends HanziSet
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
         ]);
 
         if (!($this->load($params) && $this->validate())) {
@@ -327,5 +308,5 @@ class HanziSetSearch extends HanziSet
 
         return $dataProvider;
     }
-    
+
 }

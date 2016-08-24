@@ -56,7 +56,7 @@ use yii\helpers\Url;
 
 <?php 
 if (!empty($param)) {
-    if (empty($data)) {
+    if (empty($hanziSet)) {
         echo "<div style='color:#808080; margin-left: 10px; font-style: italic;' class='summary'>查询结果为空。</div>";
     } else {
        echo '<hr/>';  
@@ -64,17 +64,18 @@ if (!empty($param)) {
 } ?>
 
 <div class="search-result">
-    <?php if (!empty($data[HanziSet::SOURCE_TAIWAN])) : ?>
+
+    <?php if (!empty($hanziSet[HanziSet::SOURCE_TAIWAN])) : ?>
     <div class="dic-title">台灣異體字字典：</div>
-    <?php foreach ($data[HanziSet::SOURCE_TAIWAN] as $normal => $variants) {
+    <?php foreach ($hanziSet[HanziSet::SOURCE_TAIWAN] as $normal => $variants) {
         $class = ($param == $normal)? 'param': '';
-        echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-set/variant', 'param' => $normal]) ."'>【<span class=$class>". $normal . "</span>】</a></div>";
+        echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $normal]) ."'>【<span class=$class>". $normal . "</span>】</a></div>";
         echo "<div class='hanzi-variants'>";
         foreach ($variants as $variant) {
             if (!empty($variant->word)) {
                 $title = empty($variant->nor_var_type)? '' : HanziSet::norVarTypes()[$variant->nor_var_type];
                 $class = ($param == $variant->word)? 'param variant'.$variant->nor_var_type : 'variant'.$variant->nor_var_type;
-                echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-set/variant', 'param' => $variant->word]) ."'>". $variant->word . "</a></span>";
+                echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->word]) ."'>". $variant->word . "</a></span>";
             } elseif (!empty($variant->pic_name)) {
                 $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
                 $title = $variant->pic_name;
@@ -82,18 +83,18 @@ if (!empty($param)) {
                     $title = $title . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
                 }
                 $class = ($param == $variant->pic_name)? 'param variant'.$variant->nor_var_type: 'variant'.$variant->nor_var_type;
-                echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-set/variant', 'param' => $variant->pic_name]) ."'>" . "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'></a></span>";
+                echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->pic_name]) ."'>" . "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'></a></span>";
             }
         }
         echo "</div><br/>";
     } ?>
     <?php endif;?>
 
-    <?php if (!empty($data[HanziSet::SOURCE_GAOLI])) : ?>
+    <?php if (!empty($hanziSet[HanziSet::SOURCE_GAOLI])) : ?>
     <div class="dic-title">高麗異體字字典：</div>
-    <?php foreach ($data[HanziSet::SOURCE_GAOLI] as $normal => $variants) {
+    <?php foreach ($hanziSet[HanziSet::SOURCE_GAOLI] as $normal => $variants) {
         $class = ($param == $normal)? 'param': '';
-        echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-set/variant', 'param' => $normal, 'a' => 'gl']) ."'>【<span class=$class >". $normal . "</span>】</a></div>";
+        echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $normal, 'a' => 'gl']) ."'>【<span class=$class >". $normal . "</span>】</a></div>";
         echo "<div class='hanzi-variants'>";
         foreach ($variants as $variant) {
             if (!empty($variant->word)) {
@@ -107,18 +108,18 @@ if (!empty($param)) {
     } ?>
     <?php endif;?>
 
-    <?php if (!empty($data[HanziSet::SOURCE_HANYU])) : ?>
+    <?php if (!empty($hanziSet[HanziSet::SOURCE_HANYU])) : ?>
     <div class="dic-title">漢語大字典：</div>
-    <div><a target="_blank" href=<?=Url::toRoute(['hanzi-set/variant', 'param' => $param, 'a' => 'hy'])?>><?php 
-        $position = explode('-', $data[HanziSet::SOURCE_HANYU]);
+    <div><a target="_blank" href=<?=Url::toRoute(['hanzi-dict/variant', 'param' => $param, 'a' => 'hy'])?>><?php
+        $position = explode('-', $hanziSet[HanziSet::SOURCE_HANYU]);
         echo "第" . $position[1] . "页 第" . $position[2] . "字";
     ?></a></div>
     <?php endif;?>
 
-    <?php if (!empty($data[HanziSet::SOURCE_DUNHUANG])) : ?>
+    <?php if (!empty($hanziSet[HanziSet::SOURCE_DUNHUANG])) : ?>
     <div class="dic-title">敦煌俗字典：</div>
-    <div><a target="_blank" href=<?=Url::toRoute(['hanzi-set/variant', 'param' => $param, 'a' => 'dh'])?>><?php 
-        echo "第" . $data[HanziSet::SOURCE_DUNHUANG] . "页";
+    <div><a target="_blank" href=<?=Url::toRoute(['hanzi-dict/variant', 'param' => $param, 'a' => 'dh'])?>><?php
+        echo "第" . $hanziSet[HanziSet::SOURCE_DUNHUANG] . "页";
     ?></a></div>
     <?php endif;?>
 

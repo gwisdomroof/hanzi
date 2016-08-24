@@ -36,12 +36,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', '部件笔画检
 
         <div class="search-result">
         <?php 
-        $view = '_searchWord';
-        if ($hanziSearch->mode == HanziSetSearch::SEARCH_WORD) {
-            $view = '_searchWord';
-        } elseif ($hanziSearch->mode == HanziSetSearch::SEARCH_REVERSE) {
-            $view = '_searchReverse';
-        }
+        $view = '_'.$mode;
         echo $this->render($view, [
                 'hanziSearch' => $hanziSearch,
                 'data' => $data,
