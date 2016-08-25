@@ -11,98 +11,130 @@ use yii\grid\GridView;
 $this->title = Yii::t('frontend', '异体字审核');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<style type="text/css">
-    .confirm, .modify {
-        cursor: pointer;
-        font-size: 14px;
-    }
-    .hanzi-image {
-        width:40px;
-    }
-    .container {
-        width: 100%;
-    }
-    .normal {
-        color:#337ab7;
-        cursor:pointer;
-    }
-</style>
-
-<div class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
-
-    <table class="table table-hover" >
-        <tr style="background:#f9f9f9; color:#337ab7;"><th>&nbsp;</th><th>图片名</th><th>查字典</th><th width="10%">正字</th><th width="15%">异体字编号</th><th>正异类型</th><th>难易等级</th><th>审核</th><th>操作</th></tr>
-        
-         <?php foreach ($dataProvider->getModels() as $model): ?>
-            <form id=<?="form".$model->id?> >
-            <?php $bNew = $model->isNew(); ?>
-            <tr><td>
-            <?php if (!empty($model->pic_name)) {
-                echo Html::img("/img/FontImage/".$model->belong_standard_word_code1."/$model->pic_name", ['class' => 'hanzi-image']);
-            }?>
-            </td><td>
-            <?php
-                $title = str_replace('.jpg', '', $model->pic_name);
-
-                $value = mb_strlen($title) > 7 ? mb_substr($title, 0, 7, 'UTF-8').'...' : $title;
-                echo "<div title='$title'>$value</div>";
-            ?>
-            </td><td>
-            <?php echo "<div class='normal'>". $model->belong_standard_word_code2 . "</div>";
-            ?>
-            </td><td>
-            <?= Html::activeInput('text', $model, 'belong_standard_word_code2', ['class' => 'form-control', 'id' => 'sw'.$model->id, 'disabled' => !$bNew]); ?>
-            </td><td>
-            <?= Html::activeInput('text', $model, 'variant_code2', ['class' => 'form-control', 'id' => 'vc'.$model->id, 'disabled' => !$bNew]); ?>
-            </td><td>
-            <?= Html::activeDropDownList ($model, 'nor_var_type2', \common\models\HanziSet::norVarTypes(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'nv'.$model->id, 'disabled' => !$bNew] ); ?>
-            </td><td>
-            <?= Html::activeDropDownList ($model, 'level2', \common\models\LqVariantCheck::levels(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'lv'.$model->id, 'disabled' => !$bNew] ); ?>
-             </td><td>
-            <?= Html::activeRadioList ($model, 'bconfirm', [1 => '是', 0 => '否'], ['prompt'=>'', 'alt'=>$model->id, 'class'=>'choose', 'id' => 'bc'.$model->id, 'disabled' => !$bNew] ); ?>
-            </td><td>
-            <?php if($bNew) { 
-                echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
-            } else {
-                echo "<a class='modify' name='" . $model->id . "' >修改</a>";
-            }?>
-            </td><tr>
-
-            </form>
-        <?php endforeach;?>
-    </table>
-
-    <ul class="pagination">
-    <?php
-    $count = 10;
-    $curPage = (int)$dataProvider->pagination->page + 1;
-    $maxPage = $dataProvider->pagination->pageCount;
-    $minPage = $curPage-(int)($count/2) > 1 ? $curPage-(int)($count/2) : 1;
-    $maxPage = $minPage + $count -1 < $maxPage ? $minPage + $count -1 : $maxPage;
-    if ($curPage > 1) {
-        $prePage = $curPage-1;
-        echo "<li class='prev'><a href='/lq-variant-check/index?page=$prePage'>«</a></li>";
-    }
-    for ($i=$minPage; $i <= $maxPage; $i++) { 
-        if ($i == $curPage) {
-            echo "<li class='active'><a href='/lq-variant-check/index?page=$i'>$i</a></li>";
-        } else {
-            echo "<li><a href='/lq-variant-check/index?page=$i'>$i</a></li>";
+    <style type="text/css">
+        .confirm, .modify {
+            cursor: pointer;
+            font-size: 14px;
         }
-    } 
-    if ($curPage < $maxPage) {
-        $nextPage = $curPage+1;
-        echo "<li class='next'><a href='/lq-variant-check/index?page=$nextPage'>»</a></li>";
-    }
-    ?>
-    </ul>
 
-</div>
+        .hanzi-image {
+            width: 40px;
+        }
 
-<div class="lq-variant-search col-sm-4">
-<iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>" src="<?=Url::toRoute(['hanzi-dict/msearch']);?>"></iframe>
+        .container {
+            width: 100%;
+        }
 
-</div>
+        .normal {
+            color: #337ab7;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.body.onload = function () {
+            var height = document.body.clientHeight - 120;
+            $('#variant-check').height(height);
+            $('#variant-search').height(height);
+        };
+    </script>
+
+    <div id='variant-check' class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
+
+        <table class="table table-hover">
+            <tr style="background:#f9f9f9; color:#337ab7;">
+                <th>&nbsp;</th>
+                <th>图片名</th>
+                <th>查字典</th>
+                <th width="10%">正字</th>
+                <th width="15%">异体字编号</th>
+                <th>正异类型</th>
+                <th>难易等级</th>
+                <th>审核</th>
+                <th>操作</th>
+            </tr>
+
+            <?php foreach ($dataProvider->getModels() as $model): ?>
+                <form id=<?= "form" . $model->id ?>>
+                    <?php $bNew = $model->isNew(); ?>
+                    <tr>
+                        <td>
+                            <?php if (!empty($model->pic_name)) {
+                                echo Html::img("/img/FontImage/" . $model->belong_standard_word_code1 . "/$model->pic_name", ['class' => 'hanzi-image']);
+                            } ?>
+                        </td>
+                        <td>
+                            <?php
+                            $title = str_replace('.jpg', '', $model->pic_name);
+
+                            $value = mb_strlen($title) > 7 ? mb_substr($title, 0, 7, 'UTF-8') . '...' : $title;
+                            echo "<div title='$title'>$value</div>";
+                            ?>
+                        </td>
+                        <td>
+                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code2 . "</div>";
+                            ?>
+                        </td>
+                        <td>
+                            <?= Html::activeInput('text', $model, 'belong_standard_word_code2', ['class' => 'form-control', 'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeInput('text', $model, 'variant_code2', ['class' => 'form-control', 'id' => 'vc' . $model->id, 'disabled' => !$bNew]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeDropDownList($model, 'nor_var_type2', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $model->id, 'disabled' => !$bNew]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeDropDownList($model, 'level2', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $model->id, 'disabled' => !$bNew]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeRadioList($model, 'bconfirm', [1 => '是', 0 => '否'], ['prompt' => '', 'alt' => $model->id, 'class' => 'choose', 'id' => 'bc' . $model->id, 'disabled' => !$bNew]); ?>
+                        </td>
+                        <td>
+                            <?php if ($bNew) {
+                                echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
+                            } else {
+                                echo "<a class='modify' name='" . $model->id . "' >修改</a>";
+                            } ?>
+                        </td>
+                    <tr>
+
+                </form>
+            <?php endforeach; ?>
+        </table>
+
+        <ul class="pagination">
+            <?php
+            $count = 10;
+            $curPage = (int)$dataProvider->pagination->page + 1;
+            $maxPage = $dataProvider->pagination->pageCount;
+            $minPage = $curPage - (int)($count / 2) > 1 ? $curPage - (int)($count / 2) : 1;
+            $maxPage = $minPage + $count - 1 < $maxPage ? $minPage + $count - 1 : $maxPage;
+            if ($curPage > 1) {
+                $prePage = $curPage - 1;
+                echo "<li class='prev'><a href='/lq-variant-check/admin?page=$prePage'>«</a></li>";
+            }
+            for ($i = $minPage; $i <= $maxPage; $i++) {
+                if ($i == $curPage) {
+                    echo "<li class='active'><a href='/lq-variant-check/admin?page=$i'>$i</a></li>";
+                } else {
+                    echo "<li><a href='/lq-variant-check/admin?page=$i'>$i</a></li>";
+                }
+            }
+            if ($curPage < $maxPage) {
+                $nextPage = $curPage + 1;
+                echo "<li class='next'><a href='/lq-variant-check/admin?page=$nextPage'>»</a></li>";
+            }
+            ?>
+        </ul>
+
+    </div>
+
+    <div id='variant-search' class="lq-variant-search col-sm-4">
+        <iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>"
+                src="<?= Url::toRoute(['hanzi-dict/msearch']); ?>"></iframe>
+
+    </div>
 
 
 <?php

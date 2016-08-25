@@ -51,10 +51,20 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            \yii\behaviors\TimestampBehavior::className()
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
-            [['source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm'], 'integer'],
+            [['source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
             [['pic_name', 'variant_code1', 'belong_standard_word_code1', 'variant_code2', 'belong_standard_word_code2'], 'string', 'max' => 64],
             [['remark'], 'string', 'max' => 128],
         ];

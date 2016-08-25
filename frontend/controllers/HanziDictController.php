@@ -68,7 +68,7 @@ class HanziDictController extends Controller
         $this->layout = '_clear';
         # 将post请求转为Get请求，以免get请求中的参数累加
         if (Yii::$app->request->post()) {
-            $this->redirect(['search', 'param' => Yii::$app->request->post()['HanziSetSearch']['param']]);
+            $this->redirect(['msearch', 'param' => Yii::$app->request->post()['HanziSetSearch']['param']]);
         }
 
         $param = trim(Yii::$app->request->get('param'));
