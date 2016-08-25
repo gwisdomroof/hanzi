@@ -304,6 +304,16 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 是否为校勘专员
+     * @return array|mixed
+     */
+    public static function isCollater($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('校勘专员', $roles);
+    }
+
+    /**
      * @param get members of leader
      * @return mixed
      */

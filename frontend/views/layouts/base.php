@@ -27,6 +27,20 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
             ['label' => Yii::t('frontend', '异体字检索'), 'url' => ['/hanzi-dict/search'],'visible'=>!Yii::$app->user->isGuest,],
             ['label' => Yii::t('frontend', '积分排名'), 'url' => ['/user-task/order'],'visible'=>!Yii::$app->user->isGuest,],
             [
+                'label' => Yii::t('frontend', '校勘工作坊'),
+                'visible'=>\common\models\HanziTask::isCollater(Yii::$app->user->id),
+                'items'=>[
+                    [
+                        'label' => Yii::t('frontend', '异体字判取'),
+                        'url' => ['/lq-variant-check/index']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字审查'),
+                        'url' => ['/lq-variant-check/pages']
+                    ]
+                ]
+            ],
+            [
                 'label' => Yii::t('frontend', '任务管理'),
                 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id),
                 'items'=>[
