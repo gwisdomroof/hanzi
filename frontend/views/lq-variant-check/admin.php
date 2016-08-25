@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <div class="lq-variant-search col-sm-4">
-<iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>" src="<?=Url::toRoute(['hanzi-set/hsearch']);?>"></iframe>
+<iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>" src="<?=Url::toRoute(['hanzi-dict/msearch']);?>"></iframe>
 
 </div>
 
@@ -145,7 +145,7 @@ $script = <<<SCRIPT
     });
 
     $(document).on('click', '.normal', function() {
-        var url = '/hanzi-set/hsearch?HanziSetSearch[param]=' + $(this).text();
+        var url = '/hanzi-dict/msearch?param=' + $(this).text();
         $('#search-result').attr('src', url);
 
     });
