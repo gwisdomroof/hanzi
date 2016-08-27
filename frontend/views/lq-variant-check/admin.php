@@ -58,10 +58,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{label}<div class="col-sm-6">{input}</div>'
             ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
             <?php echo $form->field($searchModel, 'bconfirm', [
-                'options' => ['class' => 'search-input'],
+                'options' => ['class' => 'search-input',  'style'=>'width:40%;'],
                 'labelOptions' => ['class' => 'col-sm-4'],
                 'template' => '{label} <div class="col-sm-6">{input}</div>'
-            ])->inline()->radioList([1 => '是', 0 => '否']) ?>
+            ])->inline()->radioList([1 => '是', 0 => '否', 2 => '空']) ?>
             <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
             <?php ActiveForm::end(); ?>
         </div>

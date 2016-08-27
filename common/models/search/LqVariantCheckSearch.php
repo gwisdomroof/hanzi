@@ -71,8 +71,13 @@ class LqVariantCheckSearch extends LqVariantCheck
             'nor_var_type2' => $this->nor_var_type2,
             'level1' => $this->level1,
             'level2' => $this->level2,
-            'bconfirm' => $this->bconfirm,
         ]);
+
+        if(isset($this->bconfirm) && $this->bconfirm == 2) {
+            $query->andWhere('bconfirm is null');
+        } else {
+            $query->andFilterWhere(['bconfirm' => $this->bconfirm]);
+        }
 
         $query->andFilterWhere(['like', 'pic_name', $this->pic_name])
             ->andFilterWhere(['like', 'variant_code1', $this->variant_code1])

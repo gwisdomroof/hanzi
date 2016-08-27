@@ -51,12 +51,15 @@ class LqVariantCheckController extends Controller
     {
         # 将post请求转为Get请求，以免get请求中的参数累加
         if (Yii::$app->request->post()) {
-            $level2 = Yii::$app->request->post()['LqVariantCheckSearch']['level2'];
+            $level = Yii::$app->request->post()['LqVariantCheckSearch']['level2'];
             $bconfirm = Yii::$app->request->post()['LqVariantCheckSearch']['bconfirm'];
-            $this->redirect(['admin', "LqVariantCheckSearch[level2]" =>$level2, "LqVariantCheckSearch[bconfirm]" => $bconfirm]);
+            $this->redirect(['admin', "level" =>$level, "confirm" => $bconfirm]);
         }
 
         $searchModel = new LqVariantCheckSearch();
+        $searchModel->level2 = trim(Yii::$app->request->get('level'));
+        # confirm中用2来表示为空的情况
+        $searchModel->bconfirm = trim(Yii::$app->request->get('confirm'));
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('admin', [
