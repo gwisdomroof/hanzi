@@ -49,6 +49,13 @@ class LqVariantCheckController extends Controller
      */
     public function actionAdmin()
     {
+        # 将post请求转为Get请求，以免get请求中的参数累加
+        if (Yii::$app->request->post()) {
+            $level2 = Yii::$app->request->post()['LqVariantCheckSearch']['level2'];
+            $bconfirm = Yii::$app->request->post()['LqVariantCheckSearch']['bconfirm'];
+            $this->redirect(['admin', "LqVariantCheckSearch[level2]" =>$level2, "LqVariantCheckSearch[bconfirm]" => $bconfirm]);
+        }
+
         $searchModel = new LqVariantCheckSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

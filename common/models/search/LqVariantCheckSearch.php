@@ -18,7 +18,7 @@ class LqVariantCheckSearch extends LqVariantCheck
     public function rules()
     {
         return [
-            [['id', 'source', 'nor_var_type1', 'nor_var_type2', 'bconfirm'], 'integer'],
+            [['id', 'source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm'], 'integer'],
             [['pic_name', 'variant_code1', 'belong_standard_word_code1', 'variant_code2', 'belong_standard_word_code2', 'remark'], 'safe'],
         ];
     }
@@ -69,6 +69,8 @@ class LqVariantCheckSearch extends LqVariantCheck
             'source' => $this->source,
             'nor_var_type1' => $this->nor_var_type1,
             'nor_var_type2' => $this->nor_var_type2,
+            'level1' => $this->level1,
+            'level2' => $this->level2,
             'bconfirm' => $this->bconfirm,
         ]);
 

@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\LqVariantCheckSearch */
@@ -12,7 +12,7 @@ $this->title = Yii::t('frontend', '异体字审核');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <style type="text/css">
-        .confirm, .modify {
+        .search-input {
             cursor: pointer;
             font-size: 14px;
         }
@@ -24,10 +24,16 @@ $this->params['breadcrumbs'][] = $this->title;
         .container {
             width: 100%;
         }
-
+        .search-input {
+            width: 30%;
+            float: left;
+        }
         .normal {
             color: #337ab7;
             cursor: pointer;
+        }
+        .search-input label {
+            margin-top: 6px;
         }
     </style>
 
@@ -40,6 +46,25 @@ $this->params['breadcrumbs'][] = $this->title;
     </script>
 
     <div id='variant-check' class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
+
+        <div class="lq-variant-check-search">
+            <?php $form = ActiveForm::begin([
+                'layout' => 'horizontal',
+                'method' => 'post',
+            ]); ?>
+            <?php echo $form->field($searchModel, 'level2', [
+                'options' => ['class' => 'search-input'],
+                'labelOptions' => ['class' => 'col-sm-4'],
+                'template' => '{label}<div class="col-sm-6">{input}</div>'
+            ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
+            <?php echo $form->field($searchModel, 'bconfirm', [
+                'options' => ['class' => 'search-input'],
+                'labelOptions' => ['class' => 'col-sm-4'],
+                'template' => '{label} <div class="col-sm-6">{input}</div>'
+            ])->inline()->radioList([1 => '是', 0 => '否']) ?>
+            <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
+            <?php ActiveForm::end(); ?>
+        </div>
 
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
@@ -105,25 +130,31 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <ul class="pagination">
             <?php
+
             $count = 10;
             $curPage = (int)$dataProvider->pagination->page + 1;
             $maxPage = $dataProvider->pagination->pageCount;
             $minPage = $curPage - (int)($count / 2) > 1 ? $curPage - (int)($count / 2) : 1;
             $maxPage = $minPage + $count - 1 < $maxPage ? $minPage + $count - 1 : $maxPage;
+            $url = Url::current();
+            if (isset(Yii::$app->request->queryParams['page'])) {
+                $url = str_replace("page={$curPage}&",  '' ,  $url);
+                $url = str_replace("&page={$curPage}",  '' ,  $url);
+            }
             if ($curPage > 1) {
                 $prePage = $curPage - 1;
-                echo "<li class='prev'><a href='/lq-variant-check/admin?page=$prePage'>«</a></li>";
+                echo "<li class='prev'><a href='$url&page=$prePage'>«</a></li>";
             }
             for ($i = $minPage; $i <= $maxPage; $i++) {
                 if ($i == $curPage) {
-                    echo "<li class='active'><a href='/lq-variant-check/admin?page=$i'>$i</a></li>";
+                    echo "<li class='active'><a href='$url&page=$i'>$i</a></li>";
                 } else {
-                    echo "<li><a href='/lq-variant-check/admin?page=$i'>$i</a></li>";
+                    echo "<li><a href='$url&page=$i'>$i</a></li>";
                 }
             }
             if ($curPage < $maxPage) {
                 $nextPage = $curPage + 1;
-                echo "<li class='next'><a href='/lq-variant-check/admin?page=$nextPage'>»</a></li>";
+                echo "<li class='next'><a href='$url&page=$nextPage'>»</a></li>";
             }
             ?>
         </ul>
