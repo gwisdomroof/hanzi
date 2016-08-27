@@ -59,7 +59,8 @@ class LqVariantController extends Controller
         }
 
         $contents = implode("\r\n", $sqls);
-        file_put_contents('d:\Inbox\import-lq-variant-'.date('Y-m-d-H-i-s', time()).'.txt', $contents);
+//        file_put_contents('d:\Inbox\import-lq-variant-'.date('Y-m-d-H-i-s', time()).'.txt', $contents);
+        file_put_contents('\home\xiandu\import-lq-variant-'.date('Y-m-d-H-i-s', time()).'.txt', $contents);
 
         Yii::$app->get('keyStorage')->set('frontend.last-lq-variant-import-time', $curImportTime);
         echo 'success!';
