@@ -25,7 +25,9 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     const LEVEL_ONE = 1;
     const LEVEL_TWO = 2;
     const LEVEL_THREE = 3;
-
+    const LEVEL_FOUR = 4;
+    const LEVEL_FIVE = 5;
+    const LEVEL_SIX = 6;
 
     /**
      * Returns user statuses list
@@ -36,7 +38,10 @@ class LqVariantCheck extends \yii\db\ActiveRecord
         return [
             self::LEVEL_ONE => Yii::t('frontend', '一'),
             self::LEVEL_TWO => Yii::t('frontend', '二'),
-            self::LEVEL_THREE => Yii::t('frontend', '三')
+            self::LEVEL_THREE => Yii::t('frontend', '三'),
+            self::LEVEL_FOUR => Yii::t('frontend', '四'),
+            self::LEVEL_FIVE => Yii::t('frontend', '五'),
+            self::LEVEL_SIX => Yii::t('frontend', '六')
         ];
     }
 
