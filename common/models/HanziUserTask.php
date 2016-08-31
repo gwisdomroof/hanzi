@@ -26,7 +26,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
     const TYPE_COLLATE = 3;
     const TYPE_DOWNLOAD = 4;
 
-    const SPLIT_WEIGHT = 1;
+    const SPLIT_WEIGHT = 2;
     const INPUT_WEIGHT = 1;
 
     public $cnt;
