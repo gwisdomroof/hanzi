@@ -58,7 +58,7 @@ class WorkPackageSearch extends WorkPackage
             $query->where('progress < volume');
         }
 
-        // 并设置表别名为 `member`
+        // 并设置表别名为 `user`
         $query->joinWith(['user' => function ($query) {
             $query->from(['user' => 'user']);
         }]);

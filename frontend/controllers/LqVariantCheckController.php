@@ -2,12 +2,13 @@
 
 namespace frontend\controllers;
 
+use Yii;
 use common\models\LqVariantCheck;
 use common\models\search\LqVariantCheckSearch;
-use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * LqVariantCheckController implements the CRUD actions for LqVariantCheck model.
@@ -33,12 +34,37 @@ class LqVariantCheckController extends Controller
      * Lists all LqVariantCheck models.
      * @return mixed
      */
+    public function actionPages()
+    {
+        return $this->render('pages');
+    }
+
+    /**
+     * Lists all LqVariantCheck models.
+     * @return mixed
+     */
+    public function actionList()
+    {
+        $searchModel = new LqVariantCheckSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('list', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all LqVariantCheck models.
+     * @return mixed
+     */
     public function actionIndex()
     {
         $searchModel = new LqVariantCheckSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -51,13 +77,13 @@ class LqVariantCheckController extends Controller
     {
         # 将post请求转为Get请求，以免get请求中的参数累加
         if (Yii::$app->request->post()) {
-            $level = Yii::$app->request->post()['LqVariantCheckSearch']['level2'];
+            $level = Yii::$app->request->post()['LqVariantCheckSearch']['level'];
             $bconfirm = Yii::$app->request->post()['LqVariantCheckSearch']['bconfirm'];
-            $this->redirect(['admin', "level" =>$level, "confirm" => $bconfirm]);
+            $this->redirect(['admin', "level" => $level, "confirm" => $bconfirm]);
         }
 
         $searchModel = new LqVariantCheckSearch();
-        $searchModel->level2 = trim(Yii::$app->request->get('level'));
+        $searchModel->level = trim(Yii::$app->request->get('level'));
         # confirm中用2来表示为空的情况
         $searchModel->bconfirm = trim(Yii::$app->request->get('confirm'));
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -69,29 +95,15 @@ class LqVariantCheckController extends Controller
     }
 
     /**
-     * Lists all LqVariantCheck models.
-     * @return mixed
-     */
-    public function actionPages()
-    {
-        return $this->render('pages');
-    }
-   /**
+     * Displays a single LqVariantCheck model.
      * @param string $id
      * @return mixed
      */
-    public function actionModify($id)
+    public function actionView($id)
     {
-        if (!Yii::$app->request->isAjax) {
-            return false;
-        }
-
-        $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return '{"status":"success", "id": ' . $id. '}';
-        } else {
-            return '{"status":"error", "id": ' . $id. '}';
-        }
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
@@ -110,6 +122,7 @@ class LqVariantCheckController extends Controller
                 'model' => $model,
             ]);
         }
+
     }
 
     /**
@@ -128,6 +141,24 @@ class LqVariantCheckController extends Controller
             return $this->render('update', [
                 'model' => $model,
             ]);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @return mixed
+     */
+    public function actionModify($id)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return false;
+        }
+
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return '{"status":"success", "id": ' . $id . '}';
+        } else {
+            return '{"status":"error", "id": ' . $id . '}';
         }
     }
 

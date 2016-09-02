@@ -92,4 +92,5 @@ return [
     'Search' => '检索',
     'Work Packages' => '工作包',
     'Work Clocks' => '打卡',
+    'Lq Variant Checks' => '异体字判定'
 ];

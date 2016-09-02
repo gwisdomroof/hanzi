@@ -18,8 +18,9 @@ class LqVariantCheckSearch extends LqVariantCheck
     public function rules()
     {
         return [
-            [['id', 'source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm'], 'integer'],
-            [['pic_name', 'variant_code1', 'belong_standard_word_code1', 'variant_code2', 'belong_standard_word_code2', 'remark'], 'safe'],
+            [['id', 'userid', 'source', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
+            [['pic_name', 'variant_code', 'origin_standard_word_code', 'belong_standard_word_code', 'remark'], 'safe'],
+            [['user.username'], 'safe'],
         ];
     }
 
@@ -47,15 +48,21 @@ class LqVariantCheckSearch extends LqVariantCheck
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 20
-            ],
-            'sort'=> [
-                'defaultOrder' => ['id'=>SORT_ASC]
-            ]
+            'pagination' => ['pageSize' => 20],
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
         ]);
 
         $this->load($params);
+
+        // 并设置表别名为 `user`
+        $query->joinWith(['user' => function ($query) {
+            $query->from(['user' => 'user']);
+        }]);
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['user.username'] = [
+            'asc' => ['user.username' => SORT_ASC],
+            'desc' => ['user.username' => SORT_DESC],
+        ];
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -66,25 +73,28 @@ class LqVariantCheckSearch extends LqVariantCheck
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'userid' => $this->userid,
             'source' => $this->source,
-            'nor_var_type1' => $this->nor_var_type1,
-            'nor_var_type2' => $this->nor_var_type2,
-            'level1' => $this->level1,
-            'level2' => $this->level2,
+            'nor_var_type' => $this->nor_var_type,
+            'level' => $this->level,
+            'bconfirm' => $this->bconfirm,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ]);
 
-        if(isset($this->bconfirm) && $this->bconfirm == 2) {
+        if (isset($this->bconfirm) && $this->bconfirm == 2) {
             $query->andWhere('bconfirm is null');
         } else {
             $query->andFilterWhere(['bconfirm' => $this->bconfirm]);
         }
 
         $query->andFilterWhere(['like', 'pic_name', $this->pic_name])
-            ->andFilterWhere(['like', 'variant_code1', $this->variant_code1])
-            ->andFilterWhere(['like', 'belong_standard_word_code1', $this->belong_standard_word_code1])
-            ->andFilterWhere(['like', 'variant_code2', $this->variant_code2])
-            ->andFilterWhere(['like', 'belong_standard_word_code2', $this->belong_standard_word_code2])
+            ->andFilterWhere(['like', 'variant_code', $this->variant_code])
+            ->andFilterWhere(['like', 'origin_standard_word_code', $this->belong_standard_word_code])
+            ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code])
             ->andFilterWhere(['like', 'remark', $this->remark]);
+
+        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
 
         return $dataProvider;
     }

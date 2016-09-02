@@ -37,6 +37,14 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '异体字审查'),
                         'url' => ['/lq-variant-check/pages']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字提交'),
+                        'url' => ['/lq-variant-check/create']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字检索'),
+                        'url' => ['/lq-variant-check/list']
                     ]
                 ]
             ],

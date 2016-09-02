@@ -3,24 +3,38 @@
 namespace common\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%lq_variant_check}}".
  *
  * @property string $id
+ * @property integer $userid
  * @property integer $source
  * @property string $pic_name
- * @property string $variant_code1
- * @property string $belong_standard_word_code1
- * @property integer $nor_var_type1
- * @property string $variant_code2
- * @property string $belong_standard_word_code2
- * @property integer $nor_var_type2
+ * @property string $variant_code
+ * @property string $belong_standard_word_code
+ * @property integer $nor_var_type
+ * @property integer $level
  * @property integer $bconfirm
  * @property string $remark
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class LqVariantCheck extends \yii\db\ActiveRecord
 {
+    // 来源
+    const SOURCE_TW = 1;
+    const SOURCE_GL = 2;
+    const SOURCE_HY = 3;
+    const SOURCE_SZ = 4;
+    const SOURCE_QS = 5;
+    const SOURCE_PL = 6;
+    const SOURCE_HW = 7;
+    const SOURCE_YL = 8;
+    const SOURCE_JX = 9;
+    const SOURCE_QL = 10;
+
     // 难易等级
     const LEVEL_ONE = 1;
     const LEVEL_TWO = 2;
@@ -30,20 +44,9 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     const LEVEL_SIX = 6;
 
     /**
-     * Returns user statuses list
-     * @return array|mixed
+     * @var UploadedFile
      */
-    public static function levels()
-    {
-        return [
-            self::LEVEL_ONE => Yii::t('frontend', '一'),
-            self::LEVEL_TWO => Yii::t('frontend', '二'),
-            self::LEVEL_THREE => Yii::t('frontend', '三'),
-            self::LEVEL_FOUR => Yii::t('frontend', '四'),
-            self::LEVEL_FIVE => Yii::t('frontend', '五'),
-            self::LEVEL_SIX => Yii::t('frontend', '六')
-        ];
-    }
+    public $imageFile;
 
     /**
      * @inheritdoc
@@ -69,11 +72,88 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'nor_var_type1', 'nor_var_type2', 'level1', 'level2', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
-            [['pic_name', 'variant_code1', 'belong_standard_word_code1', 'variant_code2', 'belong_standard_word_code2'], 'string', 'max' => 64],
+            [['userid', 'source', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
+            [['pic_name', 'variant_code', 'origin_standard_word_code', 'belong_standard_word_code'], 'string', 'max' => 64],
             [['remark'], 'string', 'max' => 128],
+            [['belong_standard_word_code'], 'required'],
+//            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            ['imageFile', 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg',
+                'minWidth' => 30, 'maxWidth' => 1000,
+                'minHeight' => 30, 'maxHeight' => 1000,
+            ],
         ];
     }
+
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'userid']);
+    }
+
+    public function attributes()
+    {
+        // 添加关联字段到可搜索特性
+        return array_merge(parent::attributes(), ['user.username']);
+    }
+
+    /**
+     * 给图片编码，按编码重命名上传的图片
+     * 按照它所属的正字往下排序，如“阿001”
+     * @return array
+     */
+    public function encode()
+    {
+        $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+        $existNames = LqVariantCheck::find()->select('pic_name')
+            ->where("pic_name ~ '^{$normal}\d+.(jpg|png)$'")
+            ->asArray()
+            ->all();
+        $max = 0;
+        foreach ($existNames as $name) {
+            $num = (int)preg_replace("({$normal}|.jpg|.png)", '', $name['pic_name']);
+            $max = $max < $num ? $num : $max;
+        }
+        $next = ++$max;
+        return ['normal' => $normal, 'name' => $normal . $next];
+    }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            $code = $this->encode();
+            $normal = $code['normal'];
+            $name = $code['name'] . '.' . $this->imageFile->extension;
+            $path = "img/FontImage/{$normal}/";
+            if (!is_dir(iconv('utf-8', 'gbk', $path))) {
+                mkdir(iconv('utf-8', 'gbk', $path));
+            }
+            $this->imageFile->saveAs(iconv('utf-8', 'gbk', "img/FontImage/{$normal}/{$name}"));
+//            $this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+            return $name;
+        } else {
+            return false;
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->imageFile = UploadedFile::getInstance($this, 'imageFile');
+        if (!empty($this->imageFile)) {
+            $name = $this->upload();
+            if ($name) {
+                $this->pic_name = $name;
+            } else {
+                $this->addError('imageFile', '文件保存错误。');
+                return false;
+            }
+        }
+        $this->userid = Yii::$app->user->id;
+        return parent::beforeSave($insert);
+    }
+
 
     /**
      * @inheritdoc
@@ -82,18 +162,19 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('common', 'ID'),
+            'userid' => Yii::t('common', '用户名'),
             'source' => Yii::t('common', '来源'),
             'pic_name' => Yii::t('common', '图片名'),
-            'variant_code1' => Yii::t('common', '异体字编号'),
-            'belong_standard_word_code1' => Yii::t('common', '所属正字'),
-            'nor_var_type1' => Yii::t('common', '正异类型'),
-            'level1' => Yii::t('common', '等级'),
-            'variant_code2' => Yii::t('common', '异体字编号'),
-            'belong_standard_word_code2' => Yii::t('common', '所属正字'),
-            'nor_var_type2' => Yii::t('common', '正异类型'),
-            'level2' => Yii::t('common', '等级'),
+            'imageFile' => Yii::t('common', '图片'),
+            'variant_code' => Yii::t('common', '异体字编号'),
+            'origin_standard_word_code' => Yii::t('common', '原属正字'),
+            'belong_standard_word_code' => Yii::t('common', '所属正字'),
+            'nor_var_type' => Yii::t('common', '正异类型'),
+            'level' => Yii::t('common', '等级'),
             'bconfirm' => Yii::t('common', '是否确定'),
             'remark' => Yii::t('common', '备注'),
+            'created_at' => Yii::t('common', '提交时间'),
+            'updated_at' => Yii::t('common', '更新时间'),
         ];
     }
 
@@ -102,11 +183,48 @@ class LqVariantCheck extends \yii\db\ActiveRecord
      */
     public function isNew()
     {
-        if (!empty($this->variant_code2) || !empty($this->nor_var_type2)) {
+        if (!empty($this->variant_code) || !empty($this->nor_var_type)) {
             return false;
         } else {
-           return true; 
+            return true;
         }
+    }
+
+
+    /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function sources()
+    {
+        return [
+            self::SOURCE_TW => Yii::t('frontend', 'TW'),
+            self::SOURCE_GL => Yii::t('frontend', 'GL'),
+            self::SOURCE_HY => Yii::t('frontend', 'HY'),
+            self::SOURCE_SZ => Yii::t('frontend', 'SZ'),
+            self::SOURCE_QS => Yii::t('frontend', '磧砂'),
+            self::SOURCE_PL => Yii::t('frontend', '毗盧'),
+            self::SOURCE_HW => Yii::t('frontend', '洪武'),
+            self::SOURCE_YL => Yii::t('frontend', '永樂'),
+            self::SOURCE_JX => Yii::t('frontend', '嘉興'),
+            self::SOURCE_QL => Yii::t('frontend', '乾隆'),
+        ];
+    }
+
+    /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function levels()
+    {
+        return [
+            self::LEVEL_ONE => Yii::t('frontend', '一'),
+            self::LEVEL_TWO => Yii::t('frontend', '二'),
+            self::LEVEL_THREE => Yii::t('frontend', '三'),
+            self::LEVEL_FOUR => Yii::t('frontend', '四'),
+            self::LEVEL_FIVE => Yii::t('frontend', '五'),
+            self::LEVEL_SIX => Yii::t('frontend', '六')
+        ];
     }
 
 }
