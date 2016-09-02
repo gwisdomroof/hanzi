@@ -67,19 +67,15 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                 'visible'=>!Yii::$app->user->isGuest,
                 'items'=>[
                     [
-                        'label' => Yii::t('frontend', '异体字拆字'),
-                        'url' => ['/hanzi-task/index?type=1']
+                        'label' => Yii::t('frontend', '任 务'),
+                        'url' => ['/work-package/index']
                     ],
                     [
-                        'label' => Yii::t('frontend', '异体字识别'),
-                        'url' => ['/hanzi-task/index?type=2']
+                        'label' => Yii::t('frontend', '打 卡'),
+                        'url' => ['/work-clock/index']
                     ],
                     [
-                        'label' => Yii::t('frontend', '完成情况'),
-                        'url' => ['/user-task/index']
-                    ],
-                    [
-                        'label' => Yii::t('frontend', '积分兑换'),
+                        'label' => Yii::t('frontend', '积 分'),
                         'url' => ['/score-exchange/index']
                     ]
                 ]

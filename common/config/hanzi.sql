@@ -234,3 +234,27 @@ CREATE TABLE IF NOT EXISTS lq_variant (
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
 );
+
+-- 工作包
+CREATE TABLE IF NOT EXISTS work_package (
+  id BIGSERIAL PRIMARY KEY,
+  userid int NOT NULL, -- '用户id'
+  type smallint DEFAULT NULL, -- '工作类型'
+  volume smallint DEFAULT NULL, -- '工作量'
+  daily_schedule smallint DEFAULT NULL, -- '日计划工作量'
+  expected_date INT DEFAULT NULL, -- '预计完成时间'
+  progress smallint DEFAULT NULL, -- '已完成的进度'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL
+);
+
+-- 打卡日记
+CREATE TABLE IF NOT EXISTS work_clock (
+  id BIGSERIAL PRIMARY KEY,
+  userid int NOT NULL, -- '用户id'
+  type smallint DEFAULT NULL, -- '工作类型'
+  amount smallint DEFAULT NULL, -- '工作量'
+  content varchar(1024) DEFAULT NULL, -- '打卡日记'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL
+);

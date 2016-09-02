@@ -44,7 +44,7 @@ class HanziSplit extends \yii\db\ActiveRecord
 {
     const TYPE_WORD = 1;
     const TYPE_PICTURE = 2;
-    const TYPE_WORD_PICTURE = 3; 
+    const TYPE_WORD_PICTURE = 3;
 
     /**
      * @inheritdoc
@@ -63,7 +63,7 @@ class HanziSplit extends \yii\db\ActiveRecord
             [['source', 'hanzi_type', 'nor_var_type', 'stocks', 'duplicate', 'hard10', 'hard20', 'hard30', 'created_at', 'updated_at'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['word', 'radical', 'structure'], 'string', 'max' => 8],
-            [['picture', 'corners', 'attach','duplicate10', 'duplicate20', 'duplicate30', ], 'string', 'max' => 32],
+            [['picture', 'corners', 'attach', 'duplicate10', 'duplicate20', 'duplicate30',], 'string', 'max' => 32],
             [['standard_word', 'position_code'], 'string', 'max' => 64],
             [['initial_split11', 'initial_split12', 'deform_split10', 'similar_stock10', 'initial_split21', 'initial_split22', 'deform_split20', 'similar_stock20', 'initial_split31', 'initial_split32', 'deform_split30', 'similar_stock30', 'remark'], 'string', 'max' => 128],
         ];
@@ -84,10 +84,10 @@ class HanziSplit extends \yii\db\ActiveRecord
      */
     public function nextSplitId($curId)
     {
-        if (!isset($curId)) 
+        if (!isset($curId))
             return false;
 
-        $query = HanziSplit::find()->OrderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
+        $query = HanziSplit::find()->orderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
 
         return $query->one()->id;
 
@@ -141,13 +141,33 @@ class HanziSplit extends \yii\db\ActiveRecord
      * @param  [type] $page [description]
      * @return [type]       [description]
      */
+    public static function getUnfinishedMinId($startId, $endId)
+    {
+        // updated_at为空表示尚未作更新
+        $model = HanziSplit::find()
+            ->where(['duplicate' => 0])
+            ->andWhere('updated_at is null')
+            ->andWhere(['>=', 'id', $startId])
+            ->andWhere(['<=', 'id', $endId])
+            ->orderBy('id')
+            ->one();
+        return empty($model) ? false : $model->id;
+    }
+
+    /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
     public static function getIdRangeByPage($page)
     {
         $pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
 
-        $dataset = HanziSplit::find()->orderBy('id')->where(['duplicate' => 0])->offset($pageSize * ($page - 1))->limit($pageSize)->asArray()->all();
+        $dataset = HanziSplit::find()->where(['duplicate' => 0])
+            ->offset($pageSize * ($page - 1))->limit($pageSize)
+            ->orderBy('id')->asArray()->all();
 
-        return  [
+        return [
             'minId' => (int)$dataset[0]['id'],
             'maxId' => (int)$dataset[count($dataset) - 1]['id']
         ];
@@ -160,7 +180,12 @@ class HanziSplit extends \yii\db\ActiveRecord
      */
     public function isNew($seq)
     {
-        if (!empty($this->getAttribute("duplicate$seq" . "0")) || !empty($this->getAttribute("initial_split$seq" . "1")) || !empty($this->getAttribute("initial_split$seq" . "2")) || !empty($this->getAttribute("deform_split$seq" . "0")) || !empty($this->getAttribute("similar_stock$seq" . "0"))) {
+        if (!empty($this->getAttribute("duplicate$seq" . "0"))
+            || !empty($this->getAttribute("initial_split$seq" . "1"))
+            || !empty($this->getAttribute("initial_split$seq" . "2"))
+            || !empty($this->getAttribute("deform_split$seq" . "0"))
+            || !empty($this->getAttribute("similar_stock$seq" . "0"))
+        ) {
             return false;
         }
         return true;

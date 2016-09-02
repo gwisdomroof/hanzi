@@ -41,7 +41,7 @@ class UserTaskController extends Controller
      */
     public function actionOrder()
     {
-        
+
         $searchModel = new HanziUserTaskSearch();
 
         $param = Yii::$app->request->queryParams;
@@ -78,14 +78,14 @@ class UserTaskController extends Controller
 
         $param['HanziUserTaskSearch']['task_type'] = $type;
 
-        if ((int)$type  !== HanziUserTask::TYPE_COLLATE  && (int)$type  !== HanziUserTask::TYPE_DOWNLOAD && (int)$type  !== HanziUserTask::TYPE_INPUT) {
-           throw new HttpException('400', '参数有误：type');
+        if ((int)$type !== HanziUserTask::TYPE_COLLATE && (int)$type !== HanziUserTask::TYPE_DOWNLOAD && (int)$type !== HanziUserTask::TYPE_INPUT) {
+            throw new HttpException('400', '参数有误：type');
         }
 
         $dataProvider = $searchModel->search($param);
 
-        $members =  user::find()
-            ->select(['username as value', 'username as label','id'])
+        $members = user::find()
+            ->select(['username as value', 'username as label', 'id'])
             ->where(['status' => user::STATUS_ACTIVE])
             ->asArray()
             ->all();
@@ -113,7 +113,11 @@ class UserTaskController extends Controller
         }
 
         $userid = Yii::$app->user->id;
-        $groupScore = HanziUserTask::find()->select('task_type, sum(quality) as score')->where(['userid' => $userid])->groupBy(['task_type'])->asArray()->all();
+        $groupScore = HanziUserTask::find()->select('task_type, sum(quality) as score')
+            ->where(['userid' => $userid])
+            ->groupBy(['task_type'])
+            ->asArray()
+            ->all();
 
         $dataProvider = $searchModel->search($param);
 
@@ -162,7 +166,6 @@ class UserTaskController extends Controller
     }
 
 
-
     /**
      * Displays a single HanziUserTask model.
      * @param string $id
@@ -184,8 +187,8 @@ class UserTaskController extends Controller
     {
         $model = new HanziUserTask();
 
-        $members =  user::find()
-            ->select(['username as value', 'username as label','id'])
+        $members = user::find()
+            ->select(['username as value', 'username as label', 'id'])
             ->where(['status' => user::STATUS_ACTIVE])
             ->asArray()
             ->all();
@@ -217,8 +220,8 @@ class UserTaskController extends Controller
     {
         $model = $this->findModel($id);
 
-        $members =  user::find()
-            ->select(['username as value', 'username as label','id'])
+        $members = user::find()
+            ->select(['username as value', 'username as label', 'id'])
             ->where(['status' => user::STATUS_ACTIVE])
             ->asArray()
             ->all();
@@ -231,7 +234,7 @@ class UserTaskController extends Controller
 
             if ($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
-        } 
+        }
         return $this->render('update', [
             'model' => $model,
             'members' => $members,

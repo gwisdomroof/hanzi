@@ -62,6 +62,40 @@ class HanziUserTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * 获取从某日开始已完成工作量
+     * @param int $userId 用户名
+     * @param int $taskType 任务类型
+     * @param int $start 开始日期的时间，timestamp的整数
+     * @return mixed
+     */
+    public static function getFinishedWorkCountFrom($userId, $taskType = self::TYPE_SPLIT, $start)
+    {
+        $begin = mktime(0, 0, 0, date('m', $start), date('d', $start), date('Y', $start));
+        $end = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+        return HanziUserTask::find()
+            ->where(['userid' => $userId, 'task_type' => $taskType])
+            ->andWhere(['>=', 'created_at', $begin])
+            ->andWhere(['<=', 'created_at', $end])
+            ->count();
+    }
+
+    /**
+     * 获取今日已完成工作量
+     * @param string $id
+     * @return mixed
+     */
+    public static function getFinishedWorkCountToday($userId, $taskType = self::TYPE_SPLIT)
+    {
+        $begin = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+        $end = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+        return HanziUserTask::find()
+            ->where(['userid' => $userId, 'task_type' => $taskType])
+            ->andWhere(['>=', 'created_at', $begin])
+            ->andWhere(['<=', 'created_at', $end])
+            ->count();
+    }
+
+    /**
      * 获取用户对应的积分.
      * @return
      */
@@ -73,7 +107,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * 
+     *
      */
     public static function addItem($userid, $taskid, $taskType, $quality, $taskSeq)
     {
@@ -84,7 +118,14 @@ class HanziUserTask extends \yii\db\ActiveRecord
         $userTask->task_seq = $taskSeq;
         $userTask->quality = $quality;
 
-        if (!HanziUserTask::find()->where(['userid'=>$userTask->userid, 'taskid'=>$userTask->taskid, 'task_type'=>$userTask->task_type, 'task_seq'=>$userTask->task_seq])->exists() && $userTask->save()) {
+        $ifExist = HanziUserTask::find()->where([
+//            'userid' => $userTask->userid,
+            'taskid' => $userTask->taskid,
+            'task_type' => $userTask->task_type,
+            'task_seq' => $userTask->task_seq])
+            ->exists();
+
+        if (!$ifExist && $userTask->save()) {
             // 数据不存在且保存成功
             return true;
         } else {
@@ -127,7 +168,7 @@ class HanziUserTask extends \yii\db\ActiveRecord
             self::TYPE_INPUT => Yii::t('common', '异体字录入'),
             self::TYPE_COLLATE => Yii::t('common', '图书校对'),
             self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
-        ];        
+        ];
     }
 
     /**

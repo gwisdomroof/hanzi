@@ -15,9 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="hanzi-task-index">
     <p>
-        <?php if (\common\models\HanziTask::isLeader(Yii::$app->user->id))
-           echo Html::a(Yii::t('frontend', "创建" . $taskName . "任务"), ['create', 'type'=>$type], ['class' => 'btn btn-primary']) 
-        ?>
+<!--        --><?php //if (\common\models\HanziTask::isLeader(Yii::$app->user->id))
+//           echo Html::a(Yii::t('frontend', "创建" . $taskName . "任务"), ['create', 'type'=>$type], ['class' => 'btn btn-primary'])
+//        ?>
     </p>
 
     <?= GridView::widget([
@@ -63,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 "headerOptions" => ["width" => "100"],
+                'template' => '{view}'
             ]
         ],
     ]); ?>

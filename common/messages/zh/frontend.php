@@ -89,5 +89,7 @@ return [
     'Score Exchanges' => '积分兑换',
     'Lq Variants' => '龙泉异体字',
     'Are you sure you want to delete this item?' => '您确定删除这条数据么？',
-    'Search' => '检索'
+    'Search' => '检索',
+    'Work Packages' => '工作包',
+    'Work Clocks' => '打卡',
 ];

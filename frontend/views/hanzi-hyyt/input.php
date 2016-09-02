@@ -1,4 +1,3 @@
-
 <?php
 
 use yii\bootstrap\Html;
@@ -13,108 +12,154 @@ use common\models\HanziHyyt;
 $this->title = Yii::t('frontend', 'Hanzi Hyyts');
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
-<style type="text/css">
-    .container {
-        width: 100%;
-    }
-    .confirm, .modify {
-        cursor: pointer;
-        font-size: 14px;
-    }
-    .hanzi-image {
-        width:50px;
-    }
-    .msg {
-       color: #777; 
-    }
-    .tips {
-        color: red;
-    }
-    #image-page {
-        width: 100%;
-    }
-</style>
+    <style type="text/css">
+        .container {
+            width: 100%;
+        }
 
-<div class="col-sm-6">
-    <button class="btn btn-default glyphicon glyphicon-step-backward" id="page-backward" ></button>
-    <button class="btn btn-default glyphicon glyphicon-zoom-in" onmousedown="changeSize('image-page','+');" onmouseup="window.clearTimeout(oTime);"></button>
-    <button class="btn btn-default glyphicon glyphicon-zoom-out" onmousedown="changeSize('image-page','-');" onmouseup="window.clearTimeout(oTime);"></button>
-    <button class="btn btn-default glyphicon glyphicon-step-forward" id="page-forward"></button>
+        .confirm, .modify {
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-    <div  style="float:left; overflow:scroll; height: 520px; border: 1px solid #eee;">
-    <?php
-    $imgName =  str_pad($curPage, 4, '0', STR_PAD_LEFT);
-    echo Html::img("/img/hydzd/$imgName.png", ["id" => "image-page", "style" => "width: 100%;"]);
-    ?>
+        .hanzi-image {
+            width: 50px;
+        }
+
+        .msg {
+            color: #777;
+        }
+
+        .tips {
+            color: red;
+        }
+
+        #image-page {
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        document.body.onload = function () {
+            var height = document.body.clientHeight - 110;
+            $('#left-pic').height(height);
+            $('#right-check').height(height);
+        };
+    </script>
+
+
+    <div class="col-sm-6" id="left-pic">
+        <button class="btn btn-default glyphicon glyphicon-step-backward" id="page-backward"></button>
+        <button class="btn btn-default glyphicon glyphicon-zoom-in" onmousedown="changeSize('image-page','+');"
+                onmouseup="window.clearTimeout(oTime);"></button>
+        <button class="btn btn-default glyphicon glyphicon-zoom-out" onmousedown="changeSize('image-page','-');"
+                onmouseup="window.clearTimeout(oTime);"></button>
+        <button class="btn btn-default glyphicon glyphicon-step-forward" id="page-forward"></button>
+
+        <div style="float:left; overflow:scroll; height: 100%; border: 1px solid #eee;">
+            <?php
+            $imgName = str_pad($curPage, 4, '0', STR_PAD_LEFT);
+            echo Html::img("/img/hydzd/$imgName.png", ["id" => "image-page", "style" => "width: 100%;"]);
+            ?>
+        </div>
     </div>
-</div> 
 
-<div class="msg pull-right"><span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>当前积分：<span id="score"><?=\common\models\HanziUserTask::getScore(Yii::$app->user->id)?></span></div>
-<div class="col-sm-6" style="margin-top: 13px; overflow:scroll; height: 520px;">
-    <table class="table table-hover">
-        <tr style="background:#f9f9f9"><th width="15%">字头</th><th>类型</th><th width="15%">通行字</th><th>备注</th>
-        <?php if ($writeable) {
-            echo "<th width='15%'>操作</th>";
-        } ?>
-        </tr>
-        
-        <?php foreach ($models as $model): ?>
-            <form id=<?="form".$model->id?> >
-            <?php $bNew = $model->isNew($seq); ?>
-            <tr><td>
-            <?php if (!empty($model->word1)) {
-               echo Html::activeInput('text', $model, 'word'.$seq, ['class' => 'form-control', 'id' => 'wd'.$model->id, 'disabled' => !$bNew||!$writeable]);
-            } else {
-                echo Html::img("/img/hanzi/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd'.$model->id, 'disabled' => !$bNew||!$writeable]); 
+    <div class="msg pull-right">
+        <span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>
+        当前积分：<span id="score"><?= \common\models\HanziUserTask::getScore(Yii::$app->user->id) ?></span>
+    </div>
+
+    <div class="col-sm-6" id="right-check" style="margin-top: 13px; overflow:scroll; height: 520px;">
+        <table class="table table-hover">
+            <tr style="background:#f9f9f9">
+                <th width="15%">字头</th>
+                <th>类型</th>
+                <th width="15%">通行字</th>
+                <th>备注</th>
+                <?php if ($writeable) {
+                    echo "<th width='15%'>操作</th>";
+                } ?>
+            </tr>
+
+            <?php foreach ($models as $model): ?>
+                <form id=<?= "form" . $model->id ?>>
+                    <?php $bNew = $model->isNew($seq); ?>
+                    <tr>
+                        <td>
+                            <?php if (!empty($model->word1)) {
+                                echo Html::activeInput('text', $model, 'word' . $seq, ['class' => 'form-control', 'id' => 'wd' . $model->id, 'disabled' => !$bNew || !$writeable]);
+                            } else {
+                                echo Html::img("/img/hanzi/hy/$model->picture.png", ['class' => 'form-control hanzi-image', 'id' => 'wd' . $model->id, 'disabled' => !$bNew || !$writeable]);
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?= Html::activeDropDownList($model, 'type' . $seq, HanziHyyt::types(), ['prompt' => '', 'class' => 'form-control', 'id' => 'tp' . $model->id, 'disabled' => !$bNew || !$writeable]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeInput('text', $model, 'tong_word' . $seq, ['class' => 'form-control', 'id' => 'tw' . $model->id, 'disabled' => !$bNew || !$writeable]); ?>
+                        </td>
+                        <td>
+                            <?= Html::activeInput('text', $model, 'zhushi' . $seq, ['class' => 'form-control', 'id' => 'zs' . $model->id, 'disabled' => !$bNew || !$writeable]); ?>
+                        </td>
+                        <?php
+                        # 页面权限和数据权限综合判断
+                        if ($writeable) {
+                            $dataAuthority = true;
+                            if ($pageStatus == \common\models\HanziTask::STATUS_CONTINUE
+                                && !empty($finished['mine'])
+                                && !in_array($model->id, $finished['mine'])
+                            ) {
+                                $dataAuthority = false;
+                            } elseif ($pageStatus != \common\models\HanziTask::STATUS_CONTINUE
+                                && !empty($finished['others'])
+                                && in_array($model->id, $finished['others'])
+                            ) {
+                                $dataAuthority = false;
+                            }
+                            if ($dataAuthority) {
+                                if ($bNew) {
+                                    echo "<td><a class='confirm' name='" . $model->id . "' >确定</a>";
+                                } else {
+                                    echo "<td><a class='modify' name='" . $model->id . "' >修改</a>";
+                                }
+                            }
+                            echo "<div class='clearfix'></div></td>";
+                        }
+                        ?>
+                    </tr>
+                </form>
+            <?php endforeach; ?>
+        </table>
+
+        <ul class="<?= $writeable ? 'pagination hidden' : 'pagination'; ?>">
+            <?php
+            $count = 10;
+            $maxPage = 5127;
+            $minPage = $curPage - (int)($count / 2) > 1 ? $curPage - (int)($count / 2) : 1;
+            $maxPage = $minPage + $count - 1 < $maxPage ? $minPage + $count - 1 : $maxPage;
+            if ($curPage > 1) {
+                $prePage = $curPage - 1;
+                echo "<li class='prev'><a href='/hanzi-hyyt?page=$prePage&seq=$seq'>«</a></li>";
+            }
+            for ($i = $minPage; $i <= $maxPage; $i++) {
+                if ($i == $curPage) {
+                    echo "<li class='active'><a href='/hanzi-hyyt?page=$i&seq=$seq'>$i</a></li>";
+                } else {
+                    echo "<li><a href='/hanzi-hyyt?page=$i&seq=$seq'>$i</a></li>";
+                }
+            }
+            if ($curPage < $maxPage) {
+                $nextPage = $curPage + 1;
+                echo "<li class='next'><a href='/hanzi-hyyt?page=$nextPage&seq=$seq'>»</a></li>";
             }
             ?>
-            </td><td>
-            <?= Html::activeDropDownList ($model, 'type'.$seq, HanziHyyt::types(), ['prompt'=>'', 'class' => 'form-control', 'id' => 'tp'.$model->id, 'disabled' => !$bNew||!$writeable] ); ?>
-            </td><td>
-            <?= Html::activeInput('text', $model, 'tong_word'.$seq, ['class' => 'form-control', 'id' => 'tw'.$model->id, 'disabled' => !$bNew||!$writeable]); ?>
-            </td><td>
-            <?= Html::activeInput('text', $model, 'zhushi'.$seq, ['class' => 'form-control', 'id' => 'zs'.$model->id, 'disabled' => !$bNew||!$writeable]); ?>
-            </td>
-            <?php 
-                if ($writeable) {
-                   if($bNew) { 
-                        echo "<td><a class='confirm' name='" . $model->id . "' >确定</a>";
-                    } else {
-                        echo "<td><a class='modify' name='" . $model->id . "' >修改</a>";
-                    }
-                    echo "<div class='clearfix'></div></td>";
-                }
-            ?>
-            </tr>
-            </form>
-        <?php endforeach;?>
-    </table>
+        </ul>
 
-    <ul class="pagination">
-    <?php 
-    $count = 10;
-    $maxPage = 5127;
-    $minPage = $curPage-(int)($count/2) > 1 ? $curPage-(int)($count/2) : 1;
-    $maxPage = $minPage + $count -1 < $maxPage ? $minPage + $count -1 : $maxPage;
-    if ($curPage > 1) {
-        $prePage = $curPage-1;
-        echo "<li class='prev'><a href='/hanzi-hyyt?page=$prePage&seq=$seq'>«</a></li>";
-    }
-    for ($i=$minPage; $i <= $maxPage; $i++) { 
-        if ($i == $curPage) {
-            echo "<li class='active'><a href='/hanzi-hyyt?page=$i&seq=$seq'>$i</a></li>";
-        } else {
-            echo "<li><a href='/hanzi-hyyt?page=$i&seq=$seq'>$i</a></li>";
-        }
-    } 
-    if ($curPage < $maxPage) {
-        $nextPage = $curPage+1;
-        echo "<li class='next'><a href='/hanzi-hyyt?page=$nextPage&seq=$seq'>»</a></li>";
-    }
-    ?>
-    </ul>
-
-</div>
+        <?php if ($writeable) { ?>
+            <a href="/hanzi-hyyt/recognize" class="btn btn-primary">下一页</a>
+        <?php } ?>
+    </div>
 
 <?php
 # 图片编号与urlPage编号一致
@@ -176,7 +221,6 @@ $script = <<<SCRIPT
                 }
             },
             error: function(result) {
-                alert(result.msg)
             }
         });
     });

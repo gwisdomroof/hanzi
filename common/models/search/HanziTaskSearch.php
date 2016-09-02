@@ -48,13 +48,15 @@ class HanziTaskSearch extends HanziTask
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
+            'sort' => ['defaultOrder' => ['task_type'=>SORT_ASC, 'id' => SORT_DESC]]
         ]);
 
         $this->load($params);
 
         // 并设置表别名为 `member`
-        $query->joinWith(['member' => function($query) { $query->from(['member' => 'user']); }]);
+        $query->joinWith(['member' => function ($query) {
+            $query->from(['member' => 'user']);
+        }]);
         // 使关联列的排序生效
         $dataProvider->sort->attributes['member.username'] = [
             'asc' => ['member.username' => SORT_ASC],
@@ -62,7 +64,9 @@ class HanziTaskSearch extends HanziTask
         ];
 
         // 并设置表别名为 `leader`
-        $query->joinWith(['leader' => function($query) { $query->from(['leader' => 'user']); }]);
+        $query->joinWith(['leader' => function ($query) {
+            $query->from(['leader' => 'user']);
+        }]);
         // 使关联列的排序生效
         $dataProvider->sort->attributes['leader.username'] = [
             'asc' => ['leader.username' => SORT_ASC],
@@ -78,7 +82,7 @@ class HanziTaskSearch extends HanziTask
         $query->andFilterWhere([
             'id' => $this->id,
             // 'leader_id' => $this->leader_id,
-            // 'user_id' => $this->user_id,
+            'user_id' => $this->user_id,
             'task_type' => $this->task_type,
             'page' => $this->page,
             'seq' => $this->seq,

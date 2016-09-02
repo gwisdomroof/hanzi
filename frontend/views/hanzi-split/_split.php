@@ -10,7 +10,10 @@ use yii\bootstrap\ActiveForm;
 ?>
 
 <div class="hanzi-form col-sm-7">
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal', 'id' => 'hanzi-form']); ?>  
+    <?php $form = ActiveForm::begin([
+        'layout' => 'horizontal',
+        'id' => 'hanzi-form'
+    ]); ?>
     
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-6 strong" style="font-size: 25px;" > 
@@ -102,7 +105,7 @@ use yii\bootstrap\ActiveForm;
         <?= \common\components\hanziPart\HanziPart::widget() ?>
 </div>
 
- <?php
+<?php
 $script = <<<SCRIPT
     var curSplitInput = $('.initial_split1');
     $(document).on('click', '.initial_split1', function() {

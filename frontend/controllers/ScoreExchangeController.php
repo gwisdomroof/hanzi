@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\ScoreExchange;
 use common\models\search\ScoreExchangeSearch;
+use common\models\HanziUserTask;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -55,7 +56,33 @@ class ScoreExchangeController extends Controller
         $searchModel->userid = Yii::$app->user->id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $groupScore = \common\models\HanziUserTask::find()->select('task_type, sum(quality) as score')
+            ->where(['userid' => Yii::$app->user->id])
+            ->groupBy(['task_type'])
+            ->asArray()
+            ->all();
+        $scoreitems = [];
+        foreach ($groupScore as $item) {
+            $itemscore = $item['score'];
+            switch ($item['task_type']) {
+                case HanziUserTask::TYPE_SPLIT:
+                    $scoreitems[] = "异体字拆字{$itemscore}分";
+                    break;
+                case HanziUserTask::TYPE_INPUT:
+                    $scoreitems[] = "异体字录入{$itemscore}分";
+                    break;
+                case HanziUserTask::TYPE_COLLATE:
+                    $scoreitems[] = "图书校对{$itemscore}分";
+                    break;
+                case HanziUserTask::TYPE_DOWNLOAD:
+                    $scoreitems[] = "论文下载{$itemscore}分";
+                    break;
+            }
+        }
+        $scoreitems = implode('，', $scoreitems);
+
         return $this->render('index', [
+            'scoreitems' => $scoreitems,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

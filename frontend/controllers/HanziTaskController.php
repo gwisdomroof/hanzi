@@ -33,34 +33,21 @@ class HanziTaskController extends Controller
         ];
     }
 
+
     /**
      * 列出当前任务。
      * @type 任务类型
      * @return mixed
      */
-    public function actionIndex($type=1)
+    public function actionIndex()
     {
         $searchModel = new HanziTaskSearch();
-
-        $param = Yii::$app->request->queryParams;
-        unset($param['type']);
-
-        if (!isset(Yii::$app->request->queryParams['HanziTaskSearch']['member.username'])) {
-            $param = array_merge($param, [
-                'HanziTaskSearch' => [
-                    'member.username' => Yii::$app->user->identity->username
-                    ]
-                ]);
-        }
-
-        $param['HanziTaskSearch']['task_type'] = $type;
-
-        $dataProvider = $searchModel->search($param);
+        $searchModel->user_id = Yii::$app->user->id;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'type' => $type
         ]);
 
     }

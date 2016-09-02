@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 </style>
 
 <div class="score-exchange-index">
-    <p>
-        <?= Html::a(Yii::t('frontend', '申请兑换'), ['apply'], ['class' => 'btn btn-primary']) ?>
+    <p style="padding-bottom: 2px;">
+        <?= Html::a(Yii::t('frontend', '积分兑换'), ['apply'], ['class' => 'btn btn-primary pull-right']) ?>
     </p>
 
     <div class="sum">
@@ -32,13 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
         $totalScore = \common\models\HanziUserTask::getScore(Yii::$app->user->id);
         $changeScore = \common\models\ScoreExchange::getScore(Yii::$app->user->id);
         $leftScore = $totalScore - $changeScore;
-        echo "总积分" . $totalScore . "，已用".$changeScore."分，剩余" . $leftScore . "分。" ;
+
+        echo "总积分{$totalScore}（{$scoreitems}），已用{$changeScore}分，剩余{$leftScore}分。" ;
     ?>
     </div>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -62,7 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'remark',
             // 'created_at',
             // 'updated_at',
-
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{delete}',
