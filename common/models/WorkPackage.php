@@ -61,7 +61,8 @@ class WorkPackage extends \yii\db\ActiveRecord
                 ->andWhere('progress < volume')
                 ->exists();
             if ($exist) {
-                $this->addError($attribute, "同一类型一次只能领取一个工作包。");
+                $typeInfo = WorkPackage::types()["{$this->type}"];
+                $this->addError($attribute, "一次只能领取一个{$typeInfo}工作包，请先完成未完成的工作包。");
             }
         }
     }
