@@ -185,16 +185,14 @@ CREATE TABLE IF NOT EXISTS score_exchange (
 -- 龙泉异体字工作表
 CREATE TABLE IF NOT EXISTS lq_variant_check (
   id BIGSERIAL PRIMARY KEY,
+  userid int DEFAULT NULL, -- '用户id'
   source smallint DEFAULT NULL, -- '来源'
   pic_name varchar(64) DEFAULT NULL, -- '图片'
-  variant_code1 varchar(64) DEFAULT NULL, -- '对应异体字的编号'
-  belong_standard_word_code1 varchar(64) DEFAULT NULL, -- '所属正字'
-  nor_var_type1 smallint DEFAULT NULL, -- '正异类型'
-  level1 smallint DEFAULT NULL, -- '难易等级'
-  variant_code2 varchar(64) DEFAULT NULL, -- '对应异体字的编号'
-  belong_standard_word_code2 varchar(64) DEFAULT NULL, -- '所属正字'
-  nor_var_type2 smallint DEFAULT NULL, -- '正异类型'
-  level2 smallint DEFAULT NULL, -- '难易等级'
+  variant_code varchar(64) DEFAULT NULL, -- '对应异体字的编号'
+  origin_standard_word_code varchar(64) DEFAULT NULL, -- '原属正字'
+  belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
+  nor_var_type smallint DEFAULT NULL, -- '正异类型'
+  level smallint DEFAULT NULL, -- '难易等级'
   bConfirm smallint DEFAULT NULL, -- '是否确认'
   remark varchar(128) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,

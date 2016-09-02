@@ -7,9 +7,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\LqVariantCheckSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Yii::t('frontend', '异体字判定');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Checks')];
 ?>
     <style type="text/css">
         .confirm, .modify {
@@ -58,24 +56,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tr>
                         <td>
                             <?php if (!empty($model->pic_name)) {
-                                echo Html::img("/img/FontImage/" . $model->belong_standard_word_code1 . "/$model->pic_name", ['class' => 'hanzi-image']);
+                                $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
+                                echo Html::img("/img/FontImage/" . $normal . "/$model->pic_name", ['class' => 'hanzi-image']);
                             } ?>
                         </td>
                         <td>
-                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code2 . "</div>";
+                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code . "</div>";
                             ?>
                         </td>
                         <td>
-                            <?= Html::activeInput('text', $model, 'belong_standard_word_code2', ['class' => 'form-control', 'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeInput('text', $model, 'belong_standard_word_code', ['class' => 'form-control', 'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
-                            <?= Html::activeInput('text', $model, 'variant_code2', ['class' => 'form-control', 'id' => 'vc' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeInput('text', $model, 'variant_code', ['class' => 'form-control', 'id' => 'vc' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
-                            <?= Html::activeDropDownList($model, 'nor_var_type2', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeDropDownList($model, 'nor_var_type', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
-                            <?= Html::activeDropDownList($model, 'level2', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeDropDownList($model, 'level', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
                             <?php if ($bNew) {

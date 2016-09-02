@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
+use common\models\LqVariantCheck;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\LqVariantCheck */
@@ -10,30 +11,25 @@ use yii\widgets\ActiveForm;
 
 <div class="lq-variant-check-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['layout' => 'horizontal', 'options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?= $form->field($model, 'source')->textInput() ?>
+    <?= $form->field($model, 'source')->dropDownList(LqVariantCheck::sources()) ?>
 
-    <?= $form->field($model, 'pic_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'imageFile')->fileInput() ?>
 
-    <?= $form->field($model, 'variant_code1')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'variant_code')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'belong_standard_word_code1')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'belong_standard_word_code')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'nor_var_type1')->textInput() ?>
+    <?= $form->field($model, 'nor_var_type')->dropDownList(\common\models\HanziSet::norVarTypes()) ?>
 
-    <?= $form->field($model, 'variant_code2')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'belong_standard_word_code2')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nor_var_type2')->textInput() ?>
-
-    <?= $form->field($model, 'bconfirm')->textInput() ?>
-
-    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'remark')->textArea(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend', 'Create') : Yii::t('frontend', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend', 'Create') : Yii::t('frontend', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
