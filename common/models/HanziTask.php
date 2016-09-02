@@ -325,7 +325,7 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
-     * 寻找页面池中page值最小，状态为“初分配”“已完成”的页面
+     * 寻找页面池中page值最小，状态为“初分配”“进行中”的页面
      * @param string $id
      * @return mixed
      */

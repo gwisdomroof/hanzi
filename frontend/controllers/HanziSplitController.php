@@ -76,7 +76,7 @@ class HanziSplitController extends Controller
         }
 
         // 检查当日工作是否已完成
-        $finishedCountToday = HanziUserTask::getFinishedWorkCountToday($userId, HanziTask::TYPE_SPLIT);
+        $finishedCountToday = (int)HanziUserTask::getFinishedWorkCountToday($userId, HanziTask::TYPE_SPLIT);
         if ($finishedCountToday >= (int)$curSplitPackage['daily_schedule']) {
             // 当日工作已完成，跳转打卡页面
             $this->redirect(['work-package/info', 'type' => HanziTask::TYPE_SPLIT, 'stage' => 2]);
@@ -85,6 +85,7 @@ class HanziSplitController extends Controller
 
         // 检查并设置当前工作页面的session值。
         $curPage = Yii::$app->session->get('curSplitPage');
+
         if (!isset($curPage) || empty($curPage['id'])) {
             // 寻找页面池中page值最小、状态为“初分配”“进行中”的页面，如果没有，则申请新页
             $curPage = HanziTask::getUnfinishedMinPage($userId, HanziTask::TYPE_SPLIT);
