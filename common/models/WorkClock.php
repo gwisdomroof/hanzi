@@ -49,6 +49,19 @@ class WorkClock extends \yii\db\ActiveRecord
                         $this->addError('type', '一种类型的任务，每天只能打一次卡。');
                     }
                 }
+            }],
+            [['content'], function ($attribute, $params) {
+                // 获取本日计划工作量
+                $curWorkPackage = WorkPackage::getCurWorkPackage(Yii::$app->user->id, $this->type);
+                if (empty($curWorkPackage)) {
+                    $this->addError('content', '请您先领取任务包，完成每日工作再打卡。');
+                    return;
+                }
+                $schedule = (int)$curWorkPackage->daily_schedule;
+                // 获取本日实际工作量
+                $actual = (int)HanziUserTask::getFinishedWorkCountToday(Yii::$app->user->id, $this->type);
+                if ($actual < $schedule)
+                    $this->addError('content', '请您先完成本日的计划工作再打卡。');
             }]
         ];
     }
@@ -85,6 +98,20 @@ class WorkClock extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'userid']);
+    }
+
+    public function attributes()
+    {
+        // 添加关联字段到可搜索特性
+        return array_merge(parent::attributes(), ['user.username']);
+    }
 
     /**
      * @inheritdoc

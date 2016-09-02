@@ -45,6 +45,21 @@ class WorkClockController extends Controller
     }
 
     /**
+     * Lists all WorkClock models.
+     * @return mixed
+     */
+    public function actionAdmin()
+    {
+        $searchModel = new WorkClockSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
      * Displays a single WorkClock model.
      * @param string $id
      * @return mixed

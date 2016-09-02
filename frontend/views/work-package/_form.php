@@ -30,7 +30,7 @@ use yii\helpers\Url;
             <label class="control-label col-sm-3" for="workpackage-daily_schedule">日计划</label>
             <div class="col-sm-2">
                 <?= Html::activeDropDownList($model, 'daily_schedule', [
-                    '5' => 5, '10' => 10, '15' => 15, '20' => 20, '25' => 25, '30' => 30, '35' => 35, '40' => 40, '45' => 45, '50' => 50, '0' => '自定义...'
+                    '5' => 5, '10' => 10, '15' => 15, '20' => 20, '25' => 25, '0' => '自定义...'
                 ], ['class' => 'schedule form-control']); ?>
             </div>
             <div class="col-sm-2">

@@ -19,6 +19,7 @@ class WorkPackageSearch extends WorkPackage
     {
         return [
             [['id', 'userid', 'type', 'volume', 'daily_schedule', 'expected_date', 'progress', 'created_at', 'updated_at'], 'integer'],
+            [['user.username'], 'safe'],
         ];
     }
 
@@ -57,6 +58,16 @@ class WorkPackageSearch extends WorkPackage
             $query->where('progress < volume');
         }
 
+        // 并设置表别名为 `member`
+        $query->joinWith(['user' => function ($query) {
+            $query->from(['user' => 'user']);
+        }]);
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['user.username'] = [
+            'asc' => ['user.username' => SORT_ASC],
+            'desc' => ['user.username' => SORT_DESC],
+        ];
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -75,6 +86,8 @@ class WorkPackageSearch extends WorkPackage
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
+
+        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
 
         return $dataProvider;
     }

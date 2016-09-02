@@ -67,6 +67,22 @@ class WorkPackage extends \yii\db\ActiveRecord
         }
     }
 
+
+    /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'userid']);
+    }
+
+    public function attributes()
+    {
+        // 添加关联字段到可搜索特性
+        return array_merge(parent::attributes(), ['user.username']);
+    }
+
     /**
      * 更新进度条
      * Returns user statuses list
@@ -84,6 +100,18 @@ class WorkPackage extends \yii\db\ActiveRecord
 
     }
 
+    /**
+     * 获取当前工作包
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function getCurWorkPackage($userid, $type)
+    {
+        return WorkPackage::find()->where(['userid' => $userid, 'type' => $type])
+            ->andWhere('progress < volume')
+            ->orderBy('id')
+            ->one();
+    }
 
     /**
      * 获取当前进度
@@ -166,7 +194,7 @@ class WorkPackage extends \yii\db\ActiveRecord
             'daily_schedule' => Yii::t('common', '日计划'),
             'expected_date' => Yii::t('common', '预计完成日'),
             'progress' => Yii::t('common', '进　度'),
-            'created_at' => Yii::t('common', '创建日'),
+            'created_at' => Yii::t('common', '领取日'),
             'updated_at' => Yii::t('common', '完成日'),
         ];
     }

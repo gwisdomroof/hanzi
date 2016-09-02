@@ -19,7 +19,7 @@ class WorkClockSearch extends WorkClock
     {
         return [
             [['id', 'userid', 'type', 'amount', 'created_at', 'updated_at'], 'integer'],
-            [['content'], 'safe'],
+            [['content', 'user.username'], 'safe']
         ];
     }
 
@@ -52,6 +52,16 @@ class WorkClockSearch extends WorkClock
 
         $this->load($params);
 
+        // 并设置表别名为 `member`
+        $query->joinWith(['user' => function ($query) {
+            $query->from(['user' => 'user']);
+        }]);
+        // 使关联列的排序生效
+        $dataProvider->sort->attributes['user.username'] = [
+            'asc' => ['user.username' => SORT_ASC],
+            'desc' => ['user.username' => SORT_DESC],
+        ];
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -69,6 +79,7 @@ class WorkClockSearch extends WorkClock
         ]);
 
         $query->andFilterWhere(['like', 'content', $this->content]);
+        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
 
         return $dataProvider;
     }

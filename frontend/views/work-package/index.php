@@ -45,6 +45,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
+                    'header' => '总完成',
+                    'attribute' => 'progress',
+                    "headerOptions" => ["width" => "80"],
+                    'value' => function ($data) {
+                        return $data->getCurrentProgress();
+                    }
+                ],
+                [
+                    'header' => '总进度',
+                    'attribute' => 'progress',
+                    "headerOptions" => ["width" => "80"],
+                    'value' => function ($data) {
+                        return $data->getCurrentProgress()/$data['volume']*100 . '%';
+                    }
+                ],
+                [
                     'header' => '领取日',
                     'attribute' => 'created_at',
                     'format' => ['datetime', 'php:Y-m-d'],
@@ -54,22 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => '',
                     'attribute' => 'expected_date',
                     'format' => ['datetime', 'php:Y-m-d'],
-                ],
-                [
-                    'header' => '已完成',
-                    'attribute' => 'progress',
-                    "headerOptions" => ["width" => "80"],
-                    'value' => function ($data) {
-                        return $data->getCurrentProgress();
-                    }
-                ],
-                [
-                    'header' => '进度',
-                    'attribute' => 'progress',
-                    "headerOptions" => ["width" => "80"],
-                    'value' => function ($data) {
-                        return $data->getCurrentProgress()/$data['volume']*100 . '%';
-                    }
                 ],
                 [
                     'header' => '操作',
