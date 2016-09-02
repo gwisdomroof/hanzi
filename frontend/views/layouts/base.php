@@ -85,13 +85,21 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                 'visible' => \common\models\User::isFrontManager(Yii::$app->user->id),
                 'items'=>[
                     [
+                        'label' => Yii::t('frontend', '任务包管理'),
+                        'url' => ['/work-package/admin']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '打卡管理'),
+                        'url' => ['/work-clock/admin']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '积分兑换'),
                         'url' => ['/score-exchange/admin']
                     ],
                     [
                         'label' => Yii::t('frontend', '用户信息'),
                         'url' => ['/user-admin/index']
-                    ]
+                    ],
                 ]
             ],
             [
