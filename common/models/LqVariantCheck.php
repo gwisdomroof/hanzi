@@ -48,6 +48,8 @@ class LqVariantCheck extends \yii\db\ActiveRecord
      */
     public $imageFile;
 
+    private static $imageBasePath = 'img/FontImage/';
+
     /**
      * @inheritdoc
      */
@@ -75,7 +77,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
             [['userid', 'source', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
             [['pic_name', 'variant_code', 'origin_standard_word_code', 'belong_standard_word_code'], 'string', 'max' => 64],
             [['remark'], 'string', 'max' => 128],
-            [['belong_standard_word_code'], 'required'],
+//            [['belong_standard_word_code'], 'required'],
 //            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             ['imageFile', 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg',
                 'minWidth' => 30, 'maxWidth' => 1000,
@@ -99,14 +101,18 @@ class LqVariantCheck extends \yii\db\ActiveRecord
         return array_merge(parent::attributes(), ['user.username']);
     }
 
-    /**
-     * 给图片编码，按编码重命名上传的图片
-     * 按照它所属的正字往下排序，如“阿001”
-     * @return array
-     */
-    public function encode()
+    public function getPicPath()
     {
-        $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+        $normal = !empty($this->origin_standard_word_code) ? $this->origin_standard_word_code : mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+        return self::$imageBasePath . "{$normal}/{$this->pic_name}";
+    }
+
+    /**
+     * 获取数据库中正字$normal下最大的编号值
+     * @return integer
+     */
+    public function getMaxId($normal)
+    {
         $existNames = LqVariantCheck::find()->select('pic_name')
             ->where("pic_name ~ '^{$normal}\d+.(jpg|png)$'")
             ->asArray()
@@ -116,23 +122,36 @@ class LqVariantCheck extends \yii\db\ActiveRecord
             $num = (int)preg_replace("({$normal}|.jpg|.png)", '', $name['pic_name']);
             $max = $max < $num ? $num : $max;
         }
-        $next = ++$max;
-        return ['normal' => $normal, 'name' => $normal . $next];
+        return $max;
     }
 
     public function upload()
     {
         if ($this->validate()) {
-            $code = $this->encode();
-            $normal = $code['normal'];
-            $name = $code['name'] . '.' . $this->imageFile->extension;
-            $path = "img/FontImage/{$normal}/";
+
+            $normal = 'A'; # 正字为空时，默认存放在A目录下
+            if (!empty($this->belong_standard_word_code)) {
+                $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+            }
+            # 新建数据，或者更新数据但是正字发生变化时，图片名也发生改变
+            $oldPicName = $this->pic_name;
+            if ($this->isNewRecord || (!$this->isNewRecord && $this->origin_standard_word_code != $normal)) {
+                $maxId = $this->getMaxId($normal);
+                $this->pic_name = $normal . ++$maxId . '.' . $this->imageFile->extension;
+                $this->origin_standard_word_code = $normal;
+            }
+            $path = self::$imageBasePath . $normal . '/';
             if (!is_dir(iconv('utf-8', 'gbk', $path))) {
                 mkdir(iconv('utf-8', 'gbk', $path));
             }
-            $this->imageFile->saveAs(iconv('utf-8', 'gbk', "img/FontImage/{$normal}/{$name}"));
+            $this->imageFile->saveAs(iconv('utf-8', 'gbk', $path . $this->pic_name));
 //            $this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
-            return $name;
+            # 更新数据且图片名发生变化时，删除之前的数据
+            if (!$this->isNewRecord && $oldPicName != $this->pic_name) {
+                $dir = mb_substr($oldPicName, 0, 1, 'utf8');
+                unlink(iconv('utf-8', 'gbk', self::$imageBasePath . "{$dir}/{$oldPicName}"));
+            }
+            return true;
         } else {
             return false;
         }
@@ -142,15 +161,14 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     {
         $this->imageFile = UploadedFile::getInstance($this, 'imageFile');
         if (!empty($this->imageFile)) {
-            $name = $this->upload();
-            if ($name) {
-                $this->pic_name = $name;
-            } else {
+            if (!$this->upload()) {
                 $this->addError('imageFile', '文件保存错误。');
                 return false;
             }
         }
-        $this->userid = Yii::$app->user->id;
+        if ($this->isNewRecord) {
+            $this->userid = Yii::$app->user->id;
+        }
         return parent::beforeSave($insert);
     }
 
