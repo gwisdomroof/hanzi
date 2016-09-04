@@ -28,8 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'pic_name',
                 'filter' => '',
                 'value'=>function ($model) {
-                    $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
-                    return "/img/FontImage/{$normal}/{$model->pic_name}";
+                    return $model->getPicPath();
                 },
                 'format' => ['image',['width'=>'35','height'=>'35']],
                 "headerOptions" => ["width" => "60"]

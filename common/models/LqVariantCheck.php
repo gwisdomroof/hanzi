@@ -104,7 +104,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function getPicPath()
     {
         $normal = !empty($this->origin_standard_word_code) ? $this->origin_standard_word_code : mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
-        return self::$imageBasePath . "{$normal}/{$this->pic_name}";
+        return '/' . self::$imageBasePath . "{$normal}/{$this->pic_name}";
     }
 
     /**
@@ -141,15 +141,25 @@ class LqVariantCheck extends \yii\db\ActiveRecord
                 $this->origin_standard_word_code = $normal;
             }
             $path = self::$imageBasePath . $normal . '/';
-            if (!is_dir(iconv('utf-8', 'gbk', $path))) {
-                mkdir(iconv('utf-8', 'gbk', $path));
+            $fullFileName = $path . $this->pic_name;
+            # 如果是windows服务器，则进行一层转换
+            if (DIRECTORY_SEPARATOR == '\\') {
+                $path = iconv('utf-8', 'gbk', $path);
+                $fullFileName = iconv('utf-8', 'gbk', $fullFileName);
             }
-            $this->imageFile->saveAs(iconv('utf-8', 'gbk', $path . $this->pic_name));
+            if (!is_dir($path)) {
+                mkdir($path);
+            }
+            $this->imageFile->saveAs($fullFileName);
 //            $this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
             # 更新数据且图片名发生变化时，删除之前的数据
             if (!$this->isNewRecord && $oldPicName != $this->pic_name) {
                 $dir = mb_substr($oldPicName, 0, 1, 'utf8');
-                unlink(iconv('utf-8', 'gbk', self::$imageBasePath . "{$dir}/{$oldPicName}"));
+                if (DIRECTORY_SEPARATOR == '\\') {
+                    unlink(iconv('utf-8', 'gbk', self::$imageBasePath . "{$dir}/{$oldPicName}"));
+                } else {
+                    unlink(self::$imageBasePath . "{$dir}/{$oldPicName}");
+                }
             }
             return true;
         } else {
