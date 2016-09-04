@@ -36,6 +36,7 @@ class WorkClockController extends Controller
     public function actionIndex()
     {
         $searchModel = new WorkClockSearch();
+        $searchModel->userid = Yii::$app->user->id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
