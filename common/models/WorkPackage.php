@@ -39,7 +39,7 @@ class WorkPackage extends \yii\db\ActiveRecord
         return [
             [['type', 'userid', 'volume', 'daily_schedule', 'selfSchedule', 'expected_date', 'progress', 'created_at', 'updated_at'], 'integer'],
             [['daily_schedule'], 'shouldDivideByFive'],
-            ['daily_schedule', 'required'],
+            [['volume', 'daily_schedule'], 'required'],
             ['type', 'oneWorkEachType']
         ];
     }
