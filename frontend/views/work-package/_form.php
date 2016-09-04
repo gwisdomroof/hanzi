@@ -24,7 +24,7 @@ use yii\helpers\Url;
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal'
         ]); ?>
-        <?= $form->field($model, 'type')->dropDownList(\common\models\WorkPackage::types()) ?>
+        <?= $form->field($model, 'type')->dropDownList(\common\models\WorkPackage::types(), ['disabled' => !$model->isNewRecord]) ?>
         <?= $form->field($model, 'volume')->dropDownList(['100' => 100, '200' => 200, '500' => 500, '1000' => 1000], ['prompt' => '', 'disabled' => !$model->isNewRecord]) ?>
         <div class="form-group field-workpackage-daily_schedule">
             <label class="control-label col-sm-3" for="workpackage-daily_schedule">日计划</label>

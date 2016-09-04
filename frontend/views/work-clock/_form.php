@@ -12,7 +12,7 @@ use yii\bootstrap\ActiveForm;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <?= $form->field($model, 'type', ['inputOptions' => ['style' => 'width:50%;']])->dropDownList(\common\models\WorkPackage::types()) ?>
+    <?= $form->field($model, 'type', ['inputOptions' => ['style' => 'width:50%;']])->dropDownList(\common\models\WorkPackage::types(), ['disabled' => !$model->isNewRecord]) ?>
 
     <?= $form->field($model, 'content')->textArea(['maxlength' => true, 'style'=>'height:100px;']) ?>
 
