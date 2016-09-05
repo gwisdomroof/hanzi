@@ -147,7 +147,7 @@ class WorkPackage extends \yii\db\ActiveRecord
             // 设置默认userid
             $this->userid = Yii::$app->user->id;
             // 根据工作总量和每日工作量，计算完成日期
-            $add = (int)$this->volume / $this->daily_schedule;
+            $add = (int)($this->volume / $this->daily_schedule);
             $time = strtotime("+{$add} day");
             $this->expected_date = mktime(23, 59, 59, date('m', $time), date('d', $time), date('Y', $time));
             if ($this->isNewRecord)

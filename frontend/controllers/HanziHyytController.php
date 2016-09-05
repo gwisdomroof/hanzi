@@ -32,6 +32,7 @@ class HanziHyytController extends Controller
         ];
     }
 
+
     private function recognizeInitial()
     {
         $userId = Yii::$app->user->id;
@@ -216,6 +217,7 @@ class HanziHyytController extends Controller
                 if (isset($curPage) && HanziTask::checkFinished($curPage['id'], $curPage['page'])) {
                     unset(Yii::$app->session['curRecognizePage']);
                 }
+                $this->recognizeInitial();
                 return '{"status":"success", "id": ' . $id . ', "score": ' . $addScore . '}';
             } else {
                 return '{"status":"error", "id": ' . $id . '}';

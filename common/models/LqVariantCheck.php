@@ -23,18 +23,6 @@ use yii\web\UploadedFile;
  */
 class LqVariantCheck extends \yii\db\ActiveRecord
 {
-    // 来源
-    const SOURCE_TW = 1;
-    const SOURCE_GL = 2;
-    const SOURCE_HY = 3;
-    const SOURCE_SZ = 4;
-    const SOURCE_QS = 5;
-    const SOURCE_PL = 6;
-    const SOURCE_HW = 7;
-    const SOURCE_YL = 8;
-    const SOURCE_JX = 9;
-    const SOURCE_QL = 10;
-
     // 难易等级
     const LEVEL_ONE = 1;
     const LEVEL_TWO = 2;
@@ -42,6 +30,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     const LEVEL_FOUR = 4;
     const LEVEL_FIVE = 5;
     const LEVEL_SIX = 6;
+    const LEVEL_SEVEN = 7;
 
     /**
      * @var UploadedFile
@@ -218,27 +207,6 @@ class LqVariantCheck extends \yii\db\ActiveRecord
         }
     }
 
-
-    /**
-     * Returns user statuses list
-     * @return array|mixed
-     */
-    public static function sources()
-    {
-        return [
-            self::SOURCE_TW => Yii::t('frontend', 'TW'),
-            self::SOURCE_GL => Yii::t('frontend', 'GL'),
-            self::SOURCE_HY => Yii::t('frontend', 'HY'),
-            self::SOURCE_SZ => Yii::t('frontend', 'SZ'),
-            self::SOURCE_QS => Yii::t('frontend', '磧砂'),
-            self::SOURCE_PL => Yii::t('frontend', '毗盧'),
-            self::SOURCE_HW => Yii::t('frontend', '洪武'),
-            self::SOURCE_YL => Yii::t('frontend', '永樂'),
-            self::SOURCE_JX => Yii::t('frontend', '嘉興'),
-            self::SOURCE_QL => Yii::t('frontend', '乾隆'),
-        ];
-    }
-
     /**
      * Returns user statuses list
      * @return array|mixed
@@ -249,9 +217,10 @@ class LqVariantCheck extends \yii\db\ActiveRecord
             self::LEVEL_ONE => Yii::t('frontend', '一'),
             self::LEVEL_TWO => Yii::t('frontend', '二'),
             self::LEVEL_THREE => Yii::t('frontend', '三'),
-            self::LEVEL_FOUR => Yii::t('frontend', '四'),
-            self::LEVEL_FIVE => Yii::t('frontend', '五'),
-            self::LEVEL_SIX => Yii::t('frontend', '六')
+            self::LEVEL_FOUR => Yii::t('frontend', 'A'),
+            self::LEVEL_FIVE => Yii::t('frontend', 'B'),
+            self::LEVEL_SIX => Yii::t('frontend', 'C'),
+            self::LEVEL_SEVEN => Yii::t('frontend', 'D')
         ];
     }
 

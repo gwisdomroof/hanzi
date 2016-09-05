@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                 'options' => ['class' => 'search-input',  'style'=>'width:50%;'],
                 'labelOptions' => ['class' => 'col-sm-3'],
                 'template' => '{label} <div class="col-sm-9">{input}</div>'
-            ])->inline()->radioList([1 => '是', 0 => '否', 2 => '空']) ?>
+            ])->inline()->radioList([1 => '是', 0 => '否', 2 => '？']) ?>
             <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
             <?php ActiveForm::end(); ?>
         </div>
@@ -117,7 +117,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             <?= Html::activeDropDownList($model, 'level', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
-                            <?= Html::activeRadioList($model, 'bconfirm', [1 => '是', 0 => '否'], ['prompt' => '', 'alt' => $model->id, 'class' => 'choose', 'id' => 'bc' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeRadioList($model, 'bconfirm', [1 => '是', 0 => '否', 2 => '？'], ['prompt' => '', 'alt' => $model->id, 'class' => 'choose', 'id' => 'bc' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
                             <?php if ($bNew) {

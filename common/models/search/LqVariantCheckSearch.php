@@ -82,14 +82,9 @@ class LqVariantCheckSearch extends LqVariantCheck
             'updated_at' => $this->updated_at,
         ]);
 
-        if (isset($this->bconfirm) && $this->bconfirm == 2) {
-            $query->andWhere('bconfirm is null');
-        } else {
-            $query->andFilterWhere(['bconfirm' => $this->bconfirm]);
-        }
-
         $query->andFilterWhere(['like', 'pic_name', $this->pic_name])
             ->andFilterWhere(['like', 'variant_code', $this->variant_code])
+            ->andFilterWhere(['bconfirm' => $this->bconfirm])
             ->andFilterWhere(['like', 'origin_standard_word_code', $this->belong_standard_word_code])
             ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code])
             ->andFilterWhere(['like', 'remark', $this->remark]);

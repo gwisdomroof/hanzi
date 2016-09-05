@@ -42,16 +42,16 @@ class LqVariantController extends Controller
         $curImportTime = $lastImportTime;
         $sqls = [];
         foreach ($models as $model) {
-            $source = HanziSet::SOURCE_OTHER;
+            $source = LqVariant::SOURCE_TH;
             if (stripos($model->pic_name, "TW-") !== false) {
-                $source = HanziSet::SOURCE_TAIWAN;
+                $source = LqVariant::SOURCE_TW;
             } elseif (stripos($model->pic_name, "GL-") !== false) {
-                $source = HanziSet::SOURCE_GAOLI;
+                $source = LqVariant::SOURCE_GL;
             }
-            $word = mb_strlen($model->variant_code2) == 1 ? $model->variant_code2 : null;
-            $pic_name = mb_strlen($model->variant_code2) == 1 ? null : $model->variant_code2;
+            $word = mb_strlen($model->variant_code) == 1 ? $model->variant_code : null;
+            $pic_name = mb_strlen($model->variant_code) == 1 ? null : $model->variant_code;
             $time = time();
-            $sqls[] = "INSERT INTO lq_variant(source, word, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ($source, '$word', '$pic_name', '$model->belong_standard_word_code2', $model->nor_var_type2, $time, $time);";
+            $sqls[] = "INSERT INTO lq_variant(source, ori_pic_name, word, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ($source, '$model->variant_code', ''$word', '$pic_name', '$model->belong_standard_word_code', $model->nor_var_type, $time, $time);";
 
             if ($curImportTime < $model->updated_at) {
                 $curImportTime = $model->updated_at;

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use Yii;
+use common\models\LqVariant;
 use common\models\LqVariantCheck;
 use common\models\search\LqVariantCheckSearch;
 use yii\web\Controller;
@@ -84,7 +85,6 @@ class LqVariantCheckController extends Controller
 
         $searchModel = new LqVariantCheckSearch();
         $searchModel->level = trim(Yii::$app->request->get('level'));
-        # confirm中用2来表示为空的情况
         $searchModel->bconfirm = trim(Yii::$app->request->get('confirm'));
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -156,6 +156,11 @@ class LqVariantCheckController extends Controller
 
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            # 如果等级为ABCD，且confirm为是，则将这条数据插入龙泉异体字字典
+            if ($model->level >= LqVariantCheck::LEVEL_FOUR && $model->bconfirm = 1) {
+//                $variant = new LqVariant();
+//                $variant
+            }
             return '{"status":"success", "id": ' . $id . '}';
         } else {
             return '{"status":"error", "id": ' . $id . '}';

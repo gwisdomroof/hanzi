@@ -10,6 +10,7 @@ use Yii;
  * @property string $id
  * @property integer $source
  * @property integer $type
+ * @property integer $ori_pic_name
  * @property string $word
  * @property string $pic_name
  * @property integer $nor_var_type
@@ -40,6 +41,20 @@ use Yii;
  */
 class LqVariant extends HanziSet
 {
+    // 来源
+    const SOURCE_TH = 0;    # other
+    const SOURCE_UN = 1;    # unicode
+    const SOURCE_TW = 2;    # taiwan
+    const SOURCE_HY = 3;    # hanyu
+    const SOURCE_GL = 4;    # gaoli
+    const SOURCE_SZ = 5;    # dunhuang
+    const SOURCE_QS = 6;
+    const SOURCE_PL = 7;
+    const SOURCE_HW = 8;
+    const SOURCE_YL = 9;
+    const SOURCE_JX = 10;
+    const SOURCE_QL = 11;
+
     /**
      * @inheritdoc
      */
@@ -55,6 +70,7 @@ class LqVariant extends HanziSet
     {
         return array_merge(parent::rules(), [
             [['bconfirm'], 'integer'],
+            [['ori_pic_name'], 'string', 'max' => 128],
             [['sutra_ids'], 'string', 'max' => 256]
         ]);
     }
@@ -65,8 +81,29 @@ class LqVariant extends HanziSet
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
+            'ori_pic_name' => Yii::t('common', '图片名'),
             'sutra_ids' => Yii::t('common', '经字号'),
             'bconfirm' => Yii::t('common', '是否存疑'),
         ]);
+    }
+
+    /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function sources()
+    {
+        return [
+            self::SOURCE_TW => Yii::t('frontend', 'TW'),
+            self::SOURCE_HY => Yii::t('frontend', 'HY'),
+            self::SOURCE_GL => Yii::t('frontend', 'GL'),
+            self::SOURCE_SZ => Yii::t('frontend', 'SZ'),
+            self::SOURCE_QS => Yii::t('frontend', '磧砂'),
+            self::SOURCE_PL => Yii::t('frontend', '毗盧'),
+            self::SOURCE_HW => Yii::t('frontend', '洪武'),
+            self::SOURCE_YL => Yii::t('frontend', '永樂'),
+            self::SOURCE_JX => Yii::t('frontend', '嘉興'),
+            self::SOURCE_QL => Yii::t('frontend', '乾隆'),
+        ];
     }
 }
