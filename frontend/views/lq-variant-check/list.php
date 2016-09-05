@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use common\models\HanziSet;
+use common\models\LqVariant;
 use common\models\LqVariantCheck;
 
 /* @var $this yii\web\View */
@@ -47,9 +48,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'source',
                 'headerOptions' => ['width' => '80'],
                 'value' => function ($data) {
-                    return empty($data->source) ? '' : LqVariantCheck::sources()[$data->source];
+                    return empty($data->source) ? '' : LqVariant::sources()[$data->source];
                 },
-                'filter' => LqVariantCheck::sources()
+                'filter' => LqVariant::sources()
             ],
             'pic_name',
             'variant_code',
