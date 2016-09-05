@@ -46,7 +46,7 @@ class HanziSet extends \yii\db\ActiveRecord
     const SOURCE_HANYU = 3;
     const SOURCE_GAOLI = 4;
     const SOURCE_DUNHUANG = 5;
-    const SOURCE_OTHER = 6;
+    const SOURCE_OTHER = 0;
 
     // 正异类型
     const TYPE_NORMAL_PURE = 0; # 纯正字
