@@ -94,6 +94,7 @@ class LqVariant extends HanziSet
     public static function sources()
     {
         return [
+            self::SOURCE_UN => Yii::t('frontend', 'UN'),
             self::SOURCE_TW => Yii::t('frontend', 'TW'),
             self::SOURCE_HY => Yii::t('frontend', 'HY'),
             self::SOURCE_GL => Yii::t('frontend', 'GL'),

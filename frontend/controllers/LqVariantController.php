@@ -50,10 +50,9 @@ class LqVariantController extends Controller
             }
             $word = mb_strlen($model->variant_code) == 1 ? $model->variant_code : null;
             $pic_name = mb_strlen($model->variant_code) == 1 ? null : $model->variant_code;
-            $type = empty($model->nor_var_type) ? null : $model->nor_var_type;
+            $type = empty($model->nor_var_type) ? 'null' : $model->nor_var_type;
             $time = time();
-            $sqls[] = "INSERT INTO lq_variant(source, ori_pic_name, word, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) 
-                      VALUES ({$source}, '{$model->variant_code}', '{$word}', '{$pic_name}', '{$model->belong_standard_word_code}', {$type}, {$time}, {$time});";
+            $sqls[] = "INSERT INTO lq_variant(source, ori_pic_name, word, pic_name, belong_standard_word_code, nor_var_type, created_at, updated_at) VALUES ({$source}, '{$model->variant_code}', '{$word}', '{$pic_name}', '{$model->belong_standard_word_code}', {$type}, {$time}, {$time});";
 
             if ($curImportTime < $model->updated_at) {
                 $curImportTime = $model->updated_at;
