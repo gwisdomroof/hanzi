@@ -76,10 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'bconfirm',
                 'headerOptions' => ['width' => '80'],
                 'value' => function ($data) {
-                    $arr = [1 => '是', 0 => '否'];
+                    $arr = [1 => '是', 0 => '否', 2=>'？'];
                     return !isset($data->bconfirm) ? '' : $arr[$data->bconfirm];
                 },
-                'filter' => [1 => '是', 0 => '否']
+                'filter' => [1 => '是', 0 => '否', 2=>'？']
             ],
             // 'remark',
             // 'updated_at',
