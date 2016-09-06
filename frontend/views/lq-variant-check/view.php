@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\LqVariantCheck;
+use common\models\LqVariant;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\LqVariantCheck */
@@ -23,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'user.username',
             [
                 'attribute' => 'source',
-                'value' => empty($model->source)? '' : LqVariantCheck::sources()[$model->source],
+                'value' => empty($model->source)? '' : LqVariant::sources()[$model->source],
             ],
             'pic_name',
             'variant_code',

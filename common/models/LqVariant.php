@@ -81,6 +81,7 @@ class LqVariant extends HanziSet
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
+            'pic_name' => Yii::t('common', '编号'),
             'ori_pic_name' => Yii::t('common', '图片名'),
             'sutra_ids' => Yii::t('common', '经字号'),
             'bconfirm' => Yii::t('common', '是否存疑'),
@@ -107,4 +108,50 @@ class LqVariant extends HanziSet
             self::SOURCE_QL => Yii::t('frontend', '乾隆'),
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLqPicturePath()
+    {
+        $normal = empty($this->ori_pic_name) ? 'A' : mb_substr($this->ori_pic_name, 0, 1, 'utf8');
+        $realPicName = $this->ori_pic_name;
+        # 早期贤保法师处的图片字
+        if (!preg_match("/^.\d+.(jpg|png)$/", $realPicName)) {
+            $realPicName = str_replace($normal, '', $realPicName);
+        }
+        return '/' . LqVariantCheck::$imageBasePath . "{$normal}/{$realPicName}";
+    }
+
+    /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function addVariantFromCheck($lqVariantCheck)
+    {
+        $query = LqVariant::find()->andFilterWhere(['or', ['pic_name' => $lqVariantCheck->variant_code], ['ori_pic_name' => $lqVariantCheck->pic_name]]);
+        $variant = $query->one();
+        if (!empty($variant)) {
+            $variant->source = $lqVariantCheck->source;
+            $variant->pic_name = $lqVariantCheck->variant_code;
+            $variant->ori_pic_name = $lqVariantCheck->pic_name;
+            $variant->nor_var_type = $lqVariantCheck->nor_var_type;
+            $variant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
+            if (!$variant->save()) {
+                throw new \yii\db\Exception("数据保存有误。");
+            }
+        } else {
+            $variant = new LqVariant();
+            $variant->source = $lqVariantCheck->source;
+            $variant->pic_name = $lqVariantCheck->variant_code;
+            $variant->ori_pic_name = $lqVariantCheck->pic_name;
+            $variant->nor_var_type = $lqVariantCheck->nor_var_type;
+            $variant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
+            if (!$variant->save()) {
+                throw new \yii\db\Exception("数据保存有误。");
+            }
+        }
+
+    }
+
 }

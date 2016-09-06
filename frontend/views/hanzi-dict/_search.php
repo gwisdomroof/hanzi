@@ -91,18 +91,18 @@ if (!empty($param)) {
                     if (!empty($variant->word)) {
                         $title = empty($variant->nor_var_type) ? '' : HanziSet::norVarTypes()[$variant->nor_var_type];
                         if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
-                            $title = "$title|{$variant->belong_standard_word_code}";
+                            $title = $title . '|' . $variant->belong_standard_word_code;
                         }
                         $class = ($param == $variant->word) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
                         echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->word]) . "'>" . $variant->word . "</a></span>";
-                    } elseif (!empty($variant->pic_name)) {
-                        $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-                        $title = $variant->pic_name;
+                    } elseif (!empty($variant->ori_pic_name)) {
+                        $picPath = $variant->getLqPicturePath();
+                        $title = empty($variant->pic_name) ? preg_replace('(.jpg|.png)', '', $variant->ori_pic_name) : $variant->pic_name;
                         if (!empty($variant->nor_var_type)) {
                             $title = $title . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
                         }
                         if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
-                            $title = "$title|{$variant->belong_standard_word_code}";
+                            $title = $title . '|' . $variant->belong_standard_word_code;
                         }
                         $class = ($param == $variant->pic_name) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
                         echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->pic_name]) . "'>" . "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'></a></span>";

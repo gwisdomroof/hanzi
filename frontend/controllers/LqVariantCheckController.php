@@ -158,8 +158,7 @@ class LqVariantCheckController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             # 如果等级为ABCD，且confirm为是，则将这条数据插入龙泉异体字字典
             if ($model->level >= LqVariantCheck::LEVEL_FOUR && $model->bconfirm = 1) {
-//                $variant = new LqVariant();
-//                $variant
+                LqVariant::addVariantFromCheck($model);
             }
             return '{"status":"success", "id": ' . $id . '}';
         } else {

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use common\models\LqVariantCheck;
+use common\models\LqVariant;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\LqVariantCheck */
@@ -13,7 +14,7 @@ use common\models\LqVariantCheck;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal', 'options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?= $form->field($model, 'source')->dropDownList(LqVariantCheck::sources()) ?>
+    <?= $form->field($model, 'source')->dropDownList(LqVariant::sources()) ?>
 
     <?= $form->field($model, 'imageFile')->fileInput() ?>
 

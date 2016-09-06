@@ -37,7 +37,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
      */
     public $imageFile;
 
-    private static $imageBasePath = 'img/FontImage/';
+    public static $imageBasePath = 'img/FontImage/';
 
     /**
      * @inheritdoc

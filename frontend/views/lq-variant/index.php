@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use common\models\LqVariant;
+use common\models\HanziSet;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\LqVariantSearch */
@@ -12,31 +14,61 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lq-variant-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a(Yii::t('frontend', 'Create'), ['create'], ['class' => 'btn btn-primary']) ?>
-    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'headerRowOptions' => ['style' => 'color:#337ab7'],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             // 'id',
-            'pic_name',
-            'source',
+            [
+                'header' => '图片', # 取消排序
+                'attribute'=>'ori_pic_name',
+                'filter' => '',
+                'value'=>function ($model) {
+                    return $model->getLqPicturePath();
+                },
+                'format' => ['image',['width'=>'35','height'=>'35']],
+                "headerOptions" => ["width" => "60"]
+            ],
+            [
+                'attribute' => 'ori_pic_name',
+//                'headerOptions' => ['width' => '150'],
+            ],
+            [
+                'attribute' => 'pic_name',
+                'headerOptions' => ['width' => '100'],
+            ],
+            [
+                'attribute' => 'word',
+                'headerOptions' => ['width' => '80'],
+            ],
+            [
+                'attribute' => 'source',
+                'headerOptions' => ['width' => '100'],
+                'value' => function ($data) {
+                    return empty($data->source) ? '' : LqVariant::sources()[$data->source];
+                },
+                'filter' => LqVariant::sources()
+            ],
             // 'type',
-            // 'word',
-            'nor_var_type',
+            [
+                'attribute' => 'nor_var_type',
+                'headerOptions' => ['width' => '120'],
+                'value' => function ($data) {
+                    return empty($data->nor_var_type) ? '' : HanziSet::norVarTypes()[$data->nor_var_type];
+                },
+                'filter' => HanziSet::norVarTypes()
+            ],
             'belong_standard_word_code',
             // 'standard_word_code',
             // 'position_code',
             // 'duplicate',
             // 'duplicate_id',
             // 'frequence',
-            // 'sutra_ids',
-            'bconfirm',
+//             'sutra_ids',
+//            'bconfirm',
             // 'pinyin',
             // 'radical',
             // 'stocks',
@@ -53,8 +85,10 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'remark',
             // 'created_at',
             // 'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
+//            [
+//                'class' => 'yii\grid\ActionColumn',
+//                'template' => '{view} {update}'
+//            ],
         ],
     ]); ?>
 </div>

@@ -52,7 +52,7 @@ class LqVariantSearch extends LqVariant
     {
         return [
             [['id', 'source', 'type', 'nor_var_type', 'duplicate', 'frequence', 'bconfirm', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
-            [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'sutra_ids', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
+            [['word', 'pic_name', 'ori_pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'sutra_ids', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
         ];
     }
 
@@ -106,6 +106,7 @@ class LqVariantSearch extends LqVariant
         ]);
 
         $query->andFilterWhere(['like', 'word', $this->word])
+            ->andFilterWhere(['like', 'ori_pic_name', $this->pic_name])
             ->andFilterWhere(['like', 'pic_name', $this->pic_name])
             ->andFilterWhere(['like', 'belong_standard_word_code', $this->belong_standard_word_code])
             ->andFilterWhere(['like', 'standard_word_code', $this->standard_word_code])
