@@ -65,7 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $data->getCurrentProgress();
                     }
                 ],
-
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    "headerOptions" => ["width" => "80"],
+                ],
             ],
         ]); ?>
     </div>
