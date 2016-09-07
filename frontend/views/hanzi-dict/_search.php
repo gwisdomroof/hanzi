@@ -122,7 +122,7 @@ if (!empty($param)) {
                 echo "<div class='hanzi-variants'>";
                 foreach ($variants as $variant) {
                     if (!empty($variant->word)) {
-                        $title = empty($variant->nor_var_type) ? '' : HanziSet::norVarTypes()[$variant->nor_var_type];
+                        $title = empty($variant->nor_var_type) ? $variant->word : $variant->word.'|'.HanziSet::norVarTypes()[$variant->nor_var_type];
                         if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
                             $title = "$title|{$variant->belong_standard_word_code}";
                         }
