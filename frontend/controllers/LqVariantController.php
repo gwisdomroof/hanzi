@@ -31,6 +31,41 @@ class LqVariantController extends Controller
     }
 
     /**
+     * 重置图片路径.
+     * @return mixed
+     */
+    public function actionResetImage()
+    {
+        $basePath = 'yitizi';
+        $paths = ['a', 'b', 'c', 'n'];
+        $files = [];
+        foreach ($paths as $path) {
+            $dir = "{$basePath}/yiti{$path}/s{$path}";
+            $handle = opendir($dir);
+            if ($handle) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file != '.' && $file != '..') {
+                        $filePath = $dir . "/" . $file;
+                        if (is_file($filePath)) {  # 如果是文件，则进行查找替换
+                            $content = file_get_contents($filePath);
+                            $search = 'http://yitizi.guoxuedashi.com';
+                            $replace = 'http://dict.variants.moe.edu.tw';
+                            $content = str_replace($search, $replace, $content);
+                            file_put_contents($filePath, $content);
+                            $files[] = $filePath;
+                        }
+                    }
+                }   //  end while
+                closedir($handle);
+            }
+        }
+
+        file_put_contents('\home\xiandu\reset-image-files.txt', implode("\r\n", $files));
+        echo 'success!';
+        die;
+    }
+
+    /**
      * Import LqVariants from lq-variant-check.
      * @return mixed
      */
