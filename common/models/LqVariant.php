@@ -117,7 +117,7 @@ class LqVariant extends HanziSet
         $normal = empty($this->ori_pic_name) ? 'A' : mb_substr($this->ori_pic_name, 0, 1, 'utf8');
         $realPicName = $this->ori_pic_name;
         # 早期贤保法师处的图片字
-        if (!preg_match("/^.\d+.(jpg|png)$/", $realPicName)) {
+        if (!preg_match("/^{$normal}\d+.(jpg|png)$/", $realPicName)) {
             $realPicName = substr($realPicName, strlen($normal));
         }
         return '/' . LqVariantCheck::$imageBasePath . "{$normal}/{$realPicName}";

@@ -34,7 +34,7 @@ class LqVariantController extends Controller
      * 重置图片路径.
      * @return mixed
      */
-    public function actionResetImage()
+    private function actionResetImage()
     {
         $basePath = 'yitizi';
         $paths = ['a', 'b', 'c', 'n'];
@@ -113,6 +113,7 @@ class LqVariantController extends Controller
      */
     public function actionIndex()
     {
+
         $searchModel = new LqVariantSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
