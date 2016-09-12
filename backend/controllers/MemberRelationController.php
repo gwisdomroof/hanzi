@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\MemberRelation;
-use common\models\MemberRelationSearch;
+use common\models\search\MemberRelationSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
