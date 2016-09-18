@@ -189,9 +189,9 @@ class WorkPackage extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('common', 'ID'),
             'userid' => Yii::t('common', '用户'),
-            'type' => Yii::t('common', '类　型'),
-            'volume' => Yii::t('common', '工作量'),
-            'daily_schedule' => Yii::t('common', '日计划'),
+            'type' => Yii::t('common', '任务类型'),
+            'volume' => Yii::t('common', '总工作量'),
+            'daily_schedule' => Yii::t('common', '每日计划'),
             'expected_date' => Yii::t('common', '预计完成日'),
             'progress' => Yii::t('common', '进　度'),
             'created_at' => Yii::t('common', '领取日'),

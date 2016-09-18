@@ -67,6 +67,10 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     <div class="msg pull-right">
         <span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>
         当前积分：<span id="score"><?= \common\models\HanziUserTask::getScore(Yii::$app->user->id) ?></span>
+        <?php if (!empty(Yii::$app->session->get('curRecognizeProgress'))) {
+            list($finished, $schedule) = explode('/', Yii::$app->session->get('curRecognizeProgress'));
+            echo "&nbsp;&nbsp;/&nbsp;&nbsp;日进度：<span id='finished'>{$finished}</span>/<span id='schedule'>$schedule</span>";
+        } ?>
     </div>
 
     <div class="col-sm-6" id="right-check" style="margin-top: 13px; overflow:scroll; height: 520px;">
@@ -211,9 +215,11 @@ $script = <<<SCRIPT
                     $('#zs'+id).attr('disabled', true);
                     var score = parseInt(result.score);
                     if (score != 0) {
-                        var value = parseInt($('#score').text()) + score;
                         $("#tips").fadeIn(50).fadeOut(500); 
-                        $('#score').text(value);
+                        var scoreValue = parseInt($('#score').text()) + score;
+                        $('#score').text(scoreValue);
+                        var finishedValue = parseInt($('#finished').text()) + 1;
+                        $('#finished').text(finishedValue);
                     }
                     thisObj.attr('class', 'modify');
                     thisObj.text('修改');

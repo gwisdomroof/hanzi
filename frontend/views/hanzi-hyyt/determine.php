@@ -45,7 +45,9 @@ $this->title = Yii::t('frontend', 'Hanzi Hyyts');
     </div>
 </div> 
 
-<div class="msg pull-right"><span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>当前积分：<span id="score"><?=\common\models\HanziUserTask::getScore(Yii::$app->user->id)?></span></div>
+<div class="msg pull-right">
+    <span id="tips" class="tips" style="display:none; margin-right:5px;">+1</span>当前积分：<span id="score"><?=\common\models\HanziUserTask::getScore(Yii::$app->user->id)?></span>
+</div>
 <div class="col-sm-6" style="margin-top: 13px; overflow:scroll; height: 520px;">
     <table class="table table-hover" style="font-size: 16px;">
         <tr style="background:#f9f9f9; font-size:14px;"><th width="10%">序号</th><th width="10%">阶段</th><th width="15%">字头</th><th>类型</th><th width="15%">通行字</th><th>备注</th>

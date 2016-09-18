@@ -68,6 +68,9 @@ class HanziHyytController extends Controller
             return false;
         }
 
+        // 设置当前工作进度
+        Yii::$app->session->set('curRecognizeProgress', "{$finishedCountToday}/{$curRecognizePackage['daily_schedule']}");
+
         // 检查并设置当前工作页面的session值。
         $curPage = Yii::$app->session->get('curRecognizePage');
         if (!isset($curPage) || empty($curPage['id'])) {
@@ -253,4 +256,5 @@ class HanziHyytController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

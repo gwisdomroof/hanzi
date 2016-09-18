@@ -117,8 +117,13 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         $idlePagesArr = [];
+        $inputEmptyPages = json_decode(Yii::$app->get('keyStorage')->get('frontend.input-empty-pages', null, false));
         for ($i = 1; $i < $maxPageNumber; $i++) {
             if (!in_array($i, $usedPagesArr)) {
+                # 如果是异体字输入，则需要去掉空白页面
+                if ($type == self::TYPE_INPUT && in_array($i.'', $inputEmptyPages)) {
+                    continue;
+                }
                 $idlePagesArr[$i] = $i;
                 if (count($idlePagesArr) >= $count) {
                     break;

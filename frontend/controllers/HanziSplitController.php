@@ -83,6 +83,9 @@ class HanziSplitController extends Controller
             return;
         }
 
+        // 设置当前工作进度
+        Yii::$app->session->set('curSplitProgress', "{$finishedCountToday}/{$curSplitPackage['daily_schedule']}");
+
         // 检查并设置当前工作页面的session值。
         $curPage = Yii::$app->session->get('curSplitPage');
 

@@ -74,8 +74,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'header' => '操作',
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => '{start} {update}',
+                    'template' => '{update}  {start}',
                     'buttons' => [
+                        'update' => function ($url, $model, $key) {
+                            $options = [
+                                'title' => Yii::t('yii', '设置工作量'),
+                                'aria-label' => Yii::t('yii', '设置工作量'),
+                            ];
+                            return Html::a('<span>设置工作量</span>', $url, $options);
+                        },
                         'start' => function ($url, $model, $key) {
                             $options = [
                                 'title' => Yii::t('yii', '开始工作'),
@@ -90,13 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
 
                             return Html::a('<span>开始工作</span>&nbsp;', $url, $options);
-                        },
-                        'update' => function ($url, $model, $key) {
-                            $options = [
-                                'title' => Yii::t('yii', '设置'),
-                                'aria-label' => Yii::t('yii', '设置'),
-                            ];
-                            return Html::a('<span>设置</span>', $url, $options);
                         },
                     ],
                 ],

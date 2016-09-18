@@ -10,7 +10,7 @@ use yii\grid\GridView;
 $this->title = Yii::t('frontend', 'Work Clocks');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="work-clock-index col-sm-8 col-sm-offset-2">
+<div class="work-clock-index">
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'user.username',
             ],
-//            'content',
+            'content',
 //             'updated_at',
 //            [
 //                'class' => 'yii\grid\ActionColumn',
