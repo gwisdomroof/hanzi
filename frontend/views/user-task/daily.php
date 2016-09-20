@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //            'userid',
             'user.username',
             [
+                'label'=>'数量',
                 'attribute' => 'cnt',
                 'headerOptions' => ['style' => 'color:#337ab7'],
             ],
