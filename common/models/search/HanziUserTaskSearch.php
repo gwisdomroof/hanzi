@@ -58,6 +58,10 @@ class HanziUserTaskSearch extends HanziUserTask
 
         $this->load($params);
 
+        // 转换时间格式
+        $updateTime = $this->updated_at;
+        unset($this->updated_at);
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -74,8 +78,14 @@ class HanziUserTaskSearch extends HanziUserTask
             'task_status' => $this->task_status,
             'quality' => $this->quality,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+
+        if (!empty($updateTime)) {
+            list($y, $m, $d) = explode('-', $updateTime);
+            $beginTime = mktime(0, 0, 0, $m, $d, $y);
+            $endTime = mktime(23, 59, 59, $m, $d, $y);
+            $query->andFilterWhere(['and', ['>=', 'hanzi_user_task.updated_at', $beginTime], ['<=', 'hanzi_user_task.updated_at', $endTime]]);
+        }
 
         $query->joinWith(['user']);
         $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
@@ -83,7 +93,45 @@ class HanziUserTaskSearch extends HanziUserTask
         return $dataProvider;
     }
 
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     */
+    public function dailySearch($params)
+    {
+        $query = HanziUserTask::find();
 
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        if (empty($params['HanziUserTaskSearch'])) {
+            return $dataProvider;
+        }
+
+        $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);
+
+        $query->joinWith(['user']);
+
+        if (isset($params['HanziUserTaskSearch']['task_type']))
+            $query->andFilterWhere(['task_type' => $params['HanziUserTaskSearch']['task_type']]);
+
+        if (isset($params['HanziUserTaskSearch']['updated_at']) && !empty($params['HanziUserTaskSearch']['updated_at'])) {
+            $this->updated_at = $params['HanziUserTaskSearch']['updated_at'];
+            if (!empty($this->updated_at)) {
+                list($y, $m, $d) = explode('-', $this->updated_at);
+                $beginTime = mktime(0, 0, 0, $m, $d, $y);
+                $endTime = mktime(23, 59, 59, $m, $d, $y);
+                $query->andFilterWhere(['and', ['>=', 'hanzi_user_task.updated_at', $beginTime], ['<=', 'hanzi_user_task.updated_at', $endTime]]);
+            }
+        }
+
+        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
+
+        return $dataProvider;
+    }
 
     /**
      * Creates data provider instance with search query applied
@@ -98,19 +146,19 @@ class HanziUserTaskSearch extends HanziUserTask
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['cnt'=>SORT_DESC]]
+            'sort' => ['defaultOrder' => ['cnt' => SORT_DESC]]
         ]);
-        
+
         if (isset($params['HanziUserTaskSearch']['task_type']) && $params['HanziUserTaskSearch']['task_type'] !== '0') {
             $query->select(['userid, task_type, SUM(quality) AS cnt'])->groupBy(['userid', 'task_type']);
             $this->load($params);
-            $query->andFilterWhere(['task_type' => $this->task_type ]);
+            $query->andFilterWhere(['task_type' => $this->task_type]);
         } else {
             $query->select(['userid, SUM(quality) AS cnt'])->groupBy(['userid']);
             // unset($params['HanziUserTaskSearch']['task_type']);
             $this->load($params);
         }
-        
+
         $query->joinWith(['user']);
 
         if (!$this->validate()) {

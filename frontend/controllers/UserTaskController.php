@@ -84,7 +84,7 @@ class UserTaskController extends Controller
 
         $dataProvider = $searchModel->search($param);
 
-        $members = user::find()
+        $members = User::find()
             ->select(['username as value', 'username as label', 'id'])
             ->where(['status' => user::STATUS_ACTIVE])
             ->asArray()
@@ -95,6 +95,39 @@ class UserTaskController extends Controller
             'dataProvider' => $dataProvider,
             'type' => $type,
             'members' => $members,
+        ]);
+    }
+
+    /**
+     * statistics user task amount daily.
+     * @return mixed
+     */
+    public function actionStatistics()
+    {
+        $searchModel = new HanziUserTaskSearch();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('statistics', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+
+    /**
+     * statistics user task amount daily.
+     * @return mixed
+     */
+    public function actionDaily()
+    {
+        $searchModel = new HanziUserTaskSearch();
+
+        $dataProvider = $searchModel->dailySearch(Yii::$app->request->post());
+
+        return $this->render('daily', [
+            'model' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

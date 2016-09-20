@@ -92,5 +92,8 @@ return [
     'Search' => '检索',
     'Work Packages' => '工作包',
     'Work Clocks' => '打卡',
-    'Lq Variant Checks' => '异体字判定'
+    'Lq Variant Checks' => '异体字判定',
+    'Gltw Dedups' => '高丽台湾异体字去重',
+    'Tasks Statistics' => '任务统计',
+    'Tasks Daily'=>'每日工作量'
 ];
