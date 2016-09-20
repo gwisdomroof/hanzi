@@ -108,15 +108,15 @@ class HanziUserTaskSearch extends HanziUserTask
         ]);
 
         if (empty($params['HanziUserTaskSearch'])) {
-            return $dataProvider;
+            $params['HanziUserTaskSearch']['updated_at'] = date('Y-m-d');
         }
 
         $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);
-
         $query->joinWith(['user']);
 
         if (isset($params['HanziUserTaskSearch']['task_type']))
-            $query->andFilterWhere(['task_type' => $params['HanziUserTaskSearch']['task_type']]);
+            $this->task_type = $params['HanziUserTaskSearch']['task_type'];
+            $query->andFilterWhere(['task_type' => $this->task_type]);
 
         if (isset($params['HanziUserTaskSearch']['updated_at']) && !empty($params['HanziUserTaskSearch']['updated_at'])) {
             $this->updated_at = $params['HanziUserTaskSearch']['updated_at'];

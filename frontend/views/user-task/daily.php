@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($model, 'task_type')->dropDownList([
             HanziUserTask::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
             HanziUserTask::TYPE_INPUT => Yii::t('common', '异体字录入'),
-        ]) ?>
+        ], ['prompt' => '']) ?>
     </div>
     <div class="col-sm-5">
         <label class="control-label col-sm-3" for="hanziusertasksearch-updated_at">日期</label>
