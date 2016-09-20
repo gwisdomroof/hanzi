@@ -54,6 +54,11 @@ class HanziUserTaskSearch extends HanziUserTask
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'updated_at' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -107,8 +112,11 @@ class HanziUserTaskSearch extends HanziUserTask
             'query' => $query,
         ]);
 
+        $dataProvider->pagination->pageSize=10000;
+
         if (empty($params['HanziUserTaskSearch'])) {
             $params['HanziUserTaskSearch']['updated_at'] = date('Y-m-d');
+            $params['HanziUserTaskSearch']['task_type'] = HanziUserTask::TYPE_SPLIT;
         }
 
         $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);
