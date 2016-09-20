@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = '任务列表';
         'summary' => '',
         'columns' => [
             [
-                'class' => 'yii\grid\SerialColumn',
+                'attribute' => 'id',
                 "headerOptions" => ["width" => "30"]
             ],
             [
@@ -26,14 +26,14 @@ $this->params['breadcrumbs'][] = '任务列表';
                 'value' => function ($data) {
                     return empty($data['task_type']) ? '' : $data->types()[$data['task_type']];
                 },
-                'filter'=>HanziTask::types()
+                'filter' => HanziTask::types()
             ],
             'leader.username',
             [
                 'attribute' => 'page',
                 'value' => function ($data) {
                     $url = $data->task_type == HanziTask::TYPE_SPLIT ? 'hanzi-split/index' : 'hanzi-hyyt/index';
-                    return empty($data['page']) ? '' : Html::a($data['page'],  yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                    return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
                 },
                 'format' => 'raw',
             ],
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = '任务列表';
                 'value' => function ($data) {
                     return !isset($data['status']) ? '' : $data->statuses()[$data['status']];
                 },
-                'filter'=>HanziTask::statuses(),
+                'filter' => HanziTask::statuses(),
                 "headerOptions" => ["width" => "120"]
             ],
         ],
