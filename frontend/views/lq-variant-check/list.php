@@ -17,7 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <p style="margin-bottom: 5px;">
         <?= Html::a(Yii::t('frontend', 'Create'), ['create'], ['class' => 'btn btn-success pull-right']) ?>
     </p>
-    <!--    --><? // echo $searchModel?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -31,8 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => '',
                 'value' => function ($model) {
                     $picPath = $model->getPicPath();
-                    $title = ($model->remark) ? $model->remark : "没有备注信息";
-                    return "<a data-toogle='tooltip', title=$title>" . Html::img($picPath, ['class' => 'hanzi-image', 'width' => '35', 'height' => '35']) . "</a>";
+                    $title = "备注：{$model->remark}";
+                    return "<a title={$title}>" . Html::img($picPath, ['class' => 'hanzi-image', 'width' => '35', 'height' => '35']) . '</a>';
                 },
                 "headerOptions" => ["width" => "60"],
                 'format' => 'raw',
@@ -85,9 +84,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => [1 => '是', 0 => '否', 2 => '？']
             ],
-//             'remark',
+            // 'remark',
             // 'updated_at',
-
             [
                 'class' => 'yii\grid\ActionColumn',
                 'headerOptions' => ['width' => '80'],
