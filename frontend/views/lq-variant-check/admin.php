@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             cursor: pointer;
             font-size: 14px;
         }
+
         .search-input {
             cursor: pointer;
             font-size: 14px;
@@ -29,14 +30,17 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
         .container {
             width: 100%;
         }
+
         .search-input {
             width: 30%;
             float: left;
         }
+
         .normal {
             color: #337ab7;
             cursor: pointer;
         }
+
         .search-input label {
             margin-top: 6px;
         }
@@ -58,12 +62,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                 'method' => 'post',
             ]); ?>
             <?php echo $form->field($searchModel, 'level', [
-                'options' => ['class' => 'search-input',  'style'=>'width:30%;'],
+                'options' => ['class' => 'search-input', 'style' => 'width:30%;'],
                 'labelOptions' => ['class' => 'col-sm-4'],
                 'template' => '{label}<div class="col-sm-8">{input}</div>'
             ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
             <?php echo $form->field($searchModel, 'bconfirm', [
-                'options' => ['class' => 'search-input',  'style'=>'width:50%;'],
+                'options' => ['class' => 'search-input', 'style' => 'width:50%;'],
                 'labelOptions' => ['class' => 'col-sm-4'],
                 'template' => '{label} <div class="col-sm-8">{input}</div>'
             ])->inline()->radioList([1 => '是', 0 => '否', 2 => '？']) ?>
@@ -90,10 +94,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         <td>
                             <?php if (!empty($model->pic_name)) {
                                 $source = LqVariant::sources()[$model->source];
-                                $created_at = date('Y-m-d',$model->created_at);
+                                $created_at = date('Y-m-d', $model->created_at);
                                 $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;图片名：{$model->pic_name}&#xa;创建时间：{$created_at}&#xa;提交人：{$model->user->username}&#xa;备注：{$model->remark}";
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
-                                echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
+                                echo "<a data-toogle='tooltip', title={$title}>" . Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image']) . "</a>";
                             } ?>
                         </td>
                         <td>
@@ -144,23 +148,24 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             $maxPage = $minPage + $count - 1 < $maxPage ? $minPage + $count - 1 : $maxPage;
             $url = Url::current();
             if (isset(Yii::$app->request->queryParams['page'])) {
-                $url = str_replace("page={$curPage}&",  '' ,  $url);
-                $url = str_replace("&page={$curPage}",  '' ,  $url);
+                $url = str_replace("page={$curPage}&", '', $url);
+                $url = str_replace("&page={$curPage}", '', $url);
             }
+            $linkSymbol = empty(Yii::$app->request->queryParams) ? '?' : '&';
             if ($curPage > 1) {
                 $prePage = $curPage - 1;
-                echo "<li class='prev'><a href='$url&page=$prePage'>«</a></li>";
+                echo "<li class='prev'><a href='{$url}{$linkSymbol}page={$prePage}'>«</a></li>";
             }
             for ($i = $minPage; $i <= $maxPage; $i++) {
                 if ($i == $curPage) {
-                    echo "<li class='active'><a href='$url&page=$i'>$i</a></li>";
+                    echo "<li class='active'><a href='{$url}{$linkSymbol}page=$i'>$i</a></li>";
                 } else {
-                    echo "<li><a href='$url&page=$i'>$i</a></li>";
+                    echo "<li><a href='{$url}{$linkSymbol}page=$i'>$i</a></li>";
                 }
             }
             if ($curPage < $maxPage) {
                 $nextPage = $curPage + 1;
-                echo "<li class='next'><a href='$url&page=$nextPage'>»</a></li>";
+                echo "<li class='next'><a href='{$url}{$linkSymbol}page={$nextPage}'>»</a></li>";
             }
             ?>
         </ul>
