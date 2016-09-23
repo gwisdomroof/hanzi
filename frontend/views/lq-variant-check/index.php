@@ -56,20 +56,16 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             </tr>
 
             <?php foreach ($dataProvider->getModels() as $model): ?>
-
-
                 <form id=<?= "form" . $model->id ?>>
                     <?php $bNew = $model->isNew(); ?>
                     <tr>
                         <td>
                             <?php if (!empty($model->pic_name)) {
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
-//                                echo Html::img("/img/FontImage/" . $normal . "/$model->pic_name", ['class' => 'hanzi-image','data=toogle'=>'tooltip','title'=>'ni &#xa;,<br>hao' .'$model->source' .'$model->created_at'.'$model->userid'.'$model->remark']);
                                 $source = LqVariant::sources()[$model->source];
                                 $username= $model['user']['username'];
                                 $created_at = str_replace('"','',date("Y-m-dH:i:s",$model->created_at));
                                 $title = "来源：{$model->source}&#xa;创建时间：{$created_at}&#xa;用户名：{$username}&#xa;备注：{$model->remark}";
-//                                $title= "来源：{$source}&#xa;用户名：{$username}&#xa;备注：{$model->remark}&#xa;创建时间：{$created_at}";
                                 echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
                             } ?>
 
