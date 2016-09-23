@@ -56,6 +56,9 @@ class HanziSet extends \yii\db\ActiveRecord
     const TYPE_VARIANT_NORMAL = 4;    # 狭义且正字
     const TYPE_SPECIAL_VARIANT = 5;    # 特定异体字
     const TYPE_SPECIAL_NORMAL = 6;    # 特定且正字
+    const TYPE_OTHER_ERRORS = 7;    # 误刻误印
+    const TYPE_OTHER_NOT_SELECTED = 8;    # 其他不入库类型
+    const TYPE_OTHER_SELECTED = 9;    # 其他入库类型
     #
     // 是否难字
     const HARD_TRUE = 1;
@@ -250,7 +253,10 @@ class HanziSet extends \yii\db\ActiveRecord
                 self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
                 self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义且正字'),
                 self::TYPE_SPECIAL_VARIANT => Yii::t('frontend', '特定异体字'),
-                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字')
+                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字'),
+                self::TYPE_OTHER_ERRORS => Yii::t('frontend', '误刻误印'),
+                self::TYPE_OTHER_NOT_SELECTED => Yii::t('frontend', '其他不入库类型'),
+                self::TYPE_OTHER_SELECTED => Yii::t('frontend', '其他入库类型')
             ];
         } else {
             return [
@@ -260,7 +266,11 @@ class HanziSet extends \yii\db\ActiveRecord
                 self::TYPE_VARIANT_WIDE => Yii::t('frontend', '广义异体字'),
                 self::TYPE_NORMAL_WIDE => Yii::t('frontend', '广义异体字兼正字'),
                 self::TYPE_SPECIAL_VARIANT => Yii::t('frontend', '特定异体字'),
-                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字')
+                self::TYPE_SPECIAL_NORMAL => Yii::t('frontend', '特定且正字'),
+                self::TYPE_OTHER_ERRORS => Yii::t('frontend', '误刻误印'),
+                self::TYPE_OTHER_NOT_SELECTED => Yii::t('frontend', '其他不入库类型'),
+                self::TYPE_OTHER_SELECTED => Yii::t('frontend', '其他入库类型')
+
             ];
         }
     }

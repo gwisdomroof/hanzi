@@ -4,6 +4,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 
+use common\models\LqVariantCheck;
+use common\models\LqVariant;
+
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\LqVariantCheckSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -37,6 +41,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
         };
     </script>
 
+
     <div id='variant-check' class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
 
         <table class="table table-hover">
@@ -57,8 +62,14 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         <td>
                             <?php if (!empty($model->pic_name)) {
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
-                                echo Html::img("/img/FontImage/" . $normal . "/$model->pic_name", ['class' => 'hanzi-image']);
+                                $source = LqVariant::sources()[$model->source];
+                                $username= $model['user']['username'];
+                                $created_at = str_replace('"','',date("Y-m-dH:i:s",$model->created_at));
+                                $title = "来源：{$model->source}&#xa;创建时间：{$created_at}&#xa;用户名：{$username}&#xa;备注：{$model->remark}";
+                                echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
                             } ?>
+
+
                         </td>
                         <td>
                             <?php echo "<div class='normal'>" . $model->belong_standard_word_code . "</div>";
@@ -162,6 +173,11 @@ $script = <<<SCRIPT
         $('#search-result').attr('src', url);
 
     });
+
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover(); 
+    });
+
 
 SCRIPT;
 
