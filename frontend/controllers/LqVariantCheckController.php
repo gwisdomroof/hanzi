@@ -62,7 +62,7 @@ class LqVariantCheckController extends Controller
     public function actionIndex()
     {
         $searchModel = new LqVariantCheckSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -157,8 +157,12 @@ class LqVariantCheckController extends Controller
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             # 如果等级为ABCD，且confirm为是，则将这条数据插入龙泉异体字字典
-            if ($model->level >= LqVariantCheck::LEVEL_FOUR && $model->bconfirm = 1) {
+            if ($model->level >= LqVariantCheck::LEVEL_FOUR && $model->bconfirm == 1) {
                 LqVariant::addVariantFromCheck($model);
+            }
+            # 如果等级为一二三，且confirm为否，则将这条数据从龙泉异体字字典删除
+            if ($model->level <= LqVariantCheck::LEVEL_THREE && $model->bconfirm == 0) {
+                LqVariant::deleteVariantFromCheck($model);
             }
             return '{"status":"success", "id": ' . $id . '}';
         } else {

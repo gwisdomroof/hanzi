@@ -127,9 +127,9 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         </td>
                         <td>
                             <?php if ($bNew) {
-                                echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
+                                echo "<a class='confirm' id='btn{$model->id}' name='{$model->id}' >确定</a>";
                             } else {
-                                echo "<a class='modify' name='" . $model->id . "' >修改</a>";
+                                echo "<a class='modify' id='btn{$model->id}' name='{$model->id}' >修改</a>";
                             } ?>
                         </td>
                     <tr>
@@ -245,6 +245,8 @@ $script = <<<SCRIPT
                     $('#nv'+id).attr('disabled', true);
                     $('#lv'+id).attr('disabled', true);
                     $('#bc'+id).attr('disabled', true);
+                    $('#btn'+id).attr('class', 'modify');
+                    $('#btn'+id).text('修改');
                     return true;
                 }
             },

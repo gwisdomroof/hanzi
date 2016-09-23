@@ -151,7 +151,19 @@ class LqVariant extends HanziSet
                 throw new \yii\db\Exception("数据保存有误。");
             }
         }
+    }
 
+    /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function deleteVariantFromCheck($lqVariantCheck)
+    {
+        $query = LqVariant::find()->andFilterWhere(['or', ['pic_name' => $lqVariantCheck->variant_code], ['ori_pic_name' => $lqVariantCheck->pic_name]]);
+        $variant = $query->one();
+        if (!empty($variant)) {
+            $variant->delete();
+        }
     }
 
 }
