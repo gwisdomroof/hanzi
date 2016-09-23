@@ -62,14 +62,20 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         <td>
                             <?php if (!empty($model->pic_name)) {
                                 $source = LqVariant::sources()[$model->source];
-                                $created_at = date('Y-m-d',$model->created_at);
+                                $created_at = date('Y-m-d', $model->created_at);
                                 $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;创建时间：{$created_at}&#xa;用户名：{$model->user->username}&#xa;备注：{$model->remark}";
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
-                                echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
+                                echo "<a data-toogle='tooltip', title={$title}>" . Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image']) . "</a>";
                             } ?>
                         </td>
                         <td>
-                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code . "</div>";
+                            <?php
+                            $normals = explode(';', $model->belong_standard_word_code);
+                            $htmlNormals = [];
+                            foreach ($normals as $normal) {
+                                $htmlNormals[] = "<span class='normal'>{$normal}</span>";
+                            }
+                            echo "<div id=nm{$model->id}>" . implode(";", $htmlNormals) . '</div>';
                             ?>
                         </td>
                         <td>
@@ -144,6 +150,13 @@ $script = <<<SCRIPT
                     $('#vc'+id).attr('disabled', true);
                     $('#nv'+id).attr('disabled', true);
                     $('#lv'+id).attr('disabled', true);
+                    // 设置查字典的正字值
+                    var normals = $('#sw'+id).val().split(';');
+                    var htmlNormals = new Array();
+                    for (idx = 0; idx < normals.length; idx++) {
+                        htmlNormals[idx] = "<span class='normal'>" + normals[idx] + "</span>";
+                    }
+                    $('#nm'+id).html(htmlNormals.join(";"));
                     thisObj.attr('class', 'modify');
                     thisObj.text('修改');
                     return true;
@@ -170,11 +183,6 @@ $script = <<<SCRIPT
         $('#search-result').attr('src', url);
 
     });
-
-    $(document).ready(function(){
-        $('[data-toggle="popover"]').popover(); 
-    });
-
 
 SCRIPT;
 

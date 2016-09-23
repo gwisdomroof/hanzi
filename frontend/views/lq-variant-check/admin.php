@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
         };
     </script>
 
-    <div id='variant-check' class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
+    <div id='variant-check' class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
 
         <div class="lq-variant-check-search">
             <?php $form = ActiveForm::begin([
@@ -59,13 +59,13 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             ]); ?>
             <?php echo $form->field($searchModel, 'level', [
                 'options' => ['class' => 'search-input',  'style'=>'width:30%;'],
-                'labelOptions' => ['class' => 'col-sm-3'],
-                'template' => '{label}<div class="col-sm-9">{input}</div>'
+                'labelOptions' => ['class' => 'col-sm-4'],
+                'template' => '{label}<div class="col-sm-8">{input}</div>'
             ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
             <?php echo $form->field($searchModel, 'bconfirm', [
                 'options' => ['class' => 'search-input',  'style'=>'width:50%;'],
-                'labelOptions' => ['class' => 'col-sm-3'],
-                'template' => '{label} <div class="col-sm-9">{input}</div>'
+                'labelOptions' => ['class' => 'col-sm-4'],
+                'template' => '{label} <div class="col-sm-8">{input}</div>'
             ])->inline()->radioList([1 => '是', 0 => '否', 2 => '？']) ?>
             <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
             <?php ActiveForm::end(); ?>
@@ -74,11 +74,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
                 <th>&nbsp;</th>
-                <th>图片名</th>
-                <th>查字典</th>
+                <th width="10%">查字典</th>
                 <th width="10%">正字</th>
-                <th width="15%">异体字编号</th>
-                <th>正异类型</th>
+                <th width="14%">异体字编号</th>
+                <th width="18%">正异类型</th>
                 <th>难易等级</th>
                 <th>审核</th>
                 <th>操作</th>
@@ -92,21 +91,19 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             <?php if (!empty($model->pic_name)) {
                                 $source = LqVariant::sources()[$model->source];
                                 $created_at = date('Y-m-d',$model->created_at);
-                                $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;创建时间：{$created_at}&#xa;用户名：{$model->user->username}&#xa;备注：{$model->remark}";
+                                $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;图片名：{$model->pic_name}&#xa;创建时间：{$created_at}&#xa;提交人：{$model->user->username}&#xa;备注：{$model->remark}";
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
                                 echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
                             } ?>
                         </td>
                         <td>
                             <?php
-                            $title = str_replace('.jpg', '', $model->pic_name);
-
-                            $value = mb_strlen($title) > 7 ? mb_substr($title, 0, 7, 'UTF-8') . '...' : $title;
-                            echo "<div title='$title'>$value</div>";
-                            ?>
-                        </td>
-                        <td>
-                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code . "</div>";
+                            $normals = explode(';', $model->belong_standard_word_code);
+                            $htmlNormals = [];
+                            foreach ($normals as $normal) {
+                                $htmlNormals[] = "<span class='normal'>{$normal}</span>";
+                            }
+                            echo "<div id=nm{$model->id}>" . implode(";", $htmlNormals) . '</div>';
                             ?>
                         </td>
                         <td>
@@ -170,7 +167,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
 
     </div>
 
-    <div id='variant-search' class="lq-variant-search col-sm-4">
+    <div id='variant-search' class="lq-variant-search col-sm-5">
         <iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>"
                 src="<?= Url::toRoute(['hanzi-dict/msearch']); ?>"></iframe>
 
@@ -194,6 +191,13 @@ $script = <<<SCRIPT
                     $('#nv'+id).attr('disabled', true);
                     $('#lv'+id).attr('disabled', true);
                     $('#bc'+id).attr('disabled', true);
+                    // 设置查字典的正字值
+                    var normals = $('#sw'+id).val().split(';');
+                    var htmlNormals = new Array();
+                    for (idx = 0; idx < normals.length; idx++) {
+                        htmlNormals[idx] = "<span class='normal'>" + normals[idx] + "</span>";
+                    }
+                    $('#nm'+id).html(htmlNormals.join(";"));
                     thisObj.attr('class', 'modify');
                     thisObj.text('修改');
                     return true;
