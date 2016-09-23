@@ -12,6 +12,7 @@ use yii\web\UploadedFile;
  * @property integer $userid
  * @property integer $source
  * @property string $pic_name
+ * @property integer $frequency
  * @property string $variant_code
  * @property string $belong_standard_word_code
  * @property integer $nor_var_type
@@ -63,7 +64,7 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userid', 'source', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
+            [['userid', 'source', 'frequency', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
             [['pic_name', 'variant_code', 'origin_standard_word_code', 'belong_standard_word_code'], 'string', 'max' => 64],
             [['remark'], 'string', 'max' => 128],
 //            [['belong_standard_word_code'], 'required'],
@@ -178,20 +179,21 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('common', 'ID'),
-            'userid' => Yii::t('common', '用户名'),
-            'source' => Yii::t('common', '来源'),
-            'pic_name' => Yii::t('common', '图片名'),
-            'imageFile' => Yii::t('common', '图片'),
-            'variant_code' => Yii::t('common', '异体字编号'),
-            'origin_standard_word_code' => Yii::t('common', '原属正字'),
-            'belong_standard_word_code' => Yii::t('common', '所属正字'),
-            'nor_var_type' => Yii::t('common', '正异类型'),
-            'level' => Yii::t('common', '等级'),
-            'bconfirm' => Yii::t('common', '是否确定'),
-            'remark' => Yii::t('common', '备注'),
-            'created_at' => Yii::t('common', '提交时间'),
-            'updated_at' => Yii::t('common', '更新时间'),
+            'id' => Yii::t('frontend', 'ID'),
+            'userid' => Yii::t('frontend', '用户名'),
+            'source' => Yii::t('frontend', '来源'),
+            'frequency' => Yii::t('frontend', '字频'),
+            'pic_name' => Yii::t('frontend', '图片名'),
+            'imageFile' => Yii::t('frontend', '图片'),
+            'variant_code' => Yii::t('frontend', '异体字编号'),
+            'origin_standard_word_code' => Yii::t('frontend', '原属正字'),
+            'belong_standard_word_code' => Yii::t('frontend', '所属正字'),
+            'nor_var_type' => Yii::t('frontend', '正异类型'),
+            'level' => Yii::t('frontend', '等级'),
+            'bconfirm' => Yii::t('frontend', '是否确定'),
+            'remark' => Yii::t('frontend', '备注'),
+            'created_at' => Yii::t('frontend', '提交时间'),
+            'updated_at' => Yii::t('frontend', '更新时间'),
         ];
     }
 

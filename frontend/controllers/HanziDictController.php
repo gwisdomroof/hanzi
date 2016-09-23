@@ -74,16 +74,22 @@ class HanziDictController extends Controller
         $param = trim(Yii::$app->request->get('param'));
         $hanziSearch = new HanziSetSearch();
         $hanziSearch->param = $param;
-        $data = [];
-        if ($hanziSearch->validate()) {
-            $data = $hanziSearch->vsearch();
+        $lqVariantSearch = new LqVariantSearch();
+        $lqVariantSearch->param = $param;
+        $hanziSet = [];
+        $lqVariants = [];
+        if ($hanziSearch->validate() && $lqVariantSearch->validate()) {
+            $hanziSet = $hanziSearch->vsearch();
+            $lqVariants = $lqVariantSearch->vsearch();
         }
 
         return $this->render('msearch', [
             'hanziSearch' => $hanziSearch,
-            'data' => $data,
+            'hanziSet' => $hanziSet,
+            'lqVariants' => $lqVariants,
             'param' => $param,
         ]);
+
     }
 
     /**

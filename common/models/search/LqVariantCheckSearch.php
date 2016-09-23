@@ -18,7 +18,7 @@ class LqVariantCheckSearch extends LqVariantCheck
     public function rules()
     {
         return [
-            [['id', 'userid', 'source', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'userid', 'source', 'frequency', 'nor_var_type', 'level', 'bconfirm', 'created_at', 'updated_at'], 'integer'],
             [['pic_name', 'variant_code', 'origin_standard_word_code', 'belong_standard_word_code', 'remark'], 'safe'],
             [['user.username'], 'safe'],
         ];
@@ -54,6 +54,7 @@ class LqVariantCheckSearch extends LqVariantCheck
 
         $this->load($params);
 
+
         // 并设置表别名为 `user`
         $query->joinWith(['user' => function ($query) {
             $query->from(['user' => 'user']);
@@ -64,10 +65,12 @@ class LqVariantCheckSearch extends LqVariantCheck
             'desc' => ['user.username' => SORT_DESC],
         ];
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+        if(!empty($this->frequency)) {
+            if(is_int($this->frequency)) {
+                $query->andFilterWhere(['frequency' => $this->frequency]);
+            } elseif(preg_match('/^([><]=?)(\d+)/', $this->frequency, $matches)) {
+                $query->andFilterWhere([$matches[1], 'frequency', $matches[2]]);
+            }
         }
 
         // grid filtering conditions

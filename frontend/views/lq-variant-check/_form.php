@@ -20,6 +20,8 @@ use common\models\LqVariant;
 
     <?= $form->field($model, 'variant_code')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'frequency')->textInput() ?>
+
     <?= $form->field($model, 'belong_standard_word_code')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'nor_var_type')->dropDownList(\common\models\HanziSet::norVarTypes()) ?>

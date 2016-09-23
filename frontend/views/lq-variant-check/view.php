@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'pic_name',
             'variant_code',
+            'frequency',
             'belong_standard_word_code',
             [
                 'attribute' => 'nor_var_type',

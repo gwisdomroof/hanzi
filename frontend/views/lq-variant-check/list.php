@@ -26,12 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
 //            'userid',
             [
                 'header' => '图片', # 取消排序
-                'attribute'=>'pic_name',
+                'attribute' => 'pic_name',
                 'filter' => '',
-                'value'=>function ($model) {
+                'value' => function ($model) {
                     return $model->getPicPath();
                 },
-                'format' => ['image',['width'=>'35','height'=>'35']],
+                'format' => ['image', ['width' => '35', 'height' => '35']],
                 "headerOptions" => ["width" => "60"]
             ],
             [
@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'pic_name',
             'variant_code',
-            // 'origin_standard_word_code',
+            'frequency',
             'belong_standard_word_code',
             [
                 'attribute' => 'nor_var_type',
@@ -76,10 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'bconfirm',
                 'headerOptions' => ['width' => '80'],
                 'value' => function ($data) {
-                    $arr = [1 => '是', 0 => '否', 2=>'？'];
+                    $arr = [1 => '是', 0 => '否', 2 => '？'];
                     return !isset($data->bconfirm) ? '' : $arr[$data->bconfirm];
                 },
-                'filter' => [1 => '是', 0 => '否', 2=>'？']
+                'filter' => [1 => '是', 0 => '否', 2 => '？']
             ],
             // 'remark',
             // 'updated_at',

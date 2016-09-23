@@ -120,12 +120,24 @@ CREATE TABLE IF NOT EXISTS hanzi_busu (
   busu_stroke smallint DEFAULT NULL -- '部首笔画'
 );
 
--- 高丽异体字待去重表
+-- 高丽异体字待去重（内部去重）表
 CREATE TABLE IF NOT EXISTS hanzi_gaoli_dedup (
   id BIGSERIAL PRIMARY KEY,
   zhengma VARCHAR(128) NOT NULL, 
   zmcnt SMALLINT NOT NULL,
   page INT DEFAULT NULL
+);
+
+-- 高丽异体字去重（高丽异体字与台湾异体字重复）表
+CREATE TABLE IF NOT EXISTS hanzi_gltw_dedup (
+  id BIGSERIAL PRIMARY KEY,
+  gaoli VARCHAR(32) NOT NULL,
+  unicode VARCHAR(32) NOT NULL,
+  relation SMALLINT DEFAULT NULL,
+  status SMALLINT DEFAULT NULL,
+  remark VARCHAR(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL
 );
 
 -- 异体字拆字、识别等任务分配表
@@ -188,6 +200,7 @@ CREATE TABLE IF NOT EXISTS lq_variant_check (
   userid int DEFAULT NULL, -- '用户id'
   source smallint DEFAULT NULL, -- '来源'
   pic_name varchar(64) DEFAULT NULL, -- '图片'
+  frequency smallint DEFAULT NULL, --'字频'
   variant_code varchar(64) DEFAULT NULL, -- '对应异体字的编号'
   origin_standard_word_code varchar(64) DEFAULT NULL, -- '原属正字'
   belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
