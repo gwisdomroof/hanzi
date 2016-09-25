@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use common\models\LqVariant;
+use common\models\HanziSet;
 
 
 /* @var $this yii\web\View */
@@ -17,6 +18,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             cursor: pointer;
             font-size: 14px;
         }
+
         .search-input {
             cursor: pointer;
             font-size: 14px;
@@ -29,14 +31,17 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
         .container {
             width: 100%;
         }
+
         .search-input {
             width: 30%;
             float: left;
         }
+
         .normal {
             color: #337ab7;
             cursor: pointer;
         }
+
         .search-input label {
             margin-top: 6px;
         }
@@ -44,7 +49,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
 
     <script>
         document.body.onload = function () {
-            var height = document.body.clientHeight - 120;
+            var height = document.body.clientHeight -120;
             $('#variant-check').height(height);
             $('#variant-search').height(height);
         };
@@ -52,38 +57,44 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
 
     <div id='variant-check' class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
 
-        <div class="lq-variant-check-search">
-            <?php $form = ActiveForm::begin([
-                'layout' => 'horizontal',
-                'method' => 'post',
-            ]); ?>
-            <?php echo $form->field($searchModel, 'level', [
-                'options' => ['class' => 'search-input',  'style'=>'width:30%;'],
-                'labelOptions' => ['class' => 'col-sm-3'],
-                'template' => '{label}<div class="col-sm-9">{input}</div>'
-            ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
-            <?php echo $form->field($searchModel, 'bconfirm', [
-                'options' => ['class' => 'search-input',  'style'=>'width:50%;'],
-                'labelOptions' => ['class' => 'col-sm-3'],
-                'template' => '{label} <div class="col-sm-9">{input}</div>'
-            ])->inline()->radioList([1 => '是', 0 => '否', 2 => '？']) ?>
-            <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
-            <?php ActiveForm::end(); ?>
-        </div>
-
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
-                <th>&nbsp;</th>
-                <th>图片名</th>
-                <th>查字典</th>
+                <th width="5%">&nbsp</th>
+                <th width="10%">图片名</th>
+                <th width="10%">查字典</th>
                 <th width="10%">正字</th>
-                <th width="15%">异体字编号</th>
-                <th>正异类型</th>
-                <th>难易等级</th>
-                <th>审核</th>
-                <th>操作</th>
+                <th width="10%">异体字编号</th>
+                <th width="15%">正异类型</th>
+                <th width="10%">难易等级</th>
+                <th width="15%">审核</th>
+                <th width="10%">操作</th>
+            </tr>
+            <tr>
+                <?php $form = ActiveForm::begin([
+                    'layout' => 'horizontal',
+                    'method' => 'post',
+                ]); ?>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>
+                    <?= $form->field($searchModel, 'belong_standard_word_code', ['template' => "{input}\n{hint}\n{error}", 'options' => ['style'=> 'width: 90%']])->textInput(['maxlength' => true]) ?>
+                </td>
+                <td>&nbsp;</td>
+                <td>
+                    <?= Html::activeDropDownList($searchModel, 'nor_var_type', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $searchModel->id]); ?>
+                <td>
+                    <?= Html::activeDropDownList($searchModel, 'level', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $searchModel->id]); ?>
+                </td>
+                <td>
+                    <?= Html::activeRadioList($searchModel, 'bconfirm', [1 => '是', 0 => '否', 2 => '？'], ['prompt' => '', 'alt' => $searchModel->id,]); ?>
+                </td>
+                <td>
+                    <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
+                </td>
             </tr>
 
+            <?php ActiveForm::end(); ?>
             <?php foreach ($dataProvider->getModels() as $model): ?>
                 <form id=<?= "form" . $model->id ?>>
                     <?php $bNew = $model->isNew(); ?>
@@ -92,16 +103,15 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             <?php if (!empty($model->pic_name)) {
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
                                 $source = LqVariant::sources()[$model->source];
-                                $username= $model['user']['username'];
-                                $created_at = str_replace('"','',date("Y-m-dH:i:s",$model->created_at));
+                                $username = $model['user']['username'];
+                                $created_at = str_replace('"', '', date("Y-m-dH:i:s", $model->created_at));
                                 $title = "来源：{$model->source}&#xa;创建时间：{$created_at}&#xa;用户名：{$username}&#xa;备注：{$model->remark}";
-                                echo "<a data-toogle='tooltip', title={$title}>".Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image'])."</a>";
+                                echo "<a data-toogle='tooltip', title={$title}>" . Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image']) . "</a>";
                             } ?>
                         </td>
                         <td>
                             <?php
                             $title = str_replace('.jpg', '', $model->pic_name);
-
                             $value = mb_strlen($title) > 7 ? mb_substr($title, 0, 7, 'UTF-8') . '...' : $title;
                             echo "<div title='$title'>$value</div>";
                             ?>
@@ -111,7 +121,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             ?>
                         </td>
                         <td>
-                            <?= Html::activeInput('text', $model, 'belong_standard_word_code', ['class' => 'form-control', 'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeInput('text', $model, 'belong_standard_word_code', ['class' => 'form-control', 'style'=>"width: 90%",'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
                             <?= Html::activeInput('text', $model, 'variant_code', ['class' => 'form-control', 'id' => 'vc' . $model->id, 'disabled' => !$bNew]); ?>
@@ -127,13 +137,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         </td>
                         <td>
                             <?php if ($bNew) {
-                                echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
+                                echo "<a class='confirm' name='" .$model->id . "' >确定</a>";
                             } else {
                                 echo "<a class='modify' name='" . $model->id . "' >修改</a>";
                             } ?>
                         </td>
                     <tr>
-
                 </form>
             <?php endforeach; ?>
         </table>
@@ -148,8 +157,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             $maxPage = $minPage + $count - 1 < $maxPage ? $minPage + $count - 1 : $maxPage;
             $url = Url::current();
             if (isset(Yii::$app->request->queryParams['page'])) {
-                $url = str_replace("page={$curPage}&",  '' ,  $url);
-                $url = str_replace("&page={$curPage}",  '' ,  $url);
+                $url = str_replace("page={$curPage}&", '', $url);
+                $url = str_replace("&page={$curPage}", '', $url);
             }
             if ($curPage > 1) {
                 $prePage = $curPage - 1;
