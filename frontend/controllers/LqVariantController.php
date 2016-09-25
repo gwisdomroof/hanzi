@@ -113,7 +113,6 @@ class LqVariantController extends Controller
      */
     public function actionIndex()
     {
-
         $searchModel = new LqVariantSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

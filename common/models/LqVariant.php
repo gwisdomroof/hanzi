@@ -129,28 +129,52 @@ class LqVariant extends HanziSet
      */
     public static function addVariantFromCheck($lqVariantCheck)
     {
-        $query = LqVariant::find()->andFilterWhere(['or', ['pic_name' => $lqVariantCheck->variant_code], ['ori_pic_name' => $lqVariantCheck->pic_name]]);
+        $query = LqVariant::find()
+            ->orFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code])
+            ->orFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->pic_name]);
         $variant = $query->one();
         if (!empty($variant)) {
-            $variant->source = $lqVariantCheck->source;
-            $variant->pic_name = $lqVariantCheck->variant_code;
-            $variant->ori_pic_name = $lqVariantCheck->pic_name;
-            $variant->nor_var_type = $lqVariantCheck->nor_var_type;
-            $variant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
-            if (!$variant->save()) {
+            $bChanged = self::loadFromCheck($variant, $lqVariantCheck);
+            if ($bChanged && !$variant->save()) {
                 throw new \yii\db\Exception("数据保存有误。");
             }
+
         } else {
             $variant = new LqVariant();
-            $variant->source = $lqVariantCheck->source;
-            $variant->pic_name = $lqVariantCheck->variant_code;
-            $variant->ori_pic_name = $lqVariantCheck->pic_name;
-            $variant->nor_var_type = $lqVariantCheck->nor_var_type;
-            $variant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
+            self::loadFromCheck($variant, $lqVariantCheck);
             if (!$variant->save()) {
                 throw new \yii\db\Exception("数据保存有误。");
             }
         }
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function loadFromCheck(&$lqVariant, &$lqVariantCheck)
+    {
+        $bChanged = false;
+        if ($lqVariant->source != $lqVariantCheck->source) {
+            $lqVariant->source = $lqVariantCheck->source;
+            $bChanged = true;
+        }
+        if ($lqVariant->pic_name != $lqVariantCheck->variant_code) {
+            $lqVariant->pic_name = $lqVariantCheck->variant_code;
+            $bChanged = true;
+        }
+        if ($lqVariant->ori_pic_name != $lqVariantCheck->origin_standard_word_code . $lqVariantCheck->pic_name) {
+            $lqVariant->ori_pic_name = $lqVariantCheck->origin_standard_word_code . $lqVariantCheck->pic_name;
+            $bChanged = true;
+        }
+        if ($lqVariant->nor_var_type != $lqVariantCheck->nor_var_type) {
+            $lqVariant->nor_var_type = $lqVariantCheck->nor_var_type;
+            $bChanged = true;
+        }
+        if ($lqVariant->belong_standard_word_code != $lqVariantCheck->belong_standard_word_code) {
+            $lqVariant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
+            $bChanged = true;
+        }
+        return $bChanged;
     }
 
     /**
@@ -159,7 +183,9 @@ class LqVariant extends HanziSet
      */
     public static function deleteVariantFromCheck($lqVariantCheck)
     {
-        $query = LqVariant::find()->andFilterWhere(['or', ['pic_name' => $lqVariantCheck->variant_code], ['ori_pic_name' => $lqVariantCheck->pic_name]]);
+        $query = LqVariant::find()
+            ->orFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code])
+            ->orFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->pic_name]);
         $variant = $query->one();
         if (!empty($variant)) {
             $variant->delete();
