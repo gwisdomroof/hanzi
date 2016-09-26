@@ -126,7 +126,6 @@ class LqVariantCheckController extends Controller
                 'model' => $model,
             ]);
         }
-
     }
 
     /**
