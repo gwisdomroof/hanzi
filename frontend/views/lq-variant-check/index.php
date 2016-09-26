@@ -46,12 +46,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
 
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
-                <th>异体字</th>
+                <th></th>
                 <th>查字典</th>
                 <th width="15%">正字</th>
                 <th width="15%">异体字编号</th>
                 <th>正异类型</th>
-                <th>难易等级</th>
+                <th>审核</th>
                 <th>操作</th>
             </tr>
 
@@ -85,13 +85,13 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             <?= Html::activeDropDownList($model, 'nor_var_type', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
-                            <?= Html::activeDropDownList($model, 'level', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeRadioList($model, 'bconfirm', [1 => '是', 0 => '否', 2 => '？'], ['prompt' => '', 'alt' => $model->id, 'class' => 'choose', 'id' => 'bc' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
                             <?php if ($bNew) {
-                                echo "<a class='confirm' name='" . $model->id . "' >确定</a>";
+                                echo "<a class='confirm' id='btn{$model->id}' name='{$model->id}' >确定</a>";
                             } else {
-                                echo "<a class='modify' name='" . $model->id . "' >修改</a>";
+                                echo "<a class='modify' id='btn{$model->id}' name='{$model->id}' >修改</a>";
                             } ?>
                         </td>
                     <tr>
@@ -172,6 +172,31 @@ $script = <<<SCRIPT
         var url = '/hanzi-dict/msearch?param=' + $(this).text();
         $('#search-result').attr('src', url);
 
+    });
+    
+    $(document).on('click', '.choose', function() {
+        var id = $(this).attr('alt');
+        var thisObj = $(this);
+        $.post( {
+            url: "/lq-variant-check/modify?id=" + id,
+            data: $('#form'+id).serialize(),
+            dataType: 'json',
+            success: function(result){
+                if (result.status == 'success') {
+                    $('#sw'+id).attr('disabled', true);
+                    $('#vc'+id).attr('disabled', true);
+                    $('#nv'+id).attr('disabled', true);
+                    $('#lv'+id).attr('disabled', true);
+                    $('#bc'+id).attr('disabled', true);
+                    $('#btn'+id).attr('class', 'modify');
+                    $('#btn'+id).text('修改');
+                    return true;
+                }
+            },
+            error: function(result) {
+                alert(result.msg)
+            }
+        });
     });
 
     $(document).ready(function(){

@@ -35,12 +35,11 @@ class LqVariantCheckSearch extends LqVariantCheck
 
     /**
      * Creates data provider instance with search query applied
-     *
      * @param array $params
-     *
+     * @param boolean $levelNull. if $levelNull is true, then search models which level is null
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $levelNull=false)
     {
         $query = LqVariantCheck::find();
 
@@ -73,6 +72,9 @@ class LqVariantCheckSearch extends LqVariantCheck
             }
         }
 
+        if ($levelNull) {
+            $query->andWhere('level is null');
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
