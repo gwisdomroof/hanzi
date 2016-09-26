@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-                    <?= $form->field($searchModel, 'belong_standard_word_code', ['template' => "{input}\n{hint}\n{error}", 'options' => ['style'=> 'width: 90%']])->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($searchModel, 'belong_standard_word_code', ['template' => "{input}\n{hint}\n{error}", 'options' => ['style' => 'width: 90%']])->textInput(['maxlength' => true]) ?>
                 </td>
                 <td>&nbsp;</td>
                 <td>
@@ -100,7 +100,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                             <?php if (!empty($model->pic_name)) {
                                 $source = LqVariant::sources()[$model->source];
                                 $created_at = date('Y-m-d', $model->created_at);
-                                $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;图片名：{$model->pic_name}&#xa;创建时间：{$created_at}&#xa;提交人：{$model->user->username}&#xa;备注：{$model->remark}";
+                                $username = isset($model->user) ? $model->user->username : '';
+                                $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;图片名：{$model->pic_name}&#xa;创建时间：{$created_at}&#xa;提交人：{$username}&#xa;备注：{$model->remark}";
                                 $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
                                 echo "<a data-toogle='tooltip', title={$title}>" . Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image']) . "</a>";
                             } ?>

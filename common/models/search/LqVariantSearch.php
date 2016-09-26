@@ -31,12 +31,15 @@ class LqVariantSearch extends LqVariant
         foreach ($models as $model) {
             $normals .= str_replace(';', '', $model->belong_standard_word_code);
         }
+
         # 根据正字查异体字
         $data = [];
         $variants = LqVariant::find()->where(['~', 'belong_standard_word_code', "[$normals]"])
-            ->orderBy(['nor_var_type'=>SORT_ASC, 'belong_standard_word_code'=>SORT_ASC])->all();
+            ->orderBy(['nor_var_type' => SORT_ASC, 'belong_standard_word_code' => SORT_ASC])
+            ->all();
+
         foreach ($variants as $variant) {
-            $standardWords = explode(';', $variant->belong_standard_word_code);
+            $standardWords = explode(';', trim($variant->belong_standard_word_code));
             foreach ($standardWords as $standardWord) {
                 if (strpos($normals, $standardWord) !== false)
                     $data[$standardWord][] = $variant;
