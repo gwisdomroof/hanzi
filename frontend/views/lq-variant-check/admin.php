@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use common\models\LqVariant;
-use common\models\HanziSet;
 
 
 /* @var $this yii\web\View */
@@ -49,32 +48,29 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
 
     <script>
         document.body.onload = function () {
-            var height = document.body.clientHeight -120;
+            var height = document.body.clientHeight - 120;
             $('#variant-check').height(height);
             $('#variant-search').height(height);
         };
     </script>
 
-    <div id='variant-check' class="lq-variant-check-index col-sm-8" style="overflow:scroll; height: 520px;">
-
+    <div id='variant-check' class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
-                <th width="5%">&nbsp</th>
-                <th width="10%">图片名</th>
+                <th>&nbsp;</th>
                 <th width="10%">查字典</th>
                 <th width="10%">正字</th>
-                <th width="10%">异体字编号</th>
-                <th width="15%">正异类型</th>
-                <th width="10%">难易等级</th>
-                <th width="15%">审核</th>
-                <th width="10%">操作</th>
+                <th width="14%">异体字编号</th>
+                <th width="18%">正异类型</th>
+                <th>难易等级</th>
+                <th>审核</th>
+                <th>操作</th>
             </tr>
             <tr>
                 <?php $form = ActiveForm::begin([
                     'layout' => 'horizontal',
                     'method' => 'post',
                 ]); ?>
-                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -95,33 +91,32 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
             </tr>
 
             <?php ActiveForm::end(); ?>
+
             <?php foreach ($dataProvider->getModels() as $model): ?>
                 <form id=<?= "form" . $model->id ?>>
                     <?php $bNew = $model->isNew(); ?>
                     <tr>
                         <td>
                             <?php if (!empty($model->pic_name)) {
-                                $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
                                 $source = LqVariant::sources()[$model->source];
-                                $username = $model['user']['username'];
-                                $created_at = str_replace('"', '', date("Y-m-dH:i:s", $model->created_at));
-                                $title = "来源：{$model->source}&#xa;创建时间：{$created_at}&#xa;用户名：{$username}&#xa;备注：{$model->remark}";
+                                $created_at = date('Y-m-d', $model->created_at);
+                                $title = "字频：{$model->frequency}&#xa;来源：{$source}&#xa;图片名：{$model->pic_name}&#xa;创建时间：{$created_at}&#xa;提交人：{$model->user->username}&#xa;备注：{$model->remark}";
+                                $normal = !empty($model->origin_standard_word_code) ? $model->origin_standard_word_code : $model->belong_standard_word_code;
                                 echo "<a data-toogle='tooltip', title={$title}>" . Html::img("/img/FontImage/{$normal}/{$model->pic_name}", ['class' => 'hanzi-image']) . "</a>";
                             } ?>
                         </td>
                         <td>
                             <?php
-                            $title = str_replace('.jpg', '', $model->pic_name);
-                            $value = mb_strlen($title) > 7 ? mb_substr($title, 0, 7, 'UTF-8') . '...' : $title;
-                            echo "<div title='$title'>$value</div>";
+                            $normals = explode(';', $model->belong_standard_word_code);
+                            $htmlNormals = [];
+                            foreach ($normals as $normal) {
+                                $htmlNormals[] = "<span class='normal'>{$normal}</span>";
+                            }
+                            echo "<div id=nm{$model->id}>" . implode(";", $htmlNormals) . '</div>';
                             ?>
                         </td>
                         <td>
-                            <?php echo "<div class='normal'>" . $model->belong_standard_word_code . "</div>";
-                            ?>
-                        </td>
-                        <td>
-                            <?= Html::activeInput('text', $model, 'belong_standard_word_code', ['class' => 'form-control', 'style'=>"width: 90%",'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
+                            <?= Html::activeInput('text', $model, 'belong_standard_word_code', ['class' => 'form-control', 'id' => 'sw' . $model->id, 'disabled' => !$bNew]); ?>
                         </td>
                         <td>
                             <?= Html::activeInput('text', $model, 'variant_code', ['class' => 'form-control', 'id' => 'vc' . $model->id, 'disabled' => !$bNew]); ?>
@@ -137,12 +132,13 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                         </td>
                         <td>
                             <?php if ($bNew) {
-                                echo "<a class='confirm' name='" .$model->id . "' >确定</a>";
+                                echo "<a class='confirm' id='btn{$model->id}' name='{$model->id}' >确定</a>";
                             } else {
-                                echo "<a class='modify' name='" . $model->id . "' >修改</a>";
+                                echo "<a class='modify' id='btn{$model->id}' name='{$model->id}' >修改</a>";
                             } ?>
                         </td>
                     <tr>
+
                 </form>
             <?php endforeach; ?>
         </table>
@@ -160,27 +156,28 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                 $url = str_replace("page={$curPage}&", '', $url);
                 $url = str_replace("&page={$curPage}", '', $url);
             }
+            $linkSymbol = empty(Yii::$app->request->queryParams) ? '?' : '&';
             if ($curPage > 1) {
                 $prePage = $curPage - 1;
-                echo "<li class='prev'><a href='$url&page=$prePage'>«</a></li>";
+                echo "<li class='prev'><a href='{$url}{$linkSymbol}page={$prePage}'>«</a></li>";
             }
             for ($i = $minPage; $i <= $maxPage; $i++) {
                 if ($i == $curPage) {
-                    echo "<li class='active'><a href='$url&page=$i'>$i</a></li>";
+                    echo "<li class='active'><a href='{$url}{$linkSymbol}page=$i'>$i</a></li>";
                 } else {
-                    echo "<li><a href='$url&page=$i'>$i</a></li>";
+                    echo "<li><a href='{$url}{$linkSymbol}page=$i'>$i</a></li>";
                 }
             }
             if ($curPage < $maxPage) {
                 $nextPage = $curPage + 1;
-                echo "<li class='next'><a href='$url&page=$nextPage'>»</a></li>";
+                echo "<li class='next'><a href='{$url}{$linkSymbol}page={$nextPage}'>»</a></li>";
             }
             ?>
         </ul>
 
     </div>
 
-    <div id='variant-search' class="lq-variant-search col-sm-4">
+    <div id='variant-search' class="lq-variant-search col-sm-5">
         <iframe id="search-result" style="border:none; width:100%; overflow:scroll; height: 520px;>"
                 src="<?= Url::toRoute(['hanzi-dict/msearch']); ?>"></iframe>
 
@@ -204,6 +201,13 @@ $script = <<<SCRIPT
                     $('#nv'+id).attr('disabled', true);
                     $('#lv'+id).attr('disabled', true);
                     $('#bc'+id).attr('disabled', true);
+                    // 设置查字典的正字值
+                    var normals = $('#sw'+id).val().split(';');
+                    var htmlNormals = new Array();
+                    for (idx = 0; idx < normals.length; idx++) {
+                        htmlNormals[idx] = "<span class='normal'>" + normals[idx] + "</span>";
+                    }
+                    $('#nm'+id).html(htmlNormals.join(";"));
                     thisObj.attr('class', 'modify');
                     thisObj.text('修改');
                     return true;
@@ -246,6 +250,8 @@ $script = <<<SCRIPT
                     $('#nv'+id).attr('disabled', true);
                     $('#lv'+id).attr('disabled', true);
                     $('#bc'+id).attr('disabled', true);
+                    $('#btn'+id).attr('class', 'modify');
+                    $('#btn'+id).text('修改');
                     return true;
                 }
             },
