@@ -80,13 +80,17 @@ class LqVariantCheckController extends Controller
         if (Yii::$app->request->post()) {
             $level = Yii::$app->request->post()['LqVariantCheckSearch']['level'];
             $bconfirm = Yii::$app->request->post()['LqVariantCheckSearch']['bconfirm'];
-            $this->redirect(['admin', "level" => $level, "confirm" => $bconfirm]);
+            $type = Yii::$app->request->post()['LqVariantCheckSearch']['nor_var_type'];
+            $standard = Yii::$app->request->post()['LqVariantCheckSearch']['belong_standard_word_code'];
+            $this->redirect(['admin', "level" => $level, "confirm" => $bconfirm, "standard" =>$standard, "type" => $type]);
         }
-
         $searchModel = new LqVariantCheckSearch();
         $searchModel->level = trim(Yii::$app->request->get('level'));
         $searchModel->bconfirm = trim(Yii::$app->request->get('confirm'));
+        $searchModel->nor_var_type = trim(Yii::$app->request->get('type'));
+        $searchModel->belong_standard_word_code = trim(Yii::$app->request->get('standard'));
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
 
         return $this->render('admin', [
             'searchModel' => $searchModel,

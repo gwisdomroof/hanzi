@@ -55,26 +55,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
     </script>
 
     <div id='variant-check' class="lq-variant-check-index col-sm-7" style="overflow:scroll; height: 520px;">
-
-        <div class="lq-variant-check-search">
-            <?php $form = ActiveForm::begin([
-                'layout' => 'horizontal',
-                'method' => 'post',
-            ]); ?>
-            <?php echo $form->field($searchModel, 'level', [
-                'options' => ['class' => 'search-input', 'style' => 'width:30%;'],
-                'labelOptions' => ['class' => 'col-sm-4'],
-                'template' => '{label}<div class="col-sm-8">{input}</div>'
-            ])->dropDownList(\common\models\LqVariantCheck::levels(), ['prompt' => '']) ?>
-            <?php echo $form->field($searchModel, 'bconfirm', [
-                'options' => ['class' => 'search-input', 'style' => 'width:50%;'],
-                'labelOptions' => ['class' => 'col-sm-4'],
-                'template' => '{label} <div class="col-sm-8">{input}</div>'
-            ])->inline()->radioList([1 => '是', 0 => '否', 2 => '？']) ?>
-            <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
-            <?php ActiveForm::end(); ?>
-        </div>
-
         <table class="table table-hover">
             <tr style="background:#f9f9f9; color:#337ab7;">
                 <th>&nbsp;</th>
@@ -86,6 +66,31 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Lq Variant Chec
                 <th>审核</th>
                 <th>操作</th>
             </tr>
+            <tr>
+                <?php $form = ActiveForm::begin([
+                    'layout' => 'horizontal',
+                    'method' => 'post',
+                ]); ?>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>
+                    <?= $form->field($searchModel, 'belong_standard_word_code', ['template' => "{input}\n{hint}\n{error}", 'options' => ['style'=> 'width: 90%']])->textInput(['maxlength' => true]) ?>
+                </td>
+                <td>&nbsp;</td>
+                <td>
+                    <?= Html::activeDropDownList($searchModel, 'nor_var_type', \common\models\HanziSet::norVarTypes(), ['prompt' => '', 'class' => 'form-control', 'id' => 'nv' . $searchModel->id]); ?>
+                <td>
+                    <?= Html::activeDropDownList($searchModel, 'level', \common\models\LqVariantCheck::levels(), ['prompt' => '', 'class' => 'form-control', 'id' => 'lv' . $searchModel->id]); ?>
+                </td>
+                <td>
+                    <?= Html::activeRadioList($searchModel, 'bconfirm', [1 => '是', 0 => '否', 2 => '？'], ['prompt' => '', 'alt' => $searchModel->id,]); ?>
+                </td>
+                <td>
+                    <?php echo Html::submitButton(Yii::t('frontend', 'Search'), ['class' => 'btn btn-primary']) ?>
+                </td>
+            </tr>
+
+            <?php ActiveForm::end(); ?>
 
             <?php foreach ($dataProvider->getModels() as $model): ?>
                 <form id=<?= "form" . $model->id ?>>
