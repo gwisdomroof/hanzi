@@ -197,8 +197,6 @@ class LqVariant extends HanziSet
             $oriPicName = $lqVariantCheck->origin_standard_word_code . $oriPicName;
         }
 
-        echo $oriPicName;
-        die;
         if ($lqVariant->ori_pic_name != $oriPicName) {
             $lqVariant->ori_pic_name = $oriPicName;
             $bChanged = true;
