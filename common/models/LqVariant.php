@@ -110,14 +110,17 @@ class LqVariant extends HanziSet
     }
 
     /**
+     * 获取图片路径
+     * 图片名中第一个字为图片的上一级目录；
+     * 如果是早期贤保法师的图片，则图片名需要去掉第一个字；否则，不需要去掉。
      * @inheritdoc
      */
     public function getLqPicturePath()
     {
-        $normal = empty($this->ori_pic_name) ? 'A' : mb_substr($this->ori_pic_name, 0, 1, 'utf8');
+        $normal = !empty($this->ori_pic_name) ? mb_substr($this->ori_pic_name, 0, 1, 'utf8') : 'A';
         $realPicName = $this->ori_pic_name;
-        # 早期贤保法师处的图片字
-        if (!preg_match("/^{$normal}\d+.(jpg|png)$/", $realPicName)) {
+        #
+        if (!preg_match("/^{$normal}lq\d+.(jpg|png)$/", $realPicName)) {
             $realPicName = substr($realPicName, strlen($normal));
         }
         return '/' . LqVariantCheck::$imageBasePath . "{$normal}/{$realPicName}";
@@ -149,35 +152,6 @@ class LqVariant extends HanziSet
     }
 
     /**
-     * @return boolean
-     */
-    public static function loadFromCheck(&$lqVariant, &$lqVariantCheck)
-    {
-        $bChanged = false;
-        if ($lqVariant->source != $lqVariantCheck->source) {
-            $lqVariant->source = $lqVariantCheck->source;
-            $bChanged = true;
-        }
-        if ($lqVariant->pic_name != $lqVariantCheck->variant_code) {
-            $lqVariant->pic_name = $lqVariantCheck->variant_code;
-            $bChanged = true;
-        }
-        if ($lqVariant->ori_pic_name != $lqVariantCheck->origin_standard_word_code . $lqVariantCheck->pic_name) {
-            $lqVariant->ori_pic_name = $lqVariantCheck->origin_standard_word_code . $lqVariantCheck->pic_name;
-            $bChanged = true;
-        }
-        if ($lqVariant->nor_var_type != $lqVariantCheck->nor_var_type) {
-            $lqVariant->nor_var_type = $lqVariantCheck->nor_var_type;
-            $bChanged = true;
-        }
-        if ($lqVariant->belong_standard_word_code != $lqVariantCheck->belong_standard_word_code) {
-            $lqVariant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
-            $bChanged = true;
-        }
-        return $bChanged;
-    }
-
-    /**
      * Returns user statuses list
      * @return array|mixed
      */
@@ -192,4 +166,34 @@ class LqVariant extends HanziSet
         }
     }
 
+    /**
+     * @return boolean
+     */
+    public static function loadFromCheck(&$lqVariant, &$lqVariantCheck)
+    {
+        $bChanged = false;
+        if ($lqVariant->source != $lqVariantCheck->source) {
+            $lqVariant->source = $lqVariantCheck->source;
+            $bChanged = true;
+        }
+        # lqVariant的pic_name实际是lqVariantCheck的variant_code
+        if ($lqVariant->pic_name != $lqVariantCheck->variant_code) {
+            $lqVariant->pic_name = $lqVariantCheck->variant_code;
+            $bChanged = true;
+        }
+        # lqVariant的ori_pic_name实际是lqVariantCheck的pic_name
+        if ($lqVariant->ori_pic_name != $lqVariantCheck->pic_name) {
+            $lqVariant->ori_pic_name = $lqVariantCheck->pic_name;
+            $bChanged = true;
+        }
+        if ($lqVariant->nor_var_type != $lqVariantCheck->nor_var_type) {
+            $lqVariant->nor_var_type = $lqVariantCheck->nor_var_type;
+            $bChanged = true;
+        }
+        if ($lqVariant->belong_standard_word_code != $lqVariantCheck->belong_standard_word_code) {
+            $lqVariant->belong_standard_word_code = $lqVariantCheck->belong_standard_word_code;
+            $bChanged = true;
+        }
+        return $bChanged;
+    }
 }

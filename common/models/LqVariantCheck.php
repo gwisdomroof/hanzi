@@ -104,12 +104,12 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function getMaxId($normal)
     {
         $existNames = LqVariantCheck::find()->select('pic_name')
-            ->where("pic_name ~ '^{$normal}\d+.(jpg|png)$'")
+            ->where("pic_name ~ '^{$normal}lq\d+.(jpg|png)$'")
             ->asArray()
             ->all();
         $max = 0;
         foreach ($existNames as $name) {
-            $num = (int)preg_replace("({$normal}|.jpg|.png)", '', $name['pic_name']);
+            $num = (int)preg_replace("({$normal}lq|.jpg|.png)", '', $name['pic_name']);
             $max = $max < $num ? $num : $max;
         }
         return $max;
@@ -118,16 +118,25 @@ class LqVariantCheck extends \yii\db\ActiveRecord
     public function upload()
     {
         if ($this->validate()) {
-
-            $normal = 'A'; # 正字为空时，默认存放在A目录下
-            if (!empty($this->belong_standard_word_code)) {
-                $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+            # 正字的几种情况
+            if (!empty($this->origin_standard_word_code)) {
+                $normal = $this->origin_standard_word_code;
+                if (!empty($this->belong_standard_word_code) && false === strpos($normal, $this->belong_standard_word_code)) {
+                    $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+                }
+            } else {
+                if (!empty($this->belong_standard_word_code)) {
+                    $normal = mb_substr($this->belong_standard_word_code, 0, 1, 'utf8');
+                } else {
+                    $normal = 'A';
+                }
             }
+
             # 新建数据，或者更新数据但是正字发生变化时，图片名也发生改变
             $oldPicName = $this->pic_name;
             if ($this->isNewRecord || (!$this->isNewRecord && $this->origin_standard_word_code != $normal)) {
                 $maxId = $this->getMaxId($normal);
-                $this->pic_name = $normal . ++$maxId . '.' . $this->imageFile->extension;
+                $this->pic_name = $normal . 'lq' . ++$maxId . '.' . $this->imageFile->extension;
                 $this->origin_standard_word_code = $normal;
             }
             $path = self::$imageBasePath . $normal . '/';
