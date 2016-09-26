@@ -133,9 +133,13 @@ class LqVariant extends HanziSet
      */
     public static function addVariantFromCheck($lqVariantCheck)
     {
-        $query = LqVariant::find()
-            ->orFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code])
-            ->orFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->pic_name]);
+        $query = LqVariant::find()->andFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code]);
+        $oriPicName = $lqVariantCheck->pic_name;
+        if (preg_match("/^(DB|GL|NZ|SZ|TW|TE|ZY)-.*\.(jpg|png)$/", $oriPicName)) {
+            $query->andFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->belong_standard_word_code . $oriPicName]);
+        } else {
+            $query->andFilterWhere(['like', 'ori_pic_name', $oriPicName]);
+        }
         $variant = $query->one();
         if (!empty($variant)) {
             $bChanged = self::loadFromCheck($variant, $lqVariantCheck);
@@ -158,9 +162,13 @@ class LqVariant extends HanziSet
      */
     public static function deleteVariantFromCheck($lqVariantCheck)
     {
-        $query = LqVariant::find()
-            ->orFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code])
-            ->orFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->pic_name]);
+        $query = LqVariant::find()->andFilterWhere(['like', 'pic_name', $lqVariantCheck->variant_code]);
+        $oriPicName = $lqVariantCheck->pic_name;
+        if (preg_match("/^(DB|GL|NZ|SZ|TW|TE|ZY)-.*\.(jpg|png)$/", $oriPicName)) {
+            $query->andFilterWhere(['like', 'ori_pic_name', $lqVariantCheck->belong_standard_word_code . $oriPicName]);
+        } else {
+            $query->andFilterWhere(['like', 'ori_pic_name', $oriPicName]);
+        }
         $variant = $query->one();
         if (!empty($variant)) {
             $variant->delete();
@@ -183,8 +191,16 @@ class LqVariant extends HanziSet
             $bChanged = true;
         }
         # lqVariant的ori_pic_name实际是lqVariantCheck的pic_name
-        if ($lqVariant->ori_pic_name != $lqVariantCheck->pic_name) {
-            $lqVariant->ori_pic_name = $lqVariantCheck->pic_name;
+        # 早期贤保法师的图片字
+        $oriPicName = $lqVariantCheck->pic_name;
+        if (preg_match("/^(DB|GL|NZ|SZ|TW|TE|ZY)-.*\.(jpg|png)$/", $oriPicName)) {
+            $oriPicName = $lqVariantCheck->origin_standard_word_code . $oriPicName;
+        }
+
+        echo $oriPicName;
+        die;
+        if ($lqVariant->ori_pic_name != $oriPicName) {
+            $lqVariant->ori_pic_name = $oriPicName;
             $bChanged = true;
         }
         if ($lqVariant->nor_var_type != $lqVariantCheck->nor_var_type) {
