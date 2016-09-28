@@ -79,10 +79,22 @@ class CommonPageController extends Controller
                         $innerModel->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
                     elseif ($innerModel->task_type == HanziTask::TYPE_INPUT)
                         $innerModel->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
-
                     if ($innerModel->validate())
                         $innerModel->save();
-
+                }
+                return $this->redirect(['index']);
+            } elseif (preg_match("/(\d+,)+\d+/", $page, $matches)) {
+                $pages = explode(",", $page);
+                foreach ($pages as $i) {
+                    $innerModel = new CommonPage();
+                    $innerModel->task_type = $model->task_type;
+                    $innerModel->page = $i;
+                    if ($innerModel->task_type == HanziTask::TYPE_SPLIT)
+                        $innerModel->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+                    elseif ($innerModel->task_type == HanziTask::TYPE_INPUT)
+                        $innerModel->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
+                    if ($innerModel->validate())
+                        $innerModel->save();
                 }
                 return $this->redirect(['index']);
             } else {
