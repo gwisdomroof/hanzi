@@ -21,8 +21,6 @@ use common\models\user;
 
     <!-- <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?> -->
 
-    <?= $form->field($model, 'user_id')->dropDownList($model->members(), ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
-
     <?php
     $idlePages = HanziTask::getIdlePages($model->task_type);
     $pageArr =  isset($model->page) ? [$model->page => $model->page] + $idlePages : $idlePages;

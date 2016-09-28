@@ -56,7 +56,7 @@ class HanziTaskController extends Controller
      * Lists all HanziTask models.
      * @return mixed
      */
-    public function actionAdmin($type=1)
+    public function actionAdmin($type = 1)
     {
         $searchModel = new HanziTaskSearch();
 
@@ -67,8 +67,8 @@ class HanziTaskController extends Controller
             $param = array_merge($param, [
                 'HanziTaskSearch' => [
                     'leader.username' => Yii::$app->user->identity->username
-                    ]
-                ]);
+                ]
+            ]);
         }
 
         $param['HanziTaskSearch']['task_type'] = $type;
@@ -101,13 +101,13 @@ class HanziTaskController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($type=1)
+    public function actionCreate($type = 1)
     {
         $model = new HanziTask();
-        
+
         if ($type == HanziTask::TYPE_SPLIT) {
-            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false); 
-        } elseif($type == HanziTask::TYPE_INPUT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        } elseif ($type == HanziTask::TYPE_INPUT) {
             $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
         } else {
             throw new HttpException(403, 'type参数有误。');
@@ -130,13 +130,13 @@ class HanziTaskController extends Controller
      * 页码自动分配
      * @return mixed
      */
-    public function actionApply($type=1)
+    public function actionApply($type = 1)
     {
         $model = new HanziTask();
 
         if ($type == HanziTask::TYPE_SPLIT) {
-            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false); 
-        } elseif($type == HanziTask::TYPE_INPUT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        } elseif ($type == HanziTask::TYPE_INPUT) {
             $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
         } else {
             throw new HttpException(403, 'type参数有误。');
@@ -144,7 +144,7 @@ class HanziTaskController extends Controller
 
         // 如果有工作状态为“初分配”“进行中”或为空，则不能继续申请
         if (HanziTask::checkApplyPermission(Yii::$app->user->id, $type)) {
-            throw new HttpException(403, '您有工作未完成，请先完成手头的工作。'); 
+            throw new HttpException(403, '您有工作未完成，请先完成手头的工作。');
         }
 
         // set default value
@@ -170,10 +170,11 @@ class HanziTaskController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model =  $this->findModel($id);
+        $model = $this->findModel($id);
         $userId = Yii::$app->user->id;
-        if ($model->leader_id !== $userId && $model->user_id !== $userId) {
-            throw new HttpException(401, '对不起，您无权修改。'); 
+
+        if ($model->leader_id !== $userId && $model->user_id !== $userId && !\common\models\User::isFrontManager($userId)) {
+            throw new HttpException(401, '对不起，您无权修改。');
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -193,18 +194,18 @@ class HanziTaskController extends Controller
      */
     public function actionDelete($id)
     {
-        
-        $model =  $this->findModel($id);
+
+        $model = $this->findModel($id);
         $type = $model->task_type;
 
         $userId = Yii::$app->user->id;
         if ($model->leader_id !== $userId) {
-            throw new HttpException(401, '对不起，您无权删除。'); 
+            throw new HttpException(401, '对不起，您无权删除。');
         }
-        
+
         $model->delete();
 
-        return $this->redirect(['admin', 'type'=>$type]);
+        return $this->redirect(['admin', 'type' => $type]);
     }
 
 
@@ -223,5 +224,5 @@ class HanziTaskController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-        
+
 }
