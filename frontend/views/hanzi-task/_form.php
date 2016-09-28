@@ -21,9 +21,11 @@ use common\models\user;
 
     <!-- <?= $form->field($model, 'seq')->dropDownList(HanziTask::seqs(), ['prompt' => '', 'disabled' => true]) ?> -->
 
+    <?= $form->field($model, 'user_id')->dropDownList($model->members($model->user_id), ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
+
     <?php
     $idlePages = HanziTask::getIdlePages($model->task_type);
-    $pageArr =  isset($model->page) ? [$model->page => $model->page] + $idlePages : $idlePages;
+    $pageArr = isset($model->page) ? [$model->page => $model->page] + $idlePages : $idlePages;
     echo $form->field($model, 'page')->dropDownList($pageArr, ['prompt' => '', 'disabled' => $model->leader_id == Yii::$app->user->id ? false : true]) ?>
 
     <?= $form->field($model, 'status')->dropDownList(HanziTask::statuses()) ?>
@@ -32,7 +34,7 @@ use common\models\user;
 
     <div class="form-group">
         <div class="col-lg-offset-3 col-lg-8">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend', 'Create') : Yii::t('frontend', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend', 'Create') : Yii::t('frontend', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </div>
 
