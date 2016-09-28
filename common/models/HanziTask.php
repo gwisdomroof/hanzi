@@ -60,11 +60,12 @@ class HanziTask extends \yii\db\ActiveRecord
             [['leader.username', 'member.username', 'created_at', 'updated_at'], 'safe'],
             [['remark'], 'string', 'max' => 128],
             ['page', function ($attribute, $params) {
-                if ($this->status == self::STATUS_CANCEL || $this->status == self::STATUS_CONTINUE ) {
+                if ($this->status == self::STATUS_CANCEL || $this->status == self::STATUS_CONTINUE) {
                     return true;
                 }
                 // 1. create, current page is not allowed duplicated except the record is canceled
-                $query = HanziTask::find()->where(['page' => $this->page, 'task_type' => $this->task_type])
+                $query = HanziTask::find()
+                    ->where(['page' => $this->page, 'task_type' => $this->task_type, 'seq' => $this->seq])
                     ->andwhere(['!=', 'status', self::STATUS_CANCEL])
                     ->andwhere(['!=', 'status', self::STATUS_CONTINUE]);
                 // 2. update, except current id
@@ -94,16 +95,24 @@ class HanziTask extends \yii\db\ActiveRecord
     public static function getIdlePages($type = self::TYPE_SPLIT, $count = 50)
     {
         // 待处理的记录总数
-        $maxPageNumber = 0;
+        $maxPageNumber = $seq = null;
         if ($type == self::TYPE_SPLIT) {
             $countToSplit = HanziSplit::find()->where(['duplicate' => 0])->count();
             $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false)) + 1;
+            $seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
         } else {
             $maxPageNumber = 5127; // 汉语大字典最大5127页
+            $seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
+        }
+
+        # 第二阶段为回查
+        if ($seq == self::SEQ_SECOND) {
+            return self::getSecondStageSplitIdlePages();
         }
 
         // 已申请的任务页码
-        $usedPages = HanziTask::find()->select('page')->where(['task_type' => $type])
+        $usedPages = HanziTask::find()->select('page')
+            ->where(['task_type' => $type, 'seq' => $seq])
             ->andWhere(['!=', 'status', self::STATUS_CANCEL])
             ->andWhere(['!=', 'status', self::STATUS_CONTINUE])
             ->orderBy('id')
@@ -117,11 +126,12 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         $idlePagesArr = [];
+        # 异体字输入时的空白页面
         $inputEmptyPages = json_decode(Yii::$app->get('keyStorage')->get('frontend.input-empty-pages', null, false));
         for ($i = 1; $i < $maxPageNumber; $i++) {
             if (!in_array($i, $usedPagesArr)) {
                 # 如果是异体字输入，则需要去掉空白页面
-                if ($type == self::TYPE_INPUT && in_array($i.'', $inputEmptyPages)) {
+                if ($type == self::TYPE_INPUT && in_array($i . '', $inputEmptyPages)) {
                     continue;
                 }
                 $idlePagesArr[$i] = $i;
@@ -132,6 +142,39 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         return $idlePagesArr;
+    }
+
+    /**
+     * 获取二次拆分时的页面
+     * @return [type] [description]
+     */
+    public static function getSecondStageSplitIdlePages()
+    {
+        # 获取用户初次拆分而尚未二次拆分的页面
+        $userId = Yii::$app->user->id;
+        $taskType = HanziTask::TYPE_SPLIT;
+        $sql = "SELECT DISTINCT page FROM hanzi_task 
+            WHERE user_id  = {$userId} AND task_type = {$taskType} AND seq = 1
+            AND page NOT IN ( SELECT page from hanzi_task WHERE user_id  = {$userId} AND task_type = {$taskType} AND seq = 2 )
+            ORDER BY page";
+        $myPages = HanziTask::findBySql($sql)->asArray()->one();
+        if (!empty($myPages)) {
+            $page = $myPages['page'];
+            return [$page => $page];
+        }
+
+        # 获取公共页面
+        $sql = "SELECT DISTINCT page FROM common_page
+            WHERE task_type = {$taskType} AND seq = 2
+            AND page NOT IN ( SELECT page from hanzi_task WHERE task_type = {$taskType} AND seq = 2 )
+            ORDER BY page";
+        $commonPages = HanziTask::findBySql($sql)->asArray()->one();
+        if (!empty($commonPages)) {
+            $page = $commonPages['page'];
+            return [$page => $page];
+        }
+
+        return false;
 
     }
 
@@ -310,8 +353,8 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         if (!$model->validate() || !$model->save()) {
-            var_dump($model->getErrors()); die;
-            throw new \yii\db\Exception('数据库保存错误。');
+            var_dump($model->getErrors());
+            die;
         }
 
         return $model;
@@ -339,7 +382,7 @@ class HanziTask extends \yii\db\ActiveRecord
         return HanziTask::find()
             ->where(['user_id' => $userId, 'task_type' => $taskType])
             ->andWhere(['<=', 'status', self::STATUS_ONGOING])
-            ->orderBy('page')
+            ->orderBy(['seq' => SORT_ASC, 'page' => SORT_ASC])
             ->one();
     }
 

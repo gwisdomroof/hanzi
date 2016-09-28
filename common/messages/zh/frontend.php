@@ -95,5 +95,6 @@ return [
     'Lq Variant Checks' => '异体字判定',
     'Gltw Dedups' => '高丽台湾异体字去重',
     'Tasks Statistics' => '任务统计',
-    'Tasks Daily'=>'每日工作量'
+    'Tasks Daily' => '每日工作量',
+    'Common Pages' => '公共页面'
 ];

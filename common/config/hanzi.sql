@@ -26,12 +26,14 @@ CREATE TABLE IF NOT EXISTS hanzi_split (
   initial_split22 varchar(128) DEFAULT NULL, -- '初步拆分'
   deform_split20 varchar(128) DEFAULT NULL, -- '调笔拆分'
   similar_stock20 varchar(128) DEFAULT NULL, -- '相似部件'
+  split20_completed smallint DEFAULT NULL, -- '是否完成'
   duplicate30 varchar(128) DEFAULT NULL, -- '重复ID'
   hard30 smallint DEFAULT NULL, -- '是否难字'
   initial_split31 varchar(128) DEFAULT NULL, -- '初步拆分'
   initial_split32 varchar(128) DEFAULT NULL, -- '初步拆分'
   deform_split30 varchar(128) DEFAULT NULL, -- '调笔拆分'
   similar_stock30 varchar(128) DEFAULT NULL, -- '相似部件'
+  split30_completed smallint DEFAULT NULL, -- '是否完成'
   remark varchar(128) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
@@ -59,6 +61,18 @@ CREATE TABLE IF NOT EXISTS hanzi_hy_yt (
   remark varchar(128) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,
   updated_at INT NOT NULL 
+);
+
+-- 公共页面
+CREATE TABLE IF NOT EXISTS common_page (
+  id BIGSERIAL PRIMARY KEY,
+  page SMALLINT DEFAULT NULL, -- '第几页'
+  task_type SMALLINT DEFAULT NULL, -- '任务类型'
+  seq SMALLINT DEFAULT NULL, -- '第几次拆分'
+  flag SMALLINT DEFAULT NULL,
+  remark VARCHAR(128) DEFAULT NULL, -- '备注'
+  created_at INT NOT NULL,
+  updated_at INT NOT NULL
 );
 
 -- 汉字集

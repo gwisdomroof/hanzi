@@ -28,20 +28,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'source',
                 'value' =>  empty($model->source) ? '' : \common\models\HanziSet::sources()[$model->source],
             ],
-            'word',
+//            'word',
             [
                 'attribute' => 'picture',
                 'value'=> \common\models\HanziSet::getPicturePath($model->source, $model->picture),
                 'format' => ['image',['width'=>'30','height'=>'30']]
             ],
-            [
-                'attribute' => 'nor_var_type',
-                'value' => empty($model->nor_var_type) ? '' : \common\models\HanziSet::norVarTypes()[$model->nor_var_type],
-            ],
-            'standard_word',
-            'position_code',
-            'radical',
-            'stocks',
+//            [
+//                'attribute' => 'nor_var_type',
+//                'value' => empty($model->nor_var_type) ? '' : \common\models\HanziSet::norVarTypes()[$model->nor_var_type],
+//            ],
+//            'standard_word',
+//            'position_code',
+//            'radical',
+//            'stocks',
             // 'structure',
             // [
             //     'attribute' => 'hard10',
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'initial_split32',
             // 'deform_split30',
             // 'similar_stock30',
-            'remark',
+//            'remark',
             [                      
             'attribute' => 'created_at',
             'format'=>['datetime','php:Y-m-d H:i:s'],

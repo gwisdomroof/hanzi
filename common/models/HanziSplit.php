@@ -60,7 +60,7 @@ class HanziSplit extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'hanzi_type', 'nor_var_type', 'stocks', 'duplicate', 'hard10', 'hard20', 'hard30', 'created_at', 'updated_at'], 'integer'],
+            [['source', 'hanzi_type', 'nor_var_type', 'stocks', 'duplicate', 'hard10', 'hard20', 'hard30', 'created_at', 'updated_at', 'split20_completed', 'split30_completed'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['word', 'radical', 'structure'], 'string', 'max' => 8],
             [['picture', 'corners', 'attach', 'duplicate10', 'duplicate20', 'duplicate30',], 'string', 'max' => 32],
@@ -141,16 +141,23 @@ class HanziSplit extends \yii\db\ActiveRecord
      * @param  [type] $page [description]
      * @return [type]       [description]
      */
-    public static function getUnfinishedMinId($startId, $endId)
+    public static function getUnfinishedMinId($startId, $endId, $seq)
     {
-        // updated_at为空表示尚未作更新
-        $model = HanziSplit::find()
+
+        $query = HanziSplit::find()
             ->where(['duplicate' => 0])
-            ->andWhere('updated_at is null')
             ->andWhere(['>=', 'id', $startId])
             ->andWhere(['<=', 'id', $endId])
-            ->orderBy('id')
-            ->one();
+            ->orderBy('id');
+        if ($seq == 1) {
+            // updated_at为空表示尚未作更新，即尚未进行初次拆分
+            $query->andWhere('updated_at is null');
+        } elseif ($seq == 2) {
+            $query->andWhere(['!=', 'split20_completed', 1]);
+        } elseif ($seq == 3) {
+            $query->andWhere(['!=', 'split30_completed', 1]);
+        }
+        $model = $query->one();
         return empty($model) ? false : $model->id;
     }
 
@@ -189,6 +196,21 @@ class HanziSplit extends \yii\db\ActiveRecord
             return false;
         }
         return true;
+    }
+
+    /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
+    public function loadFromFirstSplit()
+    {
+        $this->duplicate20 = $this->duplicate10;
+        $this->hard20 = $this->hard10;
+        $this->initial_split21 = $this->initial_split11;
+        $this->initial_split22 = $this->initial_split12;
+        $this->deform_split20 = $this->deform_split10;
+        $this->similar_stock20 = $this->similar_stock10;
     }
 
 

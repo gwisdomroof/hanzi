@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\HanziSplit */
 
-$this->title = Yii::t('frontend', '二次拆分', [
+$this->title = Yii::t('frontend', '回查（二次拆分）', [
     'modelClass' => 'HanziSplit',
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'HanziSplits'), 'url' => ['index']];

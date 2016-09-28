@@ -88,19 +88,21 @@ class HanziSplitController extends Controller
 
         // 检查并设置当前工作页面的session值。
         $curPage = Yii::$app->session->get('curSplitPage');
-
         if (!isset($curPage) || empty($curPage['id'])) {
             // 寻找页面池中page值最小、状态为“初分配”“进行中”的页面，如果没有，则申请新页
             $curPage = HanziTask::getUnfinishedMinPage($userId, HanziTask::TYPE_SPLIT);
             if (empty($curPage)) {
                 $curPage = HanziTask::getNewPage($userId, HanziTask::TYPE_SPLIT);
+                if (empty($curPage)) {
+                    throw new HttpException(401, '对不起，页面已经分配完毕，请您联系管理员。');
+                }
             }
             Yii::$app->session->set('curSplitPage', $curPage->attributes);
         }
 
         // 寻找当前页中未完成的最小id
-        $curId = HanziSplit::getUnfinishedMinId($curPage['start_id'], $curPage['end_id']);
         $seq = $curPage['seq'];
+        $curId = HanziSplit::getUnfinishedMinId($curPage['start_id'], $curPage['end_id'], $curPage['seq']);
         if ($seq == 1) {
             $this->redirect(['first', 'id' => $curId]);
         } elseif ($seq == 2) {
@@ -255,6 +257,7 @@ class HanziSplitController extends Controller
         $next = Yii::$app->request->post('next');
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 如果提交数据不为空，则添加一条完成任务，同时更新任务所在的页面状态
             if (!$model->isNew($seq)) {
                 HanziUserTask::addItem($userId, $model->id, HanziTask::TYPE_SPLIT, HanziUserTask::SPLIT_WEIGHT, $seq);
             }
@@ -267,6 +270,9 @@ class HanziSplitController extends Controller
             return $next == 'true' ? $this->redirect(['split']) : $this->redirect(['view', 'id' => $model->id]);
         } else {
             // set default value
+            if ($model->isNew($seq)) {
+                $model->loadFromFirstSplit();
+            }
             if (!isset($model->hard20))
                 $model->hard20 = 0;
             return $this->render('second', [

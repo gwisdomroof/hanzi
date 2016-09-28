@@ -45,15 +45,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => '', # 取消排序
                 'attribute'=>'source',
+                "headerOptions" => ["width" => "100"],
                 'value'=>function ($model) {
                     return empty($model->source) ? null: \common\models\HanziSet::sources()[$model->source];
                 },
                 'filter'=>\common\models\HanziSet::sources(),
             ],
-            [
-                'header' => '', # 取消排序
-                'attribute'=>'duplicate10',
-            ],
+//            [
+//                'header' => '', # 取消排序
+//                'attribute'=>'duplicate10',
+//            ],
             // 'nor_var_type',
             // 'standard_word',
             // 'position_code',
@@ -62,18 +63,28 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'structure',
             // 'corners',
             // 'attach',
+//            [
+//                'header' => '', # 取消排序
+//                'attribute'=>'hard10',
+//                'value'=>function ($model) {
+//                    return empty($model->hard10) ? null:  HanziSet::hards()[$model->hard10];
+//                },
+//                'filter'=>HanziSet::hards()
+//            ],
             [
                 'header' => '', # 取消排序
-                'attribute'=>'hard10',
-                'value'=>function ($model) {
-                    return empty($model->hard10) ? null:  HanziSet::hards()[$model->hard10];
-                },
-                'filter'=>HanziSet::hards()
+                'label' => '首次：初步拆分',
+                'attribute'=>'initial_split11',
             ],
             [
                 'header' => '', # 取消排序
-                'label' => '初步拆分',
-                'attribute'=>'initial_split11',
+                'label' => '回查：初步拆分',
+                'attribute'=>'initial_split21',
+            ],
+            [
+                'header' => '', # 取消排序
+                'label' => '审查：初步拆分',
+                'attribute'=>'initial_split31',
             ],
             // 'initial_split12',
             // 'deform_split10',
@@ -95,21 +106,40 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => '操作',
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update}',
+                'template' => '{first} {second} {determine} {view}',
+                "headerOptions" => ["width" => "180"],
                 'buttons' => [
+                    'first' => function ($url, $model, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', '首次拆分'),
+                            'aria-label' => Yii::t('yii', '首次拆分'),
+                            'target' => '_blank'
+                        ];
+                        return Html::a('<span>首次拆分</span>', $url, $options);
+                    },
+                    'second' => function ($url, $model, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', '回查'),
+                            'aria-label' => Yii::t('yii', '回查'),
+                            'target' => '_blank'
+                        ];
+                        return Html::a('<span>回查</span>', $url, $options);
+                    },
+                    'determine' => function ($url, $model, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', '审查'),
+                            'aria-label' => Yii::t('yii', '审查'),
+                            'target' => '_blank'
+                        ];
+                        return Html::a('<span>审查</span>', $url, $options);
+                    },
                     'view' => function ($url, $model, $key) {
                         $options = [
                             'title' => Yii::t('yii', '查看'),
                             'aria-label' => Yii::t('yii', '查看'),
+                            'target' => '_blank'
                         ];
                         return Html::a('<span>查看</span>&nbsp;', $url, $options);
-                    },
-                    'update' => !$authority ? function () {return '';} : function ($url, $model, $key) {
-                        $options = [
-                            'title' => Yii::t('yii', '拆字'),
-                            'aria-label' => Yii::t('yii', '拆字'),
-                        ];
-                        return Html::a('<span>拆字</span>', $url, $options);
                     },
                 ],
             ],
