@@ -13,7 +13,7 @@ use common\models\HanziSet;
 	<tr>
 		<td>&nbsp;</td>
 		<td style="font-weight: bold" width="28%">初次拆分</td>
-		<td style="font-weight: bold" width="28%">二次拆分</td>
+		<td style="font-weight: bold" width="28%">回查（二次拆分）</td>
 		<td style="font-weight: bold" width="28%">审查</td>
 	</tr>
 	<tr>

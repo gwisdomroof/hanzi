@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //            ],
             [
                 'header' => '', # 取消排序
-                'label' => '首次：初步拆分',
+                'label' => '初次：初步拆分',
                 'attribute'=>'initial_split11',
             ],
             [
@@ -104,18 +104,18 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_at',
 
             [
-                'header' => '操作',
+                'header' => '拆字',
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{first} {second} {determine} {view}',
-                "headerOptions" => ["width" => "180"],
+                "headerOptions" => ["width" => "160"],
                 'buttons' => [
                     'first' => function ($url, $model, $key) {
                         $options = [
-                            'title' => Yii::t('yii', '首次拆分'),
-                            'aria-label' => Yii::t('yii', '首次拆分'),
+                            'title' => Yii::t('yii', '初次'),
+                            'aria-label' => Yii::t('yii', '初次'),
                             'target' => '_blank'
                         ];
-                        return Html::a('<span>首次拆分</span>', $url, $options);
+                        return Html::a('<span>初次</span>', $url, $options);
                     },
                     'second' => function ($url, $model, $key) {
                         $options = [
