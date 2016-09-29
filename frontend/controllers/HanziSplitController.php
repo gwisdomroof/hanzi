@@ -34,6 +34,26 @@ class HanziSplitController extends Controller
      * Lists all HanziSplit models.
      * @return mixed
      */
+    public function actionStage()
+    {
+        $msg = null;
+        if (!empty(Yii::$app->request->post())) {
+            $stage = Yii::$app->request->post()['stage'];
+            if (!empty(Yii::$app->request->post()['stage'])) {
+                Yii::$app->get('keyStorage')->set('frontend.current-split-stage', 2);
+            }
+            $msg = '已启动，系统进入回查阶段！';
+        }
+        return $this->render('stage', [
+            'msg' => $msg
+        ]);
+
+    }
+
+    /**
+     * Lists all HanziSplit models.
+     * @return mixed
+     */
     public function actionIndex()
     {
         $searchModel = new HanziSplitSearch();

@@ -521,12 +521,16 @@ class HanziTask extends \yii\db\ActiveRecord
      * @param get members of leader
      * @return mixed
      */
-    public function members()
+    public function members($userId = null)
     {
         $items[Yii::$app->user->id] = Yii::$app->user->identity->username;
         $users = MemberRelation::find()->with('member')->where(['leader_id' => Yii::$app->user->id])->all();
         foreach ($users as $user) {
             $items[$user->member_id] = $user->member->username;
+        }
+        if (!empty($userId)) {
+            $user = User::findOne(['id' => $userId]);
+            $items[$userId] = !empty($user) ? $user->username : '';
         }
         return $items;
     }
