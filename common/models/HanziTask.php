@@ -150,11 +150,11 @@ class HanziTask extends \yii\db\ActiveRecord
      */
     public static function getSecondStageSplitIdlePages()
     {
-        # 获取用户初次拆分而尚未二次拆分的页面
+        # 获取用户初次拆分完成而尚未二次拆分的页面
         $userId = Yii::$app->user->id;
         $taskType = HanziTask::TYPE_SPLIT;
         $sql = "SELECT DISTINCT page FROM hanzi_task 
-            WHERE user_id  = {$userId} AND task_type = {$taskType} AND seq = 1
+            WHERE user_id  = {$userId} AND task_type = {$taskType} AND status = 3 AND seq = 1 
             AND page NOT IN ( SELECT page from hanzi_task WHERE user_id  = {$userId} AND task_type = {$taskType} AND seq = 2 )
             ORDER BY page";
         $myPages = HanziTask::findBySql($sql)->asArray()->one();
