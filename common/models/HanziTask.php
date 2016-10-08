@@ -155,7 +155,7 @@ class HanziTask extends \yii\db\ActiveRecord
         $taskType = HanziTask::TYPE_SPLIT;
         $sql = "SELECT DISTINCT page FROM hanzi_task 
             WHERE user_id  = {$userId} AND task_type = {$taskType} AND status = 3 AND seq = 1 
-            AND page NOT IN ( SELECT page from hanzi_task WHERE user_id  = {$userId} AND task_type = {$taskType} AND seq = 2 )
+            AND page NOT IN ( SELECT page from hanzi_task WHERE task_type = {$taskType} AND seq = 2 )
             ORDER BY page";
         $myPages = HanziTask::findBySql($sql)->asArray()->one();
         if (!empty($myPages)) {
