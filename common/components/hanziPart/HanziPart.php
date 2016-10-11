@@ -11,12 +11,16 @@ use common\components\hanziPart\Components;
 class HanziPart extends Widget
 {
     public $components = [];
-    
+
     public function init()
     {
-        $this->components = Components::items();
-        parent::init();      
+        $hanziPart = file_get_contents(__DIR__ . '/assets/hanziPart.js', true);
+        $hanziPart = str_replace('﻿var hanziComponents = ', '', $hanziPart);
+        $hanziPart = str_replace(';', '', $hanziPart);
+        $this->components = json_decode($hanziPart, true);
+        parent::init();
     }
+
     /**
      * @inheritdoc
      */
@@ -28,22 +32,28 @@ class HanziPart extends Widget
         echo $this->renderTemplate();
         $this->registerClientScript();
     }
+
     /**
      * @return string the items that are need to be rendered.
      */
     public function renderItems()
     {
         $items = [];
-        foreach ($this->components as $stock_num => $stock_array) {
-            $items[] = "<span class='stock-item'>$stock_num</span>";
-            $i = 1;
-            foreach ($stock_array as $key => $value) {
-                if (mb_strlen($key,'utf-8') == 1) {
-                    $items[] = "<span class='component-item' value='" . $value . "'>" . $key . "</span>";
-                } else {
-                    $path =  '/img/components/' . $key . '.png';
-                    $items[] = "<span><img class='component-img' src='$path' alt='$value'></span>";
-                } 
+        $stockNum = null;
+        foreach ($this->components as $component) {
+            $key = $component['display'];
+            $value = $component['input'];
+            if (preg_match("/^(\d+)[a-z]+/", $component['search'], $matches)
+                && $stockNum !== (int)$matches[1]
+            ) {
+                $stockNum = (int)$matches[1];
+                $items[] = "<span class='stock-item'>$stockNum</span>";
+            }
+            if (mb_strlen($key, 'utf-8') == 1) {
+                $items[] = "<span class='component-item' value='" . $value . "'>" . $key . "</span>";
+            } else {
+                $path = '/img/components/' . $key . '.png';
+                $items[] = "<span><img class='component-img' src='$path' alt='$value'></span>";
             }
         }
         return implode("\n", $items);
@@ -75,6 +85,7 @@ class HanziPart extends Widget
 
         return implode("\n", $template);
     }
+
     /**
      * Registers the client script required for the plugin
      */
