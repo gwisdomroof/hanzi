@@ -162,6 +162,8 @@
 	{"display" : "弔", "input" : "弔", "search" : "4zhzs"},
 	{"display" : "厄", "input" : "厄", "search" : "4hpzz"},
 	{"display" : "攵", "input" : "攵", "search" : "4phpn"},
+	{"display" : "夊", "input" : "夊", "search" : "4phpn"},
+	{"display" : "夂", "input" : "夂", "search" : "4phpn"},
 	{"display" : "戈", "input" : "戈", "search" : "4hzpn"},
 	{"display" : "厷", "input" : "厷", "search" : "4hpzn"},
 	{"display" : "卝", "input" : "卝", "search" : "4hssh"},
