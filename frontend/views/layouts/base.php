@@ -115,32 +115,24 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                 'visible'=>!Yii::$app->user->isGuest,
                 'items'=>[
                     [
+                        'label' => Yii::t('frontend', '如何开始工作'),
+                        'url' => ['/article/work-intro']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '部件笔画检字法'),
-                        'url' => ['/article/hanzi-search']
+                        'url' => ['/article/search-intro']
                     ],
                     [
-                        'label' => Yii::t('frontend', '部件补充说明'),
-                        'url' => ['/article/component-addition']
-                    ],
-                    [
-                        'label' => Yii::t('frontend', '拆字工作流程'),
-                        'url' => ['/article/split-intro']
-                    ],
-                    [
-                        'label' => Yii::t('frontend', '拆字实例'),
+                        'label' => Yii::t('frontend', '异体字拆字实例'),
                         'url' => ['/article/split-example']
                     ],
                     [
-                        'label' => Yii::t('frontend', '部件查找介绍'),
-                        'url' => ['/article/component-help']
+                        'label' => Yii::t('frontend', '汉字部件表简介'),
+                        'url' => ['/article/component-intro']
                     ],
                     [
-                        'label' => Yii::t('frontend', '异体字录入介绍'),
+                        'label' => Yii::t('frontend', '异体字录入简介'),
                         'url' => ['/article/variant-help']
-                    ],
-                    [
-                        'label' => Yii::t('frontend', '网站更新说明'),
-                        'url' => ['/article/update-intro']
                     ]
                 ]
             ],
