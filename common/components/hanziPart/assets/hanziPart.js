@@ -460,6 +460,7 @@
 	{"display" : "魚", "input" : "魚", "search" : "11pzszhshnnnn"},
 	{"display" : "𢉖", "input" : "𢉖", "search" : "11nhpzsshznzn"},
 	{"display" : "𪡽-口", "input" : "⿱⿱⿱⿰〢⿻二丨一八⿻二丨", "search" : "11sshhshpnhhs"},
+	{"display" : "𡝤", "input" : "𡝤", "search" : "11szhhsszhzph"},
 	{"display" : "單", "input" : "單", "search" : "12szhszhszhhhs"},
 	{"display" : "𠥓", "input" : "𠥓", "search" : "12hzsshnzhps"},
 	{"display" : "雈", "input" : "雈", "search" : "12shshpsnhhhsh"},
