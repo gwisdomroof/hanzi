@@ -76,6 +76,13 @@ class HanziSplitController extends Controller
     public function actionSplit()
     {
         $userId = Yii::$app->user->id;
+
+        // 如果是回查阶段（seq=2），则检查角色权限
+        $seq = (int)Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        if ($seq == 2 && !User::isSecondSpliter($userId)) {
+            throw new HttpException(401, '对不起，您不是回查员，无权进行回查。');
+        }
+
         // 检查并设置当前任务包的session值
         $curSplitPackage = Yii::$app->session->get('curSplitPackage');
         if (!isset($curSplitPackage) || empty($curSplitPackage['id'])) {
@@ -270,11 +277,6 @@ class HanziSplitController extends Controller
     {
         $seq = 2; // 二次拆分
         $userId = Yii::$app->user->id;
-
-        // 检查角色权限
-        if (!User::isSecondSpliter($userId)) {
-            throw new HttpException(401, '对不起，您不是回查员，无权访问。');
-        }
 
         // 检查页面权限
         if (!HanziTask::checkIdPermission($userId, $id, $seq, HanziTask::TYPE_SPLIT)) {
