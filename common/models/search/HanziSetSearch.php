@@ -221,7 +221,7 @@ class HanziSetSearch extends HanziSet
 
         # IDS
         if ($ids != '') {
-            $sqlParam .= $sqlParam == '' ? "mix_split ~ '$ids'" : " AND mix_split ~ '$ids'";
+            $sqlParam .= $sqlParam == '' ? "(mix_split ~ '$ids' OR word ~ '$ids')" : " AND (mix_split ~ '$ids' OR word ~ '$ids')";
         }
 
         # 去重
