@@ -20,3 +20,9 @@ body .table {
   word-break: break-all;
 }
 /*# sourceMappingURL=style.map *//*# sourceMappingURL=style.map */
+
+.redactor-editor .hanzi-img {
+  width:  16px;
+  height: 16px;
+  margin-top: -4px;
+}

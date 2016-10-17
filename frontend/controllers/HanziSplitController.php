@@ -6,6 +6,7 @@ use common\models\HanziSplit;
 use common\models\search\HanziSplitSearch;
 use common\models\HanziTask;
 use common\models\HanziUserTask;
+use common\models\User;
 use common\models\WorkPackage;
 use Yii;
 use yii\web\Controller;
@@ -270,6 +271,12 @@ class HanziSplitController extends Controller
         $seq = 2; // 二次拆分
         $userId = Yii::$app->user->id;
 
+        // 检查角色权限
+        if (!User::isSecondSpliter($userId)) {
+            throw new HttpException(401, '对不起，您不是回查员，无权访问。');
+        }
+
+        // 检查页面权限
         if (!HanziTask::checkIdPermission($userId, $id, $seq, HanziTask::TYPE_SPLIT)) {
             throw new HttpException(401, '对不起，您无权访问。');
         }

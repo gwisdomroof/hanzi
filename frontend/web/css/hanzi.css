@@ -20,6 +20,12 @@ body {font-family: Arial, Helvetica, sans-serif, KaiXinSong;}
 	margin-left:10%;
 }
 
+.article-item .hanzi-img {
+    width:  16px;
+    height: 16px;
+    margin-top: -4px;
+}
+
 .hanzi-img {
     /*border: 1px solid #eee;*/
     border-collapse: collapse;

@@ -224,6 +224,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Returns user statuses list
+     * @return array|mixed
+     */
+    public static function isSecondSpliter($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('回查员', $roles);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getId()

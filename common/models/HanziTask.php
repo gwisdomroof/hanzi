@@ -343,7 +343,11 @@ class HanziTask extends \yii\db\ActiveRecord
         $model = new HanziTask();
         $model->leader_id = 3;  // 生产环境中，id为3，指的是贤二
         $model->user_id = Yii::$app->user->id;
-        $model->page = current(self::getIdlePages($taskType, 1));
+        $idlePages = self::getIdlePages($taskType, 1);
+        if(empty($idlePages)) {
+            return false;
+        }
+        $model->page = current($idlePages);
         $model->task_type = $taskType;
         $model->status = self::STATUS_ASSIGNMENT;
         if ($taskType == HanziTask::TYPE_SPLIT) {
