@@ -224,13 +224,23 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Returns user statuses list
+     * 异体字拆字回查员
      * @return array|mixed
      */
     public static function isSecondSpliter($id)
     {
         $roles = Yii::$app->authManager->getRolesByUser($id);
         return array_key_exists('回查员', $roles);
+    }
+
+    /**
+     * 高丽台湾异体字去重回查员
+     * @return array|mixed
+     */
+    public static function isSecondDeduper($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('去重回查员', $roles);
     }
 
     /**

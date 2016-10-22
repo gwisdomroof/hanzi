@@ -1,7 +1,16 @@
 <?php
 use common\models\HanziSet;
 use common\models\GltwDedup;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+use yii\helpers\Html;
+
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Gltw Dedups')];
+if (!empty($seq) && $seq == 2) {
+    $this->params['breadcrumbs'][] = Yii::t('frontend', 'Second Stage');
+} elseif (!empty($seq) && $seq == 3) {
+    $this->params['breadcrumbs'][] = Yii::t('frontend', 'Third Stage');
+}
 
 ?>
 
@@ -61,13 +70,30 @@ use yii\helpers\Url;
             background-color: aqua;
         }
 
+        .duplicate-different {
+            background-color: aqua;
+            border: 1px solid red;
+        }
+
         #tw-variants {
             border-right: 2px solid #eef;
             overflow-y: auto;
             max-height: 500px;
         }
+
+        .tips {
+            color: red;
+        }
     </style>
 
+    <div class="msg pull-right">
+        <span id="tips" class="tips" style="display:none; margin-right:5px;">+2</span>
+        当前积分：<span id="score"><?= \common\models\HanziUserTask::getScore(Yii::$app->user->id) ?></span>
+        <?php if (!empty(Yii::$app->session->get('curDedupProgress'))) {
+            list($finished, $schedule) = explode('/', Yii::$app->session->get('curDedupProgress'));
+            echo "&nbsp;&nbsp;/&nbsp;&nbsp;日进度：<span id='finished'>{$finished}</span>/<span id='schedule'>$schedule</span>";
+        } ?>
+    </div>
 
 <?php if (!empty($twData)) : ?>
     <div id='tw-variants' class="col-sm-6">
@@ -101,27 +127,43 @@ use yii\helpers\Url;
 
 <?php if (!empty($glData)) : ?>
     <div id='gl-variants' class="col-sm-6">
-        <div class="dic-title">高麗異體字字典</div>
+        <div class="dic-title" style="margin-top: 0px;">
+            <span>高麗異體字字典</span>
+            <?php $form = ActiveForm::begin([
+                'layout' => 'horizontal',
+                'action' => ['next', 'id' => Yii::$app->request->get('id')],
+                'id' => 'hanzi-form'
+            ]); ?>
+            <div class="form-group pull-right" style="margin-top: -20px;">
+                <?php echo Html::submitButton(Yii::t('frontend', 'Completed And Next'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'next-button']) ?>
+            </div>
+            <?php ActiveForm::end(); ?>
+        </div>
         <?php foreach ($glData as $normal => $variants) {
             $class = 'param';
             $title = $normal == $model->unicode ? $normal : "{$normal}|{$model->unicode}";
             echo "<div class='hanzi-normal gl-normal' title='$title'>【{$normal}】</div>";
             echo "<div class='hanzi-variants'>";
-            if ($model->relation = GltwDedup::RELATION_SIMILAR) {
-
-            }
             foreach ($variants as $variant) {
-                if (!empty($variant->word)) {
-                    $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->word);
-                    $title = empty($variant->duplicate_id) ? $variant->word : $variant->word . '|' . $variant->duplicate_id;
-                    $class = empty($variant->duplicate_id) ? 'hanzi-img' : 'hanzi-img duplicate';
-                    echo "<div class='hanzi-item'><img alt='$variant->word' title='$title' src='$picPath' class='$class'></div>";
-                } elseif (!empty($variant->pic_name)) {
-                    $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-                    $title = empty($variant->duplicate_id) ? $variant->pic_name : $variant->pic_name . '|' . $variant->duplicate_id;
-                    $class = empty($variant->duplicate_id) ? 'hanzi-img' : 'hanzi-img duplicate';
-                    echo "<div class='hanzi-item'><img alt='$variant->pic_name' title='$title' src='$picPath' class='$class'></div>";
+                if (empty($variant))
+                    continue;
+                $value = !empty($variant->word) ? $variant->word : $variant->pic_name;
+                $picPath = \common\models\HanziSet::getPicturePath($variant->source, $value);
+                $duplicateId = $variant->duplicate_id1 . ',' . $variant->duplicate_id2;
+                $duplicateId = preg_replace('/(^,)|(,$)/', '', $duplicateId);
+                $title = empty($duplicateId) ? $value : $value . '|' . $duplicateId;
+                $class = 'hanzi-img';
+                if (!empty($duplicateId)) {
+                    if (!empty($variant->duplicate_id1) && !empty($variant->duplicate_id2)
+                        && $variant->duplicate_id1 != $variant->duplicate_id2
+                    ) {
+                        $class = 'hanzi-img duplicate-different';
+                    } else {
+                        $class = 'hanzi-img duplicate';
+                    }
                 }
+                echo "<div class='hanzi-item'><img alt='$value' title='$title' src='$picPath' class='$class'></div>";
+
             }
             echo "</div><br/>";
         } ?>
@@ -137,7 +179,7 @@ use yii\helpers\Url;
                                style="text-align: right; margin-top: 5px; float:left;">高丽异体字</label>
                         <div class="col-sm-9" style="margin-bottom: 15px;">
                             <input type="input" id="gl-code" class="form-control" name="glCode" style="display:none;"/>
-                            <img id="gl-img" alt="㵵1" title="㵵1" src="/img/hanzi/gl/variant1/㵵1.png" class="hanzi-img">
+                            <img id="gl-img" alt="" title="" src="" class="hanzi-img">
                         </div>
                         <label class="col-sm-3" for="tw-code"
                                style="text-align: right; margin-top: 5px; float:left;">重复编号</label>
@@ -145,6 +187,7 @@ use yii\helpers\Url;
                             <input type="text" id="tw-code" class="form-control" name="twCode"
                                    placeholder="请输入与图片字重复的台湾异体字编号…"/>
                         </div>
+                        <input type="hidden" name="seq" value="<?= $seq ?>">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -157,23 +200,22 @@ use yii\helpers\Url;
 
 <?php
 $script = <<<SCRIPT
+    var seq = $seq;
+    var permission = $permission;
     $(document).on('click', '#gl-variants .hanzi-img', function() {
+        if (permission == 0)
+            return false;
         var title = $(this).attr('title');
-        
         var glCode = title.split("|")[0];
         $('#gl-code').val(glCode);
         $('#gl-img').attr('title', glCode);
         $('#gl-img').attr('alt', glCode);
-        
         $('#gl-img').attr('src', $(this).attr('src'));
-        
         $('#gl-img').attr('class', $(this).attr('class'));
-        
         var twCode = '';
         if (title.split("|").length > 1)
             twCode = title.split("|")[1];
         $('#tw-code').val(twCode);
-        
         $('#mymodal').modal('toggle');
     });
     
@@ -186,8 +228,20 @@ $script = <<<SCRIPT
             dataType: 'json',
             success: function(result){
                 if (result.status == 'success') {
-                    $('img[alt="'+glCode+'"]').attr('class', 'hanzi-img duplicate');
-                    $('img[alt="'+glCode+'"]').attr('title', glCode + '|' + twCode);
+                    if (twCode != '') {
+                        $('img[alt="'+glCode+'"]').attr('class', 'hanzi-img duplicate');
+                        $('img[alt="'+glCode+'"]').attr('title', glCode + '|' + twCode);
+                    } else {
+                        $('img[alt="'+glCode+'"]').attr('class', 'hanzi-img');
+                        $('img[alt="'+glCode+'"]').attr('title', glCode);
+                    }
+                    var score = parseInt(result.score);
+                    if (score != 0) {
+                        $("#tips").fadeIn(50).fadeOut(500); 
+                        var scoreValue = parseInt($('#score').text()) + score;
+                        $('#score').text(scoreValue);
+                    }
+                    
                 } else if(result.status == 'error') {
                     alert(result.msg);
                 }

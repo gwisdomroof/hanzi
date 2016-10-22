@@ -61,6 +61,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/hanzi-task/admin?type=2']
                     ],
                     [
+                        'label' => Yii::t('frontend', '异体字去重'),
+                        'url' => ['/hanzi-task/admin?type=5']
+                    ],
+                    [
                         'label' => Yii::t('frontend', '图书校对'),
                         'url' => ['/user-task/admin?type=3']
                     ],

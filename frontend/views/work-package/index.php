@@ -94,6 +94,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $url = Url::toRoute(['hanzi-split/split']);
                             } elseif ($model->type == HanziTask::TYPE_INPUT) {
                                 $url = Url::toRoute(['hanzi-hyyt/recognize']);
+                            } elseif ($model->type == HanziTask::TYPE_DEDUP) {
+                                $url = Url::toRoute(['gltw-dedup/next']);
                             }
 
                             return Html::a('<span>开始工作</span>&nbsp;', $url, $options);

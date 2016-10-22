@@ -32,8 +32,17 @@ $this->params['breadcrumbs'][] = '任务列表';
             [
                 'attribute' => 'page',
                 'value' => function ($data) {
-                    $url = $data->task_type == HanziTask::TYPE_SPLIT ? 'hanzi-split/index' : 'hanzi-hyyt/index';
-                    return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                    if ($data->task_type == HanziTask::TYPE_SPLIT) {
+                        $url = 'hanzi-split/index';
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                    } elseif($data->task_type == HanziTask::TYPE_INPUT) {
+                        $url ='hanzi-hyyt/index';
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                    } elseif($data->task_type == HanziTask::TYPE_DEDUP) {
+                        $url ='gltw-dedup/dedup';
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'id' => $data->page], true));
+                    }
+
                 },
                 'format' => 'raw',
             ],

@@ -120,7 +120,10 @@ class WorkPackage extends \yii\db\ActiveRecord
      */
     public function getCurrentProgress()
     {
-        return \common\models\HanziUserTask::getFinishedWorkCountFrom($this->userid, $this->type, $this->created_at);
+        if ($this->type == HanziTask::TYPE_DEDUP)
+            return \common\models\HanziTask::getFinishedWorkCountFrom($this->userid, $this->type, $this->created_at);
+        else
+            return \common\models\HanziUserTask::getFinishedWorkCountFrom($this->userid, $this->type, $this->created_at);
     }
 
     /**
@@ -130,7 +133,10 @@ class WorkPackage extends \yii\db\ActiveRecord
      */
     public function getFinishedToday()
     {
-        return \common\models\HanziUserTask::getFinishedWorkCountToday($this->userid, $this->type);
+        if ($this->type == HanziTask::TYPE_DEDUP)
+            return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type);
+        else
+            return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type);
     }
 
     /**
@@ -167,7 +173,8 @@ class WorkPackage extends \yii\db\ActiveRecord
     {
         return [
             HanziTask::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
-            HanziTask::TYPE_INPUT => Yii::t('common', '异体字录入')
+            HanziTask::TYPE_INPUT => Yii::t('common', '异体字录入'),
+            HanziTask::TYPE_DEDUP => Yii::t('common', '高丽台湾异体字去重')
         ];
     }
 

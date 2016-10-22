@@ -179,6 +179,8 @@ class WorkPackageController extends Controller
                 Yii::$app->session->set('curSplitPackage', $model->attributes);
             } elseif ($model->type == HanziTask::TYPE_INPUT) {
                 Yii::$app->session->set('curRecognizePackage', $model->attributes);
+            } elseif ($model->type == HanziTask::TYPE_DEDUP) {
+                Yii::$app->session->set('curDedupPackage', $model->attributes);
             }
 
             return $this->redirect(['index']);

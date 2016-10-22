@@ -149,9 +149,29 @@ CREATE TABLE IF NOT EXISTS hanzi_gltw_dedup (
   unicode VARCHAR(32) NOT NULL,
   relation SMALLINT DEFAULT NULL,
   status SMALLINT DEFAULT NULL,
+  frequency SMALLINT DEFAULT NULL,
+  is_occupied SMALLINT DEFAULT NULL,
   remark VARCHAR(128) DEFAULT NULL, -- '备注'
   created_at INT NOT NULL,
   updated_at INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS gltw_dedup_result (
+  id BIGSERIAL PRIMARY KEY,
+  source smallint DEFAULT NULL, -- '来源'
+  type smallint DEFAULT NULL, -- '字形类型'
+  word varchar(8) DEFAULT NULL, -- '文字'
+  pic_name varchar(64) DEFAULT NULL, -- '图片'
+  nor_var_type smallint DEFAULT NULL, -- '正异类型'
+  belong_standard_word_code varchar(64) DEFAULT NULL, -- '所属正字'
+  standard_word_code varchar(64) DEFAULT NULL, -- '兼正字号'
+  position_code varchar(128) DEFAULT NULL, -- '位置编号'
+  duplicate_id1 varchar(128) DEFAULT NULL, -- '重复ID'
+  duplicate_id2 varchar(128) DEFAULT NULL, -- '重复ID'
+  duplicate_id3 varchar(128) DEFAULT NULL, -- '重复ID'
+  remark VARCHAR(128) DEFAULT NULL, -- '备注'
+  created_at INT DEFAULT NULL,
+  updated_at INT DEFAULT NULL
 );
 
 -- 异体字拆字、识别等任务分配表
