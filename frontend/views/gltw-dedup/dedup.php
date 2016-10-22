@@ -135,6 +135,8 @@ if (!empty($seq) && $seq == 2) {
                 'id' => 'hanzi-form'
             ]); ?>
             <div class="form-group pull-right" style="margin-top: -20px;">
+                <a target="_blank" href="/article/dedup-help" title="帮助"
+                   style="font-size:16px; font-weight: bold; margin-right:4px; z-index:100">?</a>
                 <?php echo Html::submitButton(Yii::t('frontend', 'Completed And Next'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'next-button']) ?>
             </div>
             <?php ActiveForm::end(); ?>

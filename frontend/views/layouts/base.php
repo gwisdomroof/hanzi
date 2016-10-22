@@ -137,6 +137,10 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                     [
                         'label' => Yii::t('frontend', '异体字录入简介'),
                         'url' => ['/article/variant-help']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '异体字去重简介'),
+                        'url' => ['/article/dedup-help']
                     ]
                 ]
             ],
