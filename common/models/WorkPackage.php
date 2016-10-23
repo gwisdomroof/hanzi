@@ -134,7 +134,7 @@ class WorkPackage extends \yii\db\ActiveRecord
     public function getFinishedToday()
     {
         if ($this->type == HanziTask::TYPE_DEDUP)
-            return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type);
+            return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type, $this->created_at);
         else
             return \common\models\HanziUserTask::getFinishedWorkCountToday($this->userid, $this->type);
     }

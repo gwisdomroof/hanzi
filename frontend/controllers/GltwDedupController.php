@@ -119,7 +119,7 @@ class GltwDedupController extends Controller
         }
 
         // 检查当日工作是否已完成
-        $finishedCountToday = (int)HanziTask::getFinishedWorkCountToday($userId, HanziTask::TYPE_DEDUP);
+        $finishedCountToday = (int)HanziTask::getFinishedWorkCountToday($userId, HanziTask::TYPE_DEDUP, $curDedupPackage['created_at']);
         // 设置当前工作进度
         Yii::$app->session->set('curDedupProgress', "{$finishedCountToday}/{$curDedupPackage['daily_schedule']}");
         if ($finishedCountToday >= (int)$curDedupPackage['daily_schedule']) {

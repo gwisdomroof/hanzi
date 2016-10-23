@@ -220,23 +220,24 @@ class HanziTask extends \yii\db\ActiveRecord
      */
     public static function getFinishedWorkCountFrom($userId, $taskType = self::TYPE_DEDUP, $start)
     {
-        $begin = mktime(0, 0, 0, date('m', $start), date('d', $start), date('Y', $start));
-        $end = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
         return HanziTask::find()
             ->where(['user_id' => $userId, 'task_type' => $taskType, 'status' => self::STATUS_COMPLETE])
-            ->andWhere(['>=', 'created_at', $begin])
-            ->andWhere(['<=', 'created_at', $end])
+            ->andWhere(['>=', 'created_at', $start])
+            ->andWhere(['<=', 'created_at', time()])
             ->count();
     }
 
     /**
      * 获取今日已完成工作量
-     * @param string $id
+     * @param string $packageStart 当前工作包的创建时间
      * @return mixed
      */
-    public static function getFinishedWorkCountToday($userId, $taskType = self::TYPE_DEDUP)
+    public static function getFinishedWorkCountToday($userId, $taskType = self::TYPE_DEDUP, $packageStart = 0)
     {
         $begin = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+        if (!empty($packageStart) && $begin < $packageStart) {
+            $begin = $packageStart;
+        }
         $end = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
         return HanziTask::find()
             ->where(['user_id' => $userId, 'task_type' => $taskType, 'status' => self::STATUS_COMPLETE])

@@ -94,7 +94,7 @@ class WorkPackageController extends Controller
         $typeInfo = WorkPackage::types()["{$type}"];
         if ($stage == 2) {
             $msg = "当日{$typeInfo}工作已完成。";
-            if (!WorkClock::ifClockedToday(Yii::$app->user->id, $type))  {
+            if (!WorkClock::ifClockedToday(Yii::$app->user->id, $type)) {
                 $url = "/work-clock/create?type={$type}";
                 $msg = "当日{$typeInfo}工作已完成，请您去<a href='$url'>打卡</a>。";
             }
@@ -154,6 +154,8 @@ class WorkPackageController extends Controller
                 Yii::$app->session->set('curSplitPackage', $model->attributes);
             } elseif ($model->type == HanziTask::TYPE_INPUT) {
                 Yii::$app->session->set('curRecognizePackage', $model->attributes);
+            } elseif ($model->type == HanziTask::TYPE_DEDUP) {
+                Yii::$app->session->set('curDedupPackage', $model->attributes);
             }
 
             return $this->redirect(['index']);
