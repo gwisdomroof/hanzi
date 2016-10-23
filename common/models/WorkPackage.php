@@ -136,7 +136,7 @@ class WorkPackage extends \yii\db\ActiveRecord
         if ($this->type == HanziTask::TYPE_DEDUP)
             return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type);
         else
-            return \common\models\HanziTask::getFinishedWorkCountToday($this->userid, $this->type);
+            return \common\models\HanziUserTask::getFinishedWorkCountToday($this->userid, $this->type);
     }
 
     /**

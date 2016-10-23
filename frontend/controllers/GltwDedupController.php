@@ -133,6 +133,8 @@ class GltwDedupController extends Controller
         if (!isset($curPage) || empty($curPage['id'])) {
             // 寻找页面池中page值最小、状态为“初分配”“进行中”的页面，如果没有，则申请新页
             $curPage = HanziTask::getUnfinishedMinPage($userId, HanziTask::TYPE_DEDUP);
+//            var_dump($curPage);
+//            die;
             if (empty($curPage)) {
                 $curPage = HanziTask::getNewPage($userId, HanziTask::TYPE_DEDUP);
             }
@@ -161,17 +163,17 @@ class GltwDedupController extends Controller
                 var_dump($model->getErrors());
                 die;
             }
+            // 设置当前任务的状态
+            if (isset(Yii::$app->session['curDedupPage'])) {
+                $id = (int)Yii::$app->session['curDedupPage']['id'];
+                $model = HanziTask::findOne($id);
+                $model->status = HanziTask::STATUS_COMPLETE;
+                $model->save();
+            }
         }
 
-        // 设置当前任务的状态
-        if (isset(Yii::$app->session['curDedupPage'])) {
-            $id = (int)Yii::$app->session['curDedupPage']['id'];
-            $model = HanziTask::findOne($id);
-            $model->status = HanziTask::STATUS_COMPLETE;
-            $model->save();
-            // 销毁当前任务
-            unset(Yii::$app->session['curDedupPage']);
-        }
+        // 销毁当前任务
+        unset(Yii::$app->session['curDedupPage']);
 
         // 如果是回查阶段（seq=2），则检查角色权限
         $seq = (int)Yii::$app->get('keyStorage')->get('frontend.current-dedup-stage', null, false);

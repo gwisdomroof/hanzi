@@ -59,7 +59,7 @@ class WorkClock extends \yii\db\ActiveRecord
                 }
                 $schedule = (int)$curWorkPackage->daily_schedule;
                 // 获取本日实际工作量
-                $actual = (int)HanziUserTask::getFinishedWorkCountToday(Yii::$app->user->id, $this->type);
+                $actual = (int)$curWorkPackage->getFinishedToday();
                 if ($actual < $schedule)
                     $this->addError('content', '请您先完成本日的计划工作再打卡。');
             }]
