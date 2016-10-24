@@ -52,7 +52,7 @@ class GltwDedup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gaoli', 'unicode', 'created_at', 'updated_at'], 'required'],
+            [['gaoli', 'created_at', 'updated_at'], 'required'],
             [['status', 'relation', 'frequency', 'is_occupied', 'created_at', 'updated_at'], 'integer'],
             [['gaoli', 'unicode'], 'string', 'max' => 32],
             [['remark'], 'string', 'max' => 128],
