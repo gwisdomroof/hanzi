@@ -133,8 +133,6 @@ class GltwDedupController extends Controller
         if (!isset($curPage) || empty($curPage['id'])) {
             // 寻找页面池中page值最小、状态为“初分配”“进行中”的页面，如果没有，则申请新页
             $curPage = HanziTask::getUnfinishedMinPage($userId, HanziTask::TYPE_DEDUP);
-//            var_dump($curPage);
-//            die;
             if (empty($curPage)) {
                 $curPage = HanziTask::getNewPage($userId, HanziTask::TYPE_DEDUP);
             }
@@ -186,7 +184,7 @@ class GltwDedupController extends Controller
             // 跳转工作页面
             $curPage = Yii::$app->session->get('curDedupPage');
             // hanzi_gltw_dedup的id对应于
-            $this->redirect(['dedup', 'id' => $curPage['page']]);
+            $this->redirect(['dedup', 'id' => $curPage['page'], 'seq' => $curPage['seq']]);
         };
 
     }
@@ -255,12 +253,11 @@ class GltwDedupController extends Controller
         ]);
     }
 
-
     /**
      * Lists all GltwDedup models.
      * @return mixed
      */
-    private function actionCheck()
+    private function actionFindNoNeed()
     {
         $sqls = [];
         $models = GltwDedup::find()->where(['!=', 'relation', GltwDedup::RELATION_EMPTY])

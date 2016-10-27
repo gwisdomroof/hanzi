@@ -156,6 +156,8 @@ class WorkPackageController extends Controller
                 Yii::$app->session->set('curRecognizePackage', $model->attributes);
             } elseif ($model->type == HanziTask::TYPE_DEDUP) {
                 Yii::$app->session->set('curDedupPackage', $model->attributes);
+            } elseif ($model->type == HanziTask::TYPE_GAOLI_SPLIT) {
+                Yii::$app->session->set('curGaoliSplitPackage', $model->attributes);
             }
 
             return $this->redirect(['index']);
@@ -183,6 +185,8 @@ class WorkPackageController extends Controller
                 Yii::$app->session->set('curRecognizePackage', $model->attributes);
             } elseif ($model->type == HanziTask::TYPE_DEDUP) {
                 Yii::$app->session->set('curDedupPackage', $model->attributes);
+            } elseif ($model->type == HanziTask::TYPE_GAOLI_SPLIT) {
+                Yii::$app->session->set('curGaoliSplitPackage', $model->attributes);
             }
 
             return $this->redirect(['index']);

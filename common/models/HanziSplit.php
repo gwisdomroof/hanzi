@@ -87,7 +87,7 @@ class HanziSplit extends \yii\db\ActiveRecord
         if (!isset($curId))
             return false;
 
-        $query = HanziSplit::find()->orderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['word' => '']);
+        $query = HanziSplit::find()->orderBy('id')->andWhere('id > :id', [':id' => $curId])->andWhere(['duplicate' => 0]);
 
         return $query->one()->id;
 
@@ -225,6 +225,15 @@ class HanziSplit extends \yii\db\ActiveRecord
             self::TYPE_PICTURE => Yii::t('common', '图片'),
             self::TYPE_WORD_PICTURE => Yii::t('common', '文字且图片')
         ];
+    }
+
+    /**
+     * 如果id>=98246，则表示进入高丽异体字拆字页面
+     * @return array|mixed
+     */
+    public static function getSplitTaskType($id)
+    {
+        return $id >= 98246 ? HanziTask::TYPE_GAOLI_SPLIT : HanziTask::TYPE_SPLIT;
     }
 
 }

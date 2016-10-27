@@ -92,6 +92,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             $url = Url::toRoute(['']);
                             if ($model->type == HanziTask::TYPE_SPLIT) {
                                 $url = Url::toRoute(['hanzi-split/split']);
+                            } elseif ($model->type == HanziTask::TYPE_GAOLI_SPLIT) {
+                                $url = Url::toRoute(['hanzi-split/gaoli-split']);
                             } elseif ($model->type == HanziTask::TYPE_INPUT) {
                                 $url = Url::toRoute(['hanzi-hyyt/recognize']);
                             } elseif ($model->type == HanziTask::TYPE_DEDUP) {

@@ -30,6 +30,7 @@ class HanziTask extends \yii\db\ActiveRecord
     const TYPE_COLLATE = 3;
     const TYPE_DOWNLOAD = 4;
     const TYPE_DEDUP = 5;
+    const TYPE_GAOLI_SPLIT = 6;
 
     const STATUS_ASSIGNMENT = 0;
     const STATUS_ONGOING = 1;
@@ -98,9 +99,13 @@ class HanziTask extends \yii\db\ActiveRecord
         // 待处理的记录总数
         $maxPageNumber = $seq = null;
         if ($type == self::TYPE_SPLIT) {
-            $countToSplit = HanziSplit::find()->where(['duplicate' => 0])->count();
+            $countToSplit = HanziSplit::find()->where(['duplicate' => 0, 'source' => HanziSet::SOURCE_TAIWAN])->count();
             $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false)) + 1;
             $seq = Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        } elseif ($type == self::TYPE_GAOLI_SPLIT) {
+            $countToSplit = HanziSplit::find()->where(['duplicate' => 0, 'source' => HanziSet::SOURCE_GAOLI])->count();
+            $maxPageNumber = (int)($countToSplit / Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false)) + 1;
+            $seq = Yii::$app->get('keyStorage')->get('frontend.current-gaoli-split-stage', null, false);
         } else {
             $maxPageNumber = 5127; // 汉语大字典最大5127页
             $seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
@@ -127,18 +132,20 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         $idlePagesArr = [];
+        $gaoliSplitOffset = 1021;   # 高丽异体字第一页为1022
         # 异体字输入时的空白页面
         $inputEmptyPages = json_decode(Yii::$app->get('keyStorage')->get('frontend.input-empty-pages', null, false));
         for ($i = 1; $i < $maxPageNumber; $i++) {
-            if (!in_array($i, $usedPagesArr)) {
-                # 如果是异体字输入，则需要去掉空白页面
-                if ($type == self::TYPE_INPUT && in_array($i . '', $inputEmptyPages)) {
-                    continue;
-                }
-                $idlePagesArr[$i] = $i;
-                if (count($idlePagesArr) >= $count) {
-                    break;
-                }
+            # 如果是异体字输入，则需要去掉空白页面
+            if ($type == self::TYPE_INPUT && in_array($i . '', $inputEmptyPages)) {
+                continue;
+            }
+            if (count($idlePagesArr) >= $count) {
+                break;
+            }
+            $j = $type == self::TYPE_GAOLI_SPLIT ? $gaoliSplitOffset + $i : $i;
+            if (!in_array($j, $usedPagesArr)) {
+                $idlePagesArr[$j] = $j;
             }
         }
 
@@ -356,7 +363,7 @@ class HanziTask extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             // 如果是汉字拆分任务，则须保存id范围
-            if ($this->task_type == self::TYPE_SPLIT) {
+            if ($this->task_type == self::TYPE_SPLIT || $this->task_type == self::TYPE_GAOLI_SPLIT) {
                 $idRange = HanziSplit::getIdRangeByPage($this->page);
                 $this->start_id = $idRange['minId'];
                 $this->end_id = $idRange['maxId'];
@@ -395,6 +402,8 @@ class HanziTask extends \yii\db\ActiveRecord
             $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-input-stage', null, false);
         } elseif ($taskType == HanziTask::TYPE_DEDUP) {
             $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-dedup-stage', null, false);
+        } elseif ($taskType == HanziTask::TYPE_GAOLI_SPLIT) {
+            $model->seq = Yii::$app->get('keyStorage')->get('frontend.current-gaoli-split-stage', null, false);
         }
 
         if (!$model->validate() || !$model->save()) {
@@ -535,11 +544,12 @@ class HanziTask extends \yii\db\ActiveRecord
     public static function types()
     {
         return [
-            self::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+            self::TYPE_SPLIT => Yii::t('common', '台湾异体字拆字'),
+            self::TYPE_GAOLI_SPLIT => Yii::t('common', '高丽异体字拆字'),
+            self::TYPE_DEDUP => Yii::t('common', '高丽台湾异体字去重'),
             self::TYPE_INPUT => Yii::t('common', '异体字录入'),
             self::TYPE_COLLATE => Yii::t('common', '图书校对'),
-            self::TYPE_DOWNLOAD => Yii::t('common', '论文下载'),
-            self::TYPE_DEDUP => Yii::t('common', '高丽台湾异体字去重')
+            self::TYPE_DOWNLOAD => Yii::t('common', '论文下载')
         ];
     }
 
