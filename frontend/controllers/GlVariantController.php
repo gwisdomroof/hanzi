@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\GlVariant;
 use common\models\search\GlVariantSearch;
+use yii\base\InvalidValueException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -104,6 +105,33 @@ class GlVariantController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Expert chooses which duplication is correct. 0 for both wrong.
+     * @param $id int
+     * @param $choice int
+     */
+    public function actionJudge($id, $choice) {
+        $model = $this->findModel($id);
+        switch($choice) {
+            case 0:
+                $model->duplicate_id3 = "0";
+                break;
+            case 1:
+                $model->duplicate_id3 = $model->duplicate_id1;
+                break;
+            case 2:
+                $model->duplicate_id3 = $model->duplicate_id2;
+                break;
+            default:
+                throw new InvalidValueException("$choice out of range");
+        }
+
+        if ($model->save()) {
+            return json_encode(["code"=>0]);
+        }
+        return json_encode(["code"=>1, "msg"=>$model->getErrors()]);
     }
 
     /**

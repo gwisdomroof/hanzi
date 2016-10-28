@@ -77,6 +77,10 @@ class GlVariant extends \yii\db\ActiveRecord
             'remark' => Yii::t('frontend', '备注'),
             'created_at' => Yii::t('frontend', 'Created At'),
             'updated_at' => Yii::t('frontend', 'Updated At'),
+            'Origin Character' => Yii::t('frontend', '原始字'),
+            'First Dedup' => Yii::t('frontend', '第一次去重'),
+            'Second Dedup' => Yii::t('frontend', '第二次去重'),
+            'Expert Dedup' => Yii::t('frontedn', '专家去重'),
         ];
     }
 
