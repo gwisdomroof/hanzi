@@ -9,8 +9,8 @@ use common\models\HanziTask;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$taskName = ['1' => '拆字', '2' => '录入', '5' => '异体字去重'][$type];
-$this->title = Yii::t('frontend', $taskName . "任务管理");
+$taskName = ['1' => '拆字', '2' => '录入', '5' => '异体字去重', '6' => '高丽异体字去重'][$type];
+$this->title = Yii::t('frontend', $taskName . " 任务管理");
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -43,11 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     $urlMap = [
                         HanziTask::TYPE_SPLIT => 'hanzi-split/index',
+                        HanziTask::TYPE_GAOLI_SPLIT => 'hanzi-split/index',
                         HanziTask::TYPE_INPUT => 'hanzi-hyyt/index',
                         HanziTask::TYPE_DEDUP => 'gltw-dedup/dedup'
                     ];
                     $paramMap = [
                         HanziTask::TYPE_SPLIT => 'page',
+                        HanziTask::TYPE_GAOLI_SPLIT => 'page',
                         HanziTask::TYPE_INPUT => 'page',
                         HanziTask::TYPE_DEDUP => 'id'
                     ];

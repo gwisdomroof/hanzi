@@ -53,8 +53,12 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                 'visible'=>\common\models\HanziTask::isLeader(Yii::$app->user->id),
                 'items'=>[
                     [
-                        'label' => Yii::t('frontend', '异体字拆字'),
+                        'label' => Yii::t('frontend', '台湾异体字拆字'),
                         'url' => ['/hanzi-task/admin?type=1']
+                    ],
+                    [
+                        'label' => Yii::t('frontend', '高丽异体字拆字'),
+                        'url' => ['/hanzi-task/admin?type=6']
                     ],
                     [
                         'label' => Yii::t('frontend', '异体字识别'),
