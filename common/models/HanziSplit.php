@@ -228,12 +228,12 @@ class HanziSplit extends \yii\db\ActiveRecord
     }
 
     /**
-     * 如果id>=98246，则表示进入高丽异体字拆字页面
+     * 如果id>=98240，即拆字页面1022页，则表示进入高丽异体字拆字页面
      * @return array|mixed
      */
     public static function getSplitTaskType($id)
     {
-        return $id >= 98246 ? HanziTask::TYPE_GAOLI_SPLIT : HanziTask::TYPE_SPLIT;
+        return $id >= 98240 ? HanziTask::TYPE_GAOLI_SPLIT : HanziTask::TYPE_SPLIT;
     }
 
 }
