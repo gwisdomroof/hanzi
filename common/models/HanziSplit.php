@@ -151,7 +151,7 @@ class HanziSplit extends \yii\db\ActiveRecord
             ->orderBy('id');
         if ($seq == 1) {
             // updated_at为空表示尚未作更新，即尚未进行初次拆分
-            $query->andWhere('updated_at is null');
+            $query->andWhere('updated_at is null or updated_at = created_at');
         } elseif ($seq == 2) {
             $query->andWhere(['!=', 'split20_completed', 1]);
         } elseif ($seq == 3) {
