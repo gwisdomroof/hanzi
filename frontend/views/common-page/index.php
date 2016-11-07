@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'seq',
                 'value' => function ($data) {
-                    return empty($data['task_type']) ? '' : HanziTask::seqs()[$data['task_type']];
+                    return empty($data['seq']) ? '' : HanziTask::seqs()[$data['seq']];
                 },
                 'filter'=>HanziTask::seqs()
             ],
