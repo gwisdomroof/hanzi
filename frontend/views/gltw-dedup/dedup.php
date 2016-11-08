@@ -6,7 +6,9 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('frontend', 'Gltw Dedups')];
-if (!empty($seq) && $seq == 2) {
+if (!empty($seq) && $seq == 1) {
+    $this->params['breadcrumbs'][] = Yii::t('frontend', 'First Stage');
+} elseif (!empty($seq) && $seq == 2) {
     $this->params['breadcrumbs'][] = Yii::t('frontend', 'Second Stage');
 } elseif (!empty($seq) && $seq == 3) {
     $this->params['breadcrumbs'][] = Yii::t('frontend', 'Third Stage');
@@ -66,13 +68,16 @@ if (!empty($seq) && $seq == 2) {
             font-family: MingLiU;
         }
 
-        .duplicate {
+        .duplicate1 {
             background-color: aqua;
         }
 
-        .duplicate-different {
-            background-color: aqua;
+        .duplicate2 {
             border: 1px solid red;
+        }
+
+        .duplicate3 {
+            border: 1px solid green;
         }
 
         #tw-variants {
@@ -151,21 +156,24 @@ if (!empty($seq) && $seq == 2) {
                     continue;
                 $value = !empty($variant->word) ? $variant->word : $variant->pic_name;
                 $picPath = \common\models\HanziSet::getPicturePath($variant->source, $value);
-                $duplicateId = $variant->duplicate_id1 . ',' . $variant->duplicate_id2;
-                $duplicateId = preg_replace('/(^,)|(,$)/', '', $duplicateId);
-                $title = empty($duplicateId) ? $value : $value . '|' . $duplicateId;
                 $class = 'hanzi-img';
-                if (!empty($duplicateId)) {
-                    if (!empty($variant->duplicate_id1) && !empty($variant->duplicate_id2)
-                        && $variant->duplicate_id1 != $variant->duplicate_id2
-                    ) {
-                        $class = 'hanzi-img duplicate-different';
-                    } else {
-                        $class = 'hanzi-img duplicate';
-                    }
+                $title = "高丽异体字编号：{$value}；";
+                if (!empty($variant->duplicate_id1 . $variant->duplicate_id2 . $variant->duplicate_id3))
+                    $title .= "&#xa;重复的台湾异体字：";
+                if (!empty($variant->duplicate_id1)) {
+                    $class .= ' duplicate1';
+                    $title .= "&#xa; · 初次：{$variant->duplicate_id1}；";
                 }
-                echo "<div class='hanzi-item'><img alt='$value' title='$title' src='$picPath' class='$class'></div>";
-
+                if (!empty($variant->duplicate_id2)) {
+                    $class .= ' duplicate2';
+                    $title .= "&#xa; · 回查：{$variant->duplicate_id2}；";
+                }
+                if (!empty($variant->duplicate_id3)) {
+                    $class = 'hanzi-img duplicate3';
+                    $title .= "&#xa; · 审查：{$variant->duplicate_id3}；";
+                }
+                $alt = "{$value}|{$variant->duplicate_id1};{$variant->duplicate_id2};{$variant->duplicate_id3}";
+                echo "<div class='hanzi-item'><img alt='$alt' title='$title' src='$picPath' class='$class'></div>";
             }
             echo "</div><br/>";
         } ?>
@@ -177,17 +185,22 @@ if (!empty($seq) && $seq == 2) {
             <form action="gltw-dedup/save" id="gl-dedup">
                 <div class="modal-content">
                     <div class="modal-body" style="min-height: 120px; margin-top: 10px;">
-                        <label class="col-sm-3" for="tw-code"
-                               style="text-align: right; margin-top: 5px; float:left;">高丽异体字</label>
-                        <div class="col-sm-9" style="margin-bottom: 15px;">
-                            <input type="input" id="gl-code" class="form-control" name="glCode" style="display:none;"/>
-                            <img id="gl-img" alt="" title="" src="" class="hanzi-img">
+                        <div style="width: 100%">
+                            <label class="col-sm-4" for="tw-code"
+                                   style="text-align: right; margin-top: 5px; float:left;">高丽异体字：</label>
+                            <div class="col-sm-8" style="margin-bottom: 15px;">
+                                <input type="input" id="gl-code" class="form-control" name="glCode"
+                                       style="display:none;"/>
+                                <img id="gl-img" alt="" title="" src="" class="hanzi-img">
+                            </div>
                         </div>
-                        <label class="col-sm-3" for="tw-code"
-                               style="text-align: right; margin-top: 5px; float:left;">重复编号</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="tw-code" class="form-control" name="twCode"
-                                   placeholder="请输入与图片字重复的台湾异体字编号…"/>
+                        <div style="width: 100%">
+                            <label class="col-sm-4" for="tw-code"
+                                   style="text-align: right; margin-top: 5px; float:left;">重复的台湾异体字：</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="tw-code" class="form-control" name="twCode"
+                                       placeholder="请输入与高丽异体字重复的台湾异体字…"/>
+                            </div>
                         </div>
                         <input type="hidden" name="seq" value="<?= $seq ?>">
                     </div>
@@ -207,36 +220,63 @@ $script = <<<SCRIPT
     $(document).on('click', '#gl-variants .hanzi-img', function() {
         if (permission == 0)
             return false;
-        var title = $(this).attr('title');
-        var glCode = title.split("|")[0];
-        $('#gl-code').val(glCode);
-        $('#gl-img').attr('title', glCode);
-        $('#gl-img').attr('alt', glCode);
+        
+        $('#gl-img').attr('alt', $(this).attr('alt'));
+        $('#gl-img').attr('title', $(this).attr('title'));
         $('#gl-img').attr('src', $(this).attr('src'));
         $('#gl-img').attr('class', $(this).attr('class'));
+        
+        var glCode = '';
         var twCode = '';
-        if (title.split("|").length > 1)
-            twCode = title.split("|")[1];
+        var alt = $(this).attr('alt');
+        if (alt.split("|").length > 1) {
+            glCode = alt.split("|")[0];
+            var twCodeStr = alt.split("|")[1];
+            twCode = twCodeStr.split(";")[seq-1];
+        }
+        $('#gl-code').val(glCode);
         $('#tw-code').val(twCode);
         $('#mymodal').modal('toggle');
     });
     
-    $(document).on('click', '#commit', function() {  
-        var glCode = $('#gl-code').val();
+    $(document).on('click', '#commit', function() {
         var twCode = $('#tw-code').val();
+        var glCode = $('#gl-code').val();
+        var glAlt = $('#gl-img').attr('alt');
+        var glTitle = $('#gl-img').attr('title');
+        
         $.post( {
             url: "/gltw-dedup/save",
             data: $('#gl-dedup').serialize(),
             dataType: 'json',
             success: function(result){
                 if (result.status == 'success') {
-                    if (twCode != '') {
-                        $('img[alt="'+glCode+'"]').attr('class', 'hanzi-img duplicate');
-                        $('img[alt="'+glCode+'"]').attr('title', glCode + '|' + twCode);
-                    } else {
-                        $('img[alt="'+glCode+'"]').attr('class', 'hanzi-img');
-                        $('img[alt="'+glCode+'"]').attr('title', glCode);
+                    var glCodeStr = glAlt.split("|")[0];
+                    var twCodeStr = glAlt.split("|")[1];
+                    var twCodeArr = twCodeStr.split(";");
+                    var seq = parseInt(result.seq);
+                    twCodeArr[seq-1] = twCode;
+                    
+                    var cls = 'hanzi-img';
+                    var title = "高丽异体字编号：" + glCodeStr + "；";
+                    if (twCodeArr[0] != '' || twCodeArr[1] != '' || twCodeArr[2] != '')
+                        title += "\\n重复的台湾异体字：";
+                    if (twCodeArr[0] != '') {
+                        cls += ' duplicate1';
+                        title = title + "\\n · 初次：" + twCodeArr[0] + "；";
                     }
+                    if (twCodeArr[1] != '') {
+                        cls += ' duplicate2';
+                        title = title + "\\n · 回查：" + twCodeArr[1] + "；";
+                    }
+                    if (twCodeArr[2] != '') {
+                        cls = 'hanzi-img duplicate3';
+                        title = title + "\\n · 审查：" + twCodeArr[2] + "；";
+                    }
+                    $('img[alt="'+glAlt+'"]').attr('class', cls);
+                    $('img[alt="'+glAlt+'"]').attr('title', title);
+                    $('img[alt="'+glAlt+'"]').attr('alt', glCodeStr + "|" + twCodeArr.join(';'));
+
                     var score = parseInt(result.score);
                     if (score != 0) {
                         $("#tips").fadeIn(50).fadeOut(500); 

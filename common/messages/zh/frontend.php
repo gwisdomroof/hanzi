@@ -98,6 +98,7 @@ return [
     'Tasks Daily' => '每日工作量',
     'Common Pages' => '公共页面',
     'Completed And Next' => '完成，转下一页',
+    'First Stage' => '初次',
     'Second Stage' => '回查',
     'Third Stage' => '审查',
 

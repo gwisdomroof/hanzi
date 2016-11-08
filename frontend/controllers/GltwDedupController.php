@@ -77,11 +77,10 @@ class GltwDedupController extends Controller
         $glVariant->$duplicate_id = $twCode;
         if ($glVariant->save()) {
             $addScore = 0;
-            $seq = Yii::$app->get('keyStorage')->get('frontend.current-dedup-stage', null, false);
             if (HanziUserTask::addItem(Yii::$app->user->id, $glVariant->id, HanziTask::TYPE_DEDUP, HanziUserTask::DEDUP_WEIGHT, $seq)) {
                 $addScore = HanziUserTask::DEDUP_WEIGHT;  # 每增一项加一分
             }
-            return '{"status":"success", "id": ' . $glVariant->id . ', "score": ' . $addScore . '}';
+            return '{"status":"success", "id": ' . $glVariant->id . ', "score": ' . $addScore . ', "seq": ' . $seq . '}';
         }
 
         return '{"status":"error", "msg": "保存错误，请联系管理员."}';
