@@ -76,6 +76,10 @@ if (!empty($seq) && $seq == 1) {
             border: 1px solid red;
         }
 
+        .duplicate2_error {
+            border: 1px solid black;
+        }
+
         .duplicate3 {
             border: 1px solid green;
         }
@@ -164,8 +168,11 @@ if (!empty($seq) && $seq == 1) {
                     $class .= ' duplicate1';
                     $title .= "&#xa; · 初次：{$variant->duplicate_id1}；";
                 }
-                if (!empty($variant->duplicate_id2)) {
-                    $class .= ' duplicate2';
+                if (isset($variant->duplicate_id2)) {
+                    if ($variant->duplicate_id2 == '0')
+                        $class .= ' duplicate2_error';
+                    else
+                        $class .= ' duplicate2';
                     $title .= "&#xa; · 回查：{$variant->duplicate_id2}；";
                 }
                 if (!empty($variant->duplicate_id3)) {
@@ -266,7 +273,10 @@ $script = <<<SCRIPT
                         title = title + "\\n · 初次：" + twCodeArr[0] + "；";
                     }
                     if (twCodeArr[1] != '') {
-                        cls += ' duplicate2';
+                        if (twCodeArr[1] == 0)
+                            cls += ' duplicate2_error';
+                        else 
+                            cls += ' duplicate2';
                         title = title + "\\n · 回查：" + twCodeArr[1] + "；";
                     }
                     if (twCodeArr[2] != '') {

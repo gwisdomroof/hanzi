@@ -64,11 +64,13 @@ class GltwDedupController extends Controller
         }
 
         $twCode = trim(Yii::$app->request->post()['twCode']);
-        $twVariant = HanziSet::find()->where(['source' => HanziSet::SOURCE_TAIWAN])
-            ->andWhere(['or', ['word' => $twCode], ['pic_name' => $twCode]])
-            ->one();
-        if (empty($twVariant)) {
-            return '{"status":"error", "msg": "未找到编码对应的台湾异体字."}';
+        if ($twCode != 0) {
+            $twVariant = HanziSet::find()->where(['source' => HanziSet::SOURCE_TAIWAN])
+                ->andWhere(['or', ['word' => $twCode], ['pic_name' => $twCode]])
+                ->one();
+            if (empty($twVariant)) {
+                return '{"status":"error", "msg": "未找到编码对应的台湾异体字."}';
+            }
         }
 
         // 不同阶段，存储在不同的字段
