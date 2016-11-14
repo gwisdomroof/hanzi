@@ -37,9 +37,12 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     <div class="col-sm-4">
         <?= $form->field($model, 'task_type')->dropDownList([
-            HanziUserTask::TYPE_SPLIT => Yii::t('common', '异体字拆字'),
+            HanziUserTask::TYPE_GAOLI_SPLIT => Yii::t('common', '高丽异体字拆字'),
+            HanziUserTask::TYPE_DEDUP => Yii::t('common', '异体字去重'),
+            HanziUserTask::TYPE_SPLIT => Yii::t('common', '台湾异体字拆字'),
             HanziUserTask::TYPE_INPUT => Yii::t('common', '异体字录入'),
-        ]) ?>
+        ]);
+        ?>
     </div>
     <div class="col-sm-5">
         <label class="control-label col-sm-3" for="hanziusertasksearch-updated_at">日期</label>

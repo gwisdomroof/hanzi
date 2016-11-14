@@ -33,7 +33,6 @@
 	{"display" : "𠃍", "input" : "𠃍", "search" : "1z"},
 	{"display" : "𠃎", "input" : "𠃎", "search" : "1sh"},
 	{"display" : "𠃑", "input" : "𠃑", "search" : "1z"},
-	{"display" : "𠄎", "input" : "𠄎", "search" : "1z"},
 	{"display" : "〢", "input" : "〢", "search" : "2ss"},
 	{"display" : "■〢1", "input" : "〢", "search" : "2ss"},
 	{"display" : "■〢2", "input" : "〢", "search" : "2ss"},

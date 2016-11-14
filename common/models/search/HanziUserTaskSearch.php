@@ -116,7 +116,7 @@ class HanziUserTaskSearch extends HanziUserTask
 
         if (empty($params['HanziUserTaskSearch'])) {
             $params['HanziUserTaskSearch']['updated_at'] = date('Y-m-d');
-            $params['HanziUserTaskSearch']['task_type'] = HanziUserTask::TYPE_SPLIT;
+            $params['HanziUserTaskSearch']['task_type'] = HanziUserTask::TYPE_GAOLI_SPLIT;
         }
 
         $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);

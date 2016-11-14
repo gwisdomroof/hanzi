@@ -25,6 +25,8 @@ class HanziUserTask extends \yii\db\ActiveRecord
     const TYPE_INPUT = 2;
     const TYPE_COLLATE = 3;
     const TYPE_DOWNLOAD = 4;
+    const TYPE_DEDUP = 5;
+    const TYPE_GAOLI_SPLIT = 6;
 
     const DEDUP_WEIGHT = 2;
     const SPLIT_WEIGHT = 2;
