@@ -9,7 +9,7 @@ use common\models\HanziTask;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$taskName = ['1' => '拆字', '2' => '录入', '5' => '异体字去重', '6' => '高丽异体字去重'][$type];
+$taskName = ['1' => '台湾异体字拆字', '2' => '异体字录入', '5' => '异体字去重', '6' => '高丽异体字拆字'][$type];
 $this->title = Yii::t('frontend', $taskName . " 任务管理");
 $this->params['breadcrumbs'][] = $this->title;
 ?>

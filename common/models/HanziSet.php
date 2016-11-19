@@ -284,9 +284,9 @@ class HanziSet extends \yii\db\ActiveRecord
     {
         return [
             self::SOURCE_UNICODE => Yii::t('frontend', 'Unicode'),
-            self::SOURCE_TAIWAN => Yii::t('frontend', '台湾异体字'),
+            self::SOURCE_TAIWAN => Yii::t('frontend', '台湾异体字字典'),
             self::SOURCE_HANYU => Yii::t('frontend', '汉语大字典'),
-            self::SOURCE_GAOLI => Yii::t('frontend', '高丽异体字'),
+            self::SOURCE_GAOLI => Yii::t('frontend', '高丽异体字字典'),
             self::SOURCE_DUNHUANG => Yii::t('frontend', '敦煌俗字典'),
             self::SOURCE_OTHER => Yii::t('frontend', '其他')
         ];

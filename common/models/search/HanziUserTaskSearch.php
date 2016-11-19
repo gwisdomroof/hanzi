@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\HanziUserTask;
+use common\models\HanziTask;
 
 /**
  * HanziUserTaskSearch represents the model behind the search form about `common\models\HanziUserTask`.
@@ -106,39 +107,51 @@ class HanziUserTaskSearch extends HanziUserTask
      */
     public function dailySearch($params)
     {
-        $query = HanziUserTask::find();
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        $dataProvider->pagination->pageSize=10000;
-
         if (empty($params['HanziUserTaskSearch'])) {
             $params['HanziUserTaskSearch']['updated_at'] = date('Y-m-d');
             $params['HanziUserTaskSearch']['task_type'] = HanziUserTask::TYPE_GAOLI_SPLIT;
         }
 
-        $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);
-        $query->joinWith(['user']);
+        $this->updated_at = $params['HanziUserTaskSearch']['updated_at'];
+        $this->task_type = $params['HanziUserTaskSearch']['task_type'];
+        if ($params['HanziUserTaskSearch']['task_type'] == HanziUserTask::TYPE_DEDUP) {
+            $query = HanziTask::find()->where(['hanzi_task.status' => HanziTask::STATUS_COMPLETE]);
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            $dataProvider->pagination->pageSize = 10000;
+            $query->select(["user_id, \"user\".username, count(page) AS cnt"])->groupBy(['user_id', 'username']);
+            $query->joinWith(['user']);
+            $query->andFilterWhere(['task_type' => $params['HanziUserTaskSearch']['task_type']]);
+            if (isset($this->updated_at) && !empty($this->updated_at)) {
+                list($y, $m, $d) = explode('-', $this->updated_at);
+                $beginTime = mktime(0, 0, 0, $m, $d, $y);
+                $endTime = mktime(23, 59, 59, $m, $d, $y);
+                $query->andFilterWhere(['and', ['>=', 'hanzi_task.updated_at', $beginTime], ['<=', 'hanzi_task.updated_at', $endTime]]);
+            }
+            // $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
+            return $dataProvider;
 
-        if (isset($params['HanziUserTaskSearch']['task_type']))
-            $this->task_type = $params['HanziUserTaskSearch']['task_type'];
-            $query->andFilterWhere(['task_type' => $this->task_type]);
-
-        if (isset($params['HanziUserTaskSearch']['updated_at']) && !empty($params['HanziUserTaskSearch']['updated_at'])) {
-            $this->updated_at = $params['HanziUserTaskSearch']['updated_at'];
-            if (!empty($this->updated_at)) {
+        } else {
+            $query = HanziUserTask::find();
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            $dataProvider->pagination->pageSize = 10000;
+            $query->select(["userid, \"user\".username, count(taskid) AS cnt"])->groupBy(['userid', 'username']);
+            $query->joinWith(['user']);
+            $query->andFilterWhere(['task_type' => $params['HanziUserTaskSearch']['task_type']]);
+            if (isset($this->updated_at) && !empty($this->updated_at)) {
                 list($y, $m, $d) = explode('-', $this->updated_at);
                 $beginTime = mktime(0, 0, 0, $m, $d, $y);
                 $endTime = mktime(23, 59, 59, $m, $d, $y);
                 $query->andFilterWhere(['and', ['>=', 'hanzi_user_task.updated_at', $beginTime], ['<=', 'hanzi_user_task.updated_at', $endTime]]);
             }
+            // $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
+            return $dataProvider;
+
         }
 
-        $query->andFilterWhere(['like', 'user.username', $this->getAttribute('user.username')]);
-
-        return $dataProvider;
     }
 
     /**

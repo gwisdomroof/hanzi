@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\behaviors\TimestampBehavior;
 use common\models\MemberRelation;
 use common\models\HanziHyyt;
@@ -42,6 +43,8 @@ class HanziTask extends \yii\db\ActiveRecord
     const SEQ_SECOND = 2;
     const SEQ_THIRD = 3;
 
+    public $cnt;
+
     /**
      * @inheritdoc
      */
@@ -57,9 +60,9 @@ class HanziTask extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at', 'task_type'], 'integer'],
+            [['user_id', 'leader_id', 'page', 'seq', 'start_id', 'end_id', 'status', 'created_at', 'updated_at', 'task_type', 'cnt'], 'integer'],
             [['page'], 'integer', 'max' => 10000],
-            [['leader.username', 'member.username', 'created_at', 'updated_at'], 'safe'],
+            [['leader.username', 'member.username', 'user.username', 'created_at', 'updated_at'], 'safe'],
             [['remark'], 'string', 'max' => 128],
             ['page', function ($attribute, $params) {
                 if ($this->status == self::STATUS_CANCEL || $this->status == self::STATUS_CONTINUE) {
@@ -320,6 +323,15 @@ class HanziTask extends \yii\db\ActiveRecord
     }
 
     /**
+     * [getCustomer description]
+     * @return [type] [description]
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels()
@@ -331,6 +343,7 @@ class HanziTask extends \yii\db\ActiveRecord
             'user_id' => Yii::t('app', '组员'),
             'leader.username' => Yii::t('app', '组长'),
             'member.username' => Yii::t('app', '组员'),
+            'user.username' => Yii::t('app', '用户名'),
             'page' => Yii::t('app', '页码'),
             'seq' => Yii::t('app', '阶段'),
             'start_id' => Yii::t('app', '起始ID'),
@@ -356,7 +369,7 @@ class HanziTask extends \yii\db\ActiveRecord
     public function attributes()
     {
         // 添加关联字段到可搜索特性
-        return array_merge(parent::attributes(), ['member.username', 'leader.username']);
+        return array_merge(parent::attributes(), ['member.username', 'leader.username', 'user.username']);
     }
 
     public function beforeSave($insert)
@@ -373,7 +386,6 @@ class HanziTask extends \yii\db\ActiveRecord
             return false;
         }
     }
-
 
     /**
      * 寻找页面池中page值最小，状态为“初分配”“已完成”的页面

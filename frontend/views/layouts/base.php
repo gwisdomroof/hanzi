@@ -61,7 +61,7 @@ $this->beginContent('@frontend/views/layouts/_clear.php')
                         'url' => ['/hanzi-task/admin?type=6']
                     ],
                     [
-                        'label' => Yii::t('frontend', '异体字识别'),
+                        'label' => Yii::t('frontend', '异体字录入'),
                         'url' => ['/hanzi-task/admin?type=2']
                     ],
                     [

@@ -51,7 +51,7 @@ use common\models\HanziSet;
                     }
                 }
             ?></div></th>
-            <th>字典</th><th>原始位置</th><th>所属正字</th><th>备注</th>
+            <th>字典</th><th>原始出处</th><th>所属正字</th><th>备注</th>
         </tr>
         <?php foreach ($summary as $item) : ?>
             <tr><td><?=$item['source']?></td>
