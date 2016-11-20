@@ -28,22 +28,28 @@ $this->params['breadcrumbs'][] = '任务列表';
                 },
                 'filter' => HanziTask::types()
             ],
-            'leader.username',
+            [
+                'attribute' => 'seq',
+                'value' => function ($data) {
+                    return empty($data['seq']) ? '' : $data->seqs()[$data['seq']];
+                },
+                'filter' => HanziTask::seqs()
+            ],
             [
                 'attribute' => 'page',
                 'value' => function ($data) {
                     if ($data->task_type == HanziTask::TYPE_SPLIT) {
                         $url = 'hanzi-split/index';
-                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page, 'seq' => $data->seq], true));
                     } elseif ($data->task_type == HanziTask::TYPE_GAOLI_SPLIT) {
                         $url = 'hanzi-split/index';
-                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page, 'seq' => $data->seq], true));
                     } elseif($data->task_type == HanziTask::TYPE_INPUT) {
                         $url ='hanzi-hyyt/index';
-                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page], true));
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'page' => $data->page, 'seq' => $data->seq], true));
                     } elseif($data->task_type == HanziTask::TYPE_DEDUP) {
                         $url ='gltw-dedup/dedup';
-                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'id' => $data->page], true));
+                        return empty($data['page']) ? '' : Html::a($data['page'], yii\helpers\Url::to([$url, 'id' => $data->page, 'seq' => $data->seq], true));
                     }
 
                 },
@@ -57,6 +63,13 @@ $this->params['breadcrumbs'][] = '任务列表';
                 'filter' => HanziTask::statuses(),
                 "headerOptions" => ["width" => "120"]
             ],
+             [
+                 'attribute' => 'updated_at',
+                 'format'=>['datetime','php:Y-m-d H:i:s'],
+                 'label' => '完成时间',
+                 'filter' => false,
+                 "headerOptions" => ["width" => "200"]
+             ],
         ],
     ]); ?>
 </div>
