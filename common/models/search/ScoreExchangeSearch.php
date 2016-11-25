@@ -70,7 +70,7 @@ class ScoreExchangeSearch extends ScoreExchange
             'userid' => $this->userid,
             'type' => $this->type,
             'score' => $this->score,
-            'status' => $this->status,
+            'score_exchange.status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
