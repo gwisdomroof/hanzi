@@ -389,4 +389,35 @@ class GltwDedupController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    /**
+     * Deletes an existing GltwDedup model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param string $id
+     * @return mixed
+     */
+    public function actionGensqls()
+    {
+        $dupids = include "dupids.php";
+        $idx = 0;
+        $sqls = [];
+        $sql = '';
+        foreach ($dupids as $dupid) {
+            if (++$idx % 50 !== 0) {
+                $sql .= "'{$dupid}',";
+            } else {
+                $sql .= "'{$dupid}'";
+                $sqls[] = $sql;
+                $sql = '';
+            }
+        }
+
+        foreach ($sqls as $sql) {
+//            echo "{$sql}<br/>";
+            echo "UPDATE hanzi_split set is_duplicated_temp = 1 where source = 4 and picture in ({$sql});<br/>";
+
+        }
+
+        die;
+    }
 }
