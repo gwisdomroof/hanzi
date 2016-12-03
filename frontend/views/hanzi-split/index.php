@@ -24,32 +24,39 @@ $this->params['breadcrumbs'][] = $this->title;
             // ['class' => 'yii\grid\SerialColumn'],
             [
                 'header' => '', # 取消排序
-                'attribute'=>'id',
+                'attribute' => 'id',
                 "headerOptions" => ["width" => "30"]
             ],
-            // 'hanzi_type',
+//            [
+//                'header' => '', # 取消排序
+//                'attribute' => 'word',
+//                "headerOptions" => ["width" => "50"]
+//            ],
             [
                 'header' => '', # 取消排序
-                'attribute'=>'word',
-                "headerOptions" => ["width" => "50"]
-            ],
-            [
-                'header' => '', # 取消排序
-                'attribute'=>'picture',
-                'value'=>function ($model) {
+                'attribute' => 'picture',
+                'value' => function ($model) {
                     return \common\models\HanziSet::getPicturePath($model->source, $model->picture);
                 },
-                'format' => ['image',['width'=>'25','height'=>'25']],
+                'format' => ['image', ['width' => '25', 'height' => '25']],
                 "headerOptions" => ["width" => "50"]
             ],
             [
                 'header' => '', # 取消排序
-                'attribute'=>'source',
+                'attribute' => 'source',
                 "headerOptions" => ["width" => "100"],
-                'value'=>function ($model) {
-                    return empty($model->source) ? null: \common\models\HanziSet::sources()[$model->source];
+                'value' => function ($model) {
+                    return empty($model->source) ? null : \common\models\HanziSet::sources()[$model->source];
                 },
-                'filter'=>\common\models\HanziSet::sources(),
+                'filter' => \common\models\HanziSet::sources(),
+            ],
+            [
+                'header' => '是否重复',
+                'attribute' => 'is_duplicated_temp',
+                'value' => function ($model) {
+                    return !empty($model->is_duplicated_temp) ? '是' : '否';
+                },
+                "headerOptions" => ["width" => "50"]
             ],
 //            [
 //                'header' => '', # 取消排序
@@ -74,17 +81,17 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => '', # 取消排序
                 'label' => '初次：初步拆分',
-                'attribute'=>'initial_split11',
+                'attribute' => 'initial_split11',
             ],
             [
                 'header' => '', # 取消排序
                 'label' => '回查：初步拆分',
-                'attribute'=>'initial_split21',
+                'attribute' => 'initial_split21',
             ],
             [
                 'header' => '', # 取消排序
                 'label' => '审查：初步拆分',
-                'attribute'=>'initial_split31',
+                'attribute' => 'initial_split31',
             ],
             // 'initial_split12',
             // 'deform_split10',

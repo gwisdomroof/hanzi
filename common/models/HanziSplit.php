@@ -146,6 +146,7 @@ class HanziSplit extends \yii\db\ActiveRecord
 
         $query = HanziSplit::find()
             ->where(['duplicate' => 0])
+            ->andWhere(['!=', 'is_duplicated_temp', 1]) // 初次拆分时，加一个临时字段；回查阶段可以去掉
             ->andWhere(['>=', 'id', $startId])
             ->andWhere(['<=', 'id', $endId])
             ->orderBy('id');
