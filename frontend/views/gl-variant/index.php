@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'duplicate_id3',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $disable = empty($model->duplicate_id3) ? '' : 'disabled="disabled"';
+                        $disable = !isset($model->duplicate_id3) ? '' : 'disabled="disabled"';
                         return "<div><input type='text' class='form-control' {$disable} id='{$model->id}' name='{$model->id}' value='{$model->duplicate_id3}'/></div>";
                     },
                 ],
