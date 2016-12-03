@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\GlVariant;
 use Yii;
 use common\models\HanziSet;
 use yii\web\Controller;
@@ -32,7 +33,7 @@ class DeDupController extends Controller
      */
     private function actionSetpage()
     {
-        
+
         $curPage = 1;
         $curCount = 0;
         $pageCount = 50;
@@ -69,7 +70,7 @@ class DeDupController extends Controller
      */
     public function actionSetDup()
     {
-        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source'=>HanziSet::SOURCE_GAOLI])->andWhere(['!=', 'duplicate_id', ''])->all();
+        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source' => HanziSet::SOURCE_GAOLI])->andWhere(['!=', 'duplicate_id', ''])->all();
 
         $handledIds = [];
         foreach ($models as $model) {
@@ -82,25 +83,25 @@ class DeDupController extends Controller
             $standardWords = [];
             $subIds = [];
             if (strpos($model->duplicate_id, ';') == false) {
-                $glDedup = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
+                $glDedup = HanziSet::find()->where(['pic_name' => $model->duplicate_id, 'source' => HanziSet::SOURCE_GAOLI])->one();
                 if (!empty($glDedup->duplicate_id) && strpos($glDedup->duplicate_id, ';') !== false) {
                     $mainModel = $glDedup;
                     $picNames = explode(';', $glDedup->duplicate_id);
-                    $subModels = HanziSet::find()->where(['pic_name'=>$picNames, 'source'=>HanziSet::SOURCE_GAOLI])->all();
+                    $subModels = HanziSet::find()->where(['pic_name' => $picNames, 'source' => HanziSet::SOURCE_GAOLI])->all();
                 } else {
                     $subModels[] = $glDedup;
                 }
             } else {
                 $picNames = explode(';', $model->duplicate_id);
-                $subModels = HanziSet::find()->where(['pic_name'=>$picNames, 'source'=>HanziSet::SOURCE_GAOLI])->all();
+                $subModels = HanziSet::find()->where(['pic_name' => $picNames, 'source' => HanziSet::SOURCE_GAOLI])->all();
             }
 
             $handledIds[] = $mainModel->id;
             $standardWords[] = $mainModel->belong_standard_word_code;
             foreach ($subModels as $subModel) {
-                    $standardWords[] = $subModel->belong_standard_word_code;
-                    $handledIds[] = $subModel->id;
-                    $subIds[] = $subModel->id;
+                $standardWords[] = $subModel->belong_standard_word_code;
+                $handledIds[] = $subModel->id;
+                $subIds[] = $subModel->id;
             }
 
             # 主model
@@ -119,21 +120,50 @@ class DeDupController extends Controller
     }
 
     /**
+     * 提取高丽藏内部去重的重复编码
+     * @return mixed
+     */
+    public function actionExtract()
+    {
+        $models = HanziSet::find()->where("source = 4 and  duplicate_id != ''")->asArray()->all();
+        $redundants = [];
+        $redundantids = [];
+        foreach ($models as $model) {
+            $inArray = false;
+            $dupIds = explode(";", $model['duplicate_id']);
+            $dupIds[] = $model['pic_name'];
+            foreach ($dupIds as $dupId) {
+                if (in_array($dupId, $redundants))
+                    $inArray = true;
+            }
+            if (!$inArray) {
+                $redundants[] = $model['pic_name'];
+                $redundantids[] = $model['id'];
+            }
+        }
+
+        foreach ($redundantids as $redundant) {
+            echo $redundant . '<br/>';
+        }
+        die;
+
+    }
+
+    /**
      * 高丽藏内部，按照郑码去重
      * 需要去重的郑码为后台参数“frontend.gl-dedup”存储的内容
      * @return mixed
      */
-    public function actionGaoli($page=1)
+    public function actionGaoli($page = 1)
     {
         $page = (int)trim($page);
         $glDedup = \common\models\HanziGaoliDedup::find()->orderBy('id')->where(['page' => $page])->asArray()->all();
-        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source'=>HanziSet::SOURCE_GAOLI, 'zhengma'=>$glDedup])->all();
+        $models = HanziSet::find()->orderBy(['zhengma' => SORT_ASC, 'id' => SORT_ASC])->where(['source' => HanziSet::SOURCE_GAOLI, 'zhengma' => $glDedup])->all();
 
         return $this->render('glDedup', [
             'models' => $models,
             'curPage' => $page
         ]);
-
     }
 
     /**
@@ -157,21 +187,21 @@ class DeDupController extends Controller
             $score = Yii::$app->request->post()['HanziSet']['duplicate_id'];
             if (!empty($score)) {
                 $model->duplicate_id = Yii::$app->request->post()['HanziSet']['duplicate_id'];
-                $dupModel = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
+                $dupModel = HanziSet::find()->where(['pic_name' => $model->duplicate_id, 'source' => HanziSet::SOURCE_GAOLI])->one();
                 $dupModel->duplicate_id = empty($dupModel->duplicate_id) ? $model->pic_name : $dupModel->duplicate_id . ';' . $model->pic_name;
                 $dupArr = explode(';', $dupModel->duplicate_id);
                 $dupModel->duplicate_id = implode(';', array_unique($dupArr));
                 if ($dupModel !== null && $model->save() && $dupModel->save())
-                    return '{"status":"success", "dupId": "' .  $dupModel->id. '", "dupValue": "' . $dupModel->duplicate_id . '"}';
+                    return '{"status":"success", "dupId": "' . $dupModel->id . '", "dupValue": "' . $dupModel->duplicate_id . '"}';
             } else {
-                $dupModel = HanziSet::find()->where(['pic_name'=>$model->duplicate_id, 'source'=>HanziSet::SOURCE_GAOLI])->one();
-                $dupModel->duplicate_id = preg_replace('/'.$model->pic_name.';?/', '', $dupModel->duplicate_id);
+                $dupModel = HanziSet::find()->where(['pic_name' => $model->duplicate_id, 'source' => HanziSet::SOURCE_GAOLI])->one();
+                $dupModel->duplicate_id = preg_replace('/' . $model->pic_name . ';?/', '', $dupModel->duplicate_id);
                 $model->duplicate_id = '';
                 if ($dupModel !== null && $model->save() && $dupModel->save())
-                    return '{"status":"success", "dupId": "' .  $dupModel->id. '", "dupValue": "' . $dupModel->duplicate_id . '"}';
+                    return '{"status":"success", "dupId": "' . $dupModel->id . '", "dupValue": "' . $dupModel->duplicate_id . '"}';
             }
-        } 
-        
+        }
+
         return '{"status":"error"}';
     }
 

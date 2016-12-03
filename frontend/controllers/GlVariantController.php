@@ -36,7 +36,8 @@ class GlVariantController extends Controller
     public function actionIndex()
     {
         $searchModel = new GlVariantSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchDup(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize=100;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -121,4 +122,34 @@ class GlVariantController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+
+    /**
+     * 高丽藏内部去重
+     * @return mixed
+     */
+    public function actionCheckSave($id)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return false;
+        }
+
+        $id = (int)trim($id);
+        $model = GlVariant::findOne($id);
+        if ($model == null) {
+            return '{"status":"error", "msg": "data not found."}';
+        }
+
+        if (isset(Yii::$app->request->post()['duplicate_id3'])) {
+            $duplicate_id3 = Yii::$app->request->post()['duplicate_id3'];
+            if (!empty($duplicate_id3)) {
+                $model->duplicate_id3 = $duplicate_id3;
+                if ($model->save())
+                    return '{"status":"success", "dupId": "' . $model->id . '", "dupValue": "' . $model->duplicate_id3 . '"}';
+            }
+        }
+
+        return '{"status":"error", "msg": "uncertain."}';
+    }
+
 }

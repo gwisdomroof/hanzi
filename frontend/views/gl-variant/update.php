@@ -14,8 +14,6 @@ $this->params['breadcrumbs'][] = Yii::t('frontend', 'Update');
 ?>
 <div class="gltw-dedup-result-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
