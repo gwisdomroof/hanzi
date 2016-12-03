@@ -37,7 +37,7 @@ class GlVariantController extends Controller
     {
         $searchModel = new GlVariantSearch();
         $dataProvider = $searchModel->searchDup(Yii::$app->request->queryParams);
-        $dataProvider->pagination->pageSize=100;
+        $dataProvider->pagination->pageSize = 100;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -142,11 +142,9 @@ class GlVariantController extends Controller
 
         if (isset(Yii::$app->request->post()['duplicate_id3'])) {
             $duplicate_id3 = Yii::$app->request->post()['duplicate_id3'];
-            if (!empty($duplicate_id3)) {
-                $model->duplicate_id3 = $duplicate_id3;
-                if ($model->save())
-                    return '{"status":"success", "dupId": "' . $model->id . '", "dupValue": "' . $model->duplicate_id3 . '"}';
-            }
+            $model->duplicate_id3 = trim($duplicate_id3);
+            if ($model->save())
+                return '{"status":"success", "dupId": "' . $model->id . '", "dupValue": "' . $model->duplicate_id3 . '"}';
         }
 
         return '{"status":"error", "msg": "uncertain."}';
