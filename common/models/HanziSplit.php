@@ -146,7 +146,7 @@ class HanziSplit extends \yii\db\ActiveRecord
 
         $query = HanziSplit::find()
             ->where(['duplicate' => 0])
-            ->andWhere(['!=', 'is_duplicated_temp', 1]) // 初次拆分时，加一个临时字段；回查阶段可以去掉
+            ->andWhere(['!=', 'is_duplicated_temp', 1])// 初次拆分时，加一个临时字段；回查阶段可以去掉
             ->andWhere(['>=', 'id', $startId])
             ->andWhere(['<=', 'id', $endId])
             ->orderBy('id');
@@ -175,9 +175,18 @@ class HanziSplit extends \yii\db\ActiveRecord
             ->offset($pageSize * ($page - 1))->limit($pageSize)
             ->orderBy('id')->asArray()->all();
 
+        // 处理is_duplicated_temp，新增一段代码
+        $maxId = 0;
+        for ($i = count($dataset) - 1; $i >= 0; $i--) {
+            if (empty($dataset[$i]['is_duplicated_temp'])) {
+                $maxId = (int)$dataset[$i]['id'];
+                break;
+            }
+        }
+
         return [
             'minId' => (int)$dataset[0]['id'],
-            'maxId' => (int)$dataset[count($dataset) - 1]['id']
+            'maxId' => $maxId
         ];
     }
 
