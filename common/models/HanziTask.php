@@ -115,9 +115,10 @@ class HanziTask extends \yii\db\ActiveRecord
         }
 
         # 第二阶段为回查
-        if ($seq == self::SEQ_SECOND) {
-            return self::getSecondStageSplitIdlePages();
-        }
+        # 高丽异体字回查，取消公共页面的设置
+//        if ($seq == self::SEQ_SECOND) {
+//            return self::getSecondStageSplitIdlePages();
+//        }
 
         // 已申请的任务页码
         $usedPages = HanziTask::find()->select('page')
