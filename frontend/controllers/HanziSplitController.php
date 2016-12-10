@@ -120,12 +120,14 @@ class HanziSplitController extends Controller
         if (!isset($curPage) || empty($curPage['id'])) {
             // 寻找页面池中page值最小、状态为“初分配”“进行中”的页面，如果没有，则申请新页
             $curPage = HanziTask::getUnfinishedMinPage($userId, HanziTask::TYPE_GAOLI_SPLIT);
+
             if (empty($curPage)) {
                 $curPage = HanziTask::getNewPage($userId, HanziTask::TYPE_GAOLI_SPLIT);
                 if (empty($curPage)) {
                     throw new HttpException(401, '对不起，页面已经分配完毕，请您联系管理员。');
                 }
             }
+
             Yii::$app->session->set('curSplitPage', $curPage->attributes);
         }
 

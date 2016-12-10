@@ -154,9 +154,9 @@ class HanziSplit extends \yii\db\ActiveRecord
             // updated_at为空表示尚未作更新，即尚未进行初次拆分
             $query->andWhere('updated_at is null or updated_at = created_at');
         } elseif ($seq == 2) {
-            $query->andWhere(['!=', 'split20_completed', 1]);
+            $query->andWhere('split20_completed = 0 or split20_completed is null');
         } elseif ($seq == 3) {
-            $query->andWhere(['!=', 'split30_completed', 1]);
+            $query->andWhere('split30_completed = 0 or split30_completed is null');
         }
         $model = $query->one();
         return empty($model) ? false : $model->id;
