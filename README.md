@@ -1,2 +1,2 @@
-# Chinese character base on Yii 2 Starter Kit
+# Chinese characters base on Yii 2 Starter Kit.
 
