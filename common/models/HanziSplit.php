@@ -146,10 +146,12 @@ class HanziSplit extends \yii\db\ActiveRecord
 
         $query = HanziSplit::find()
             ->where(['duplicate' => 0])
-            ->andWhere(['!=', 'is_duplicated_temp', 1])// 初次拆分时，加一个临时字段；回查阶段可以去掉
             ->andWhere(['>=', 'id', $startId])
             ->andWhere(['<=', 'id', $endId])
             ->orderBy('id');
+
+        // 初次拆分时，加一个临时字段；回查阶段可以去掉
+        $query->andWhere('is_duplicated_temp is null or is_duplicated_temp = 0');
         if ($seq == 1) {
             // updated_at为空表示尚未作更新，即尚未进行初次拆分
             $query->andWhere('updated_at is null or updated_at = created_at');
