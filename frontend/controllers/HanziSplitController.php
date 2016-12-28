@@ -154,8 +154,23 @@ class HanziSplitController extends Controller
     {
         $userId = Yii::$app->user->id;
 
-        // 如果是回查阶段（seq=2），则检查角色权限
         $seq = (int)Yii::$app->get('keyStorage')->get('frontend.current-split-stage', null, false);
+        // 如果是查漏阶段（seq=3），则直接从全局分配漏查的id
+        if ($seq == 3) {
+            $leakHanzi = HanziSplit::getLeakHanzi();
+            if(!$leakHanzi) {
+                throw new HttpException(401, '随喜！查漏工作已完成。');
+            }
+            $_seq = (int)$leakHanzi['seq'];
+            $_id = (int)$leakHanzi['id'];
+            if ($_seq == 1) {
+                return $this->redirect(['first', 'id' => $_id]);
+            } elseif ($_seq == 2) {
+                return $this->redirect(['second', 'id' => $_id]);
+            }
+        }
+
+        // 如果是回查阶段（seq=2），则检查角色权限
         if ($seq == 2 && !User::isSecondSpliter($userId)) {
             throw new HttpException(401, '对不起，您不是回查员，无权进行回查。');
         }

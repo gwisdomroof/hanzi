@@ -248,4 +248,27 @@ class HanziSplit extends \yii\db\ActiveRecord
         return $id >= 98240 ? HanziTask::TYPE_GAOLI_SPLIT : HanziTask::TYPE_SPLIT;
     }
 
+    /**
+     * [getMaxSplitIdByPage description]
+     * @param  [type] $page [description]
+     * @return [type]       [description]
+     */
+    public static function getLeakHanzi()
+    {
+        $query = HanziSplit::find()->orderBy('id');
+        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) and  initial_split11 is null and initial_split12 is null and deform_split10 is null and duplicate10 is null');
+        $model = $query->one();
+        if (!empty($model)) {
+            return ['seq'=>1, 'id'=>$model->id];
+        }
+
+        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) and  initial_split21 is null and initial_split22 is null and deform_split20 is null and duplicate20 is null');
+        $model = $query->one();
+        if (!empty($model)) {
+            return ['seq'=>1, 'id'=>$model->id];
+        }
+
+        return false;
+    }
+
 }

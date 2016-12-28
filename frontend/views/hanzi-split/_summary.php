@@ -36,7 +36,7 @@ use common\models\HanziSet;
 	</tr>
 	<tr>
 		<td>初步拆分2</td>
-		<td><?php echo $model->initial_split21; ?></td>
+		<td><?php echo $model->initial_split12; ?></td>
 		<td><?php echo $model->initial_split22; ?></td>
 		<td><?php echo $model->initial_split32; ?></td>
 	</tr>
