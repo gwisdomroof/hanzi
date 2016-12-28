@@ -234,6 +234,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * 异体字拆字管理员
+     * @return array|mixed
+     */
+    public static function isSpliteManager($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('拆字管理员', $roles);
+    }
+
+    /**
      * 高丽台湾异体字去重回查员
      * @return array|mixed
      */

@@ -80,19 +80,29 @@ $this->params['breadcrumbs'][] = $this->title;
 //            ],
             [
                 'header' => '', # 取消排序
+                'label' => '初次：重复值',
+                'attribute' => 'duplicate10',
+            ],
+            [
+                'header' => '', # 取消排序
                 'label' => '初次：初步拆分',
                 'attribute' => 'initial_split11',
+            ],
+            [
+                'header' => '', # 取消排序
+                'label' => '回查：重复值',
+                'attribute' => 'duplicate20',
             ],
             [
                 'header' => '', # 取消排序
                 'label' => '回查：初步拆分',
                 'attribute' => 'initial_split21',
             ],
-            [
-                'header' => '', # 取消排序
-                'label' => '审查：初步拆分',
-                'attribute' => 'initial_split31',
-            ],
+//            [
+//                'header' => '', # 取消排序
+//                'label' => '审查：初步拆分',
+//                'attribute' => 'initial_split31',
+//            ],
             // 'initial_split12',
             // 'deform_split10',
             // 'similar_stock10',

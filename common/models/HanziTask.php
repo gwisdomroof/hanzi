@@ -499,6 +499,8 @@ class HanziTask extends \yii\db\ActiveRecord
      */
     public static function checkIdPermission($userId, $id, $seq, $taskType = self::TYPE_SPLIT)
     {
+        if(User::isSpliteManager($userId))
+            return true;
         return HanziTask::find()->where(['user_id' => $userId, 'seq' => $seq, 'task_type' => $taskType])
             ->andWhere(['<=', 'start_id', $id])
             ->andWhere(['>=', 'end_id', $id])
