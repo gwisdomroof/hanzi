@@ -256,13 +256,19 @@ class HanziSplit extends \yii\db\ActiveRecord
     public static function getLeakHanzi()
     {
         $query = HanziSplit::find()->orderBy('id');
-        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) and  initial_split11 is null and initial_split12 is null and deform_split10 is null and duplicate10 is null');
+        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) 
+            and (initial_split11 is null or initial_split11 = \'\') and (initial_split12 is null or initial_split12 = \'\') 
+            and (deform_split10 is null or deform_split10 = \'\') and (duplicate10 is null or duplicate10 = \'\')
+        ');
         $model = $query->one();
         if (!empty($model)) {
             return ['seq'=>1, 'id'=>$model->id];
         }
 
-        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) and  initial_split21 is null and initial_split22 is null and deform_split20 is null and duplicate20 is null');
+        $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) 
+            and (initial_split21 is null or initial_split21 = \'\') and (initial_split22 is null or initial_split22 = \'\') 
+            and (deform_split20 is null or deform_split20 = \'\') and (duplicate20 is null or duplicate20 = \'\')
+        ');
         $model = $query->one();
         if (!empty($model)) {
             return ['seq'=>1, 'id'=>$model->id];
