@@ -23,9 +23,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'summary' => '',
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-
+                'id',
                 [
                     'attribute' => 'created_at',
+                    'format' => ['datetime', 'php:Y-m-d'],
+                    "headerOptions" => ["width" => "100"],
+                    'filter' => ''
+                ],
+                [
+                    'attribute' => 'updated_at',
                     'format' => ['datetime', 'php:Y-m-d'],
                     "headerOptions" => ["width" => "100"],
                     'filter' => ''

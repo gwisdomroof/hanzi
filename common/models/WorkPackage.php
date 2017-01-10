@@ -175,7 +175,9 @@ class WorkPackage extends \yii\db\ActiveRecord
             HanziTask::TYPE_SPLIT => Yii::t('common', '台湾异体字拆字'),
             HanziTask::TYPE_GAOLI_SPLIT => Yii::t('common', '高丽异体字拆字'),
             HanziTask::TYPE_DEDUP => Yii::t('common', '高丽台湾异体字去重'),
-            HanziTask::TYPE_INPUT => Yii::t('common', '异体字录入')
+            HanziTask::TYPE_INPUT => Yii::t('common', '异体字录入'),
+            HanziTask::TYPE_COLLATE => Yii::t('common', '图书校对'),
+            HanziTask::TYPE_DOWNLOAD => Yii::t('common', '论文下载')
         ];
     }
 

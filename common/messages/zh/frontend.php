@@ -101,6 +101,7 @@ return [
     'First Stage' => '初次',
     'Second Stage' => '回查',
     'Third Stage' => '审查',
-    'Gltw Dedup Results' => '高丽台湾去重结果集'
+    'Gltw Dedup Results' => '高丽台湾去重结果集',
+    'Hanzi Parts' => '部件集'
 
 ];
