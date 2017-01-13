@@ -101,7 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 $title .= "&#xa;回查：{$variant->initial_split21}|{$variant->initial_split22}|{$variant->deform_split20};";
 
                 if (!empty($variant->word)) {
-                    $title = empty($variant->initial_split11) ? '' : HanziSet::norVarTypes()[$variant->nor_var_type];
                     echo "<span class='hanzi-item glyph' title='{$title}'  id='{$variant->id}'>{$variant->word}</span>";
                 } elseif (!empty($variant->picture)) {
                     $picPath = HanziSet::getPicturePath($variant->source, $variant->picture);
