@@ -97,7 +97,7 @@ class HanziPartsController extends Controller
         $models = [];
         if (!empty($find)) {
             $models = HanziSplit::find()
-                ->where("initial_split11 ~ '{$find}' or initial_split12 ~ '{$find}' or deform_split10 ~ '{$find}' or initial_split21 ~ '{$find}' or initial_split22 ~ '{$find}' or deform_split20 ~ '{$find}'")
+                ->where("initial_split11 ~ '{$find}' or initial_split12 ~ '{$find}' or deform_split10 ~ '{$find}' or similar_stock10 ~ '{$find}' or initial_split21 ~ '{$find}' or initial_split22 ~ '{$find}' or deform_split20 ~ '{$find}' or similar_stock20 ~ '{$find}'")
                 ->andWhere(['!=', 'split30_completed', 1])
                 ->limit($size)
                 ->offset(($page - 1) * $size)
@@ -225,7 +225,11 @@ class HanziPartsController extends Controller
     {
         $searchModel = new HanziPartsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->setSort(['defaultOrder' => ['id' => SORT_ASC]]);
+        $dataProvider->setSort([
+            'defaultOrder' => ['id' => SORT_ASC],
+        ]);
+
+
         $dataProvider->pagination->pageSize = 50;
 
         return $this->render('admin', [
@@ -324,6 +328,8 @@ class HanziPartsController extends Controller
                 $model->is_split_part = (int)trim($value);
             } elseif (strcmp($field, "rp") == 0) {
                 $model->replace_parts = trim($value);
+            } elseif (strcmp($field, "rm") == 0) {
+                $model->remark = trim($value);
             }
 
             if ($model->save())

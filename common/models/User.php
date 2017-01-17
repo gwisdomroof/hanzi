@@ -243,6 +243,17 @@ class User extends ActiveRecord implements IdentityInterface
         return array_key_exists('去重回查员', $roles);
     }
 
+
+    /**
+     * 异体字拆字管理员
+     * @return array|mixed
+     */
+    public static function isSplitManager($id)
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        return array_key_exists('拆字管理员', $roles);
+    }
+
     /**
      * @inheritdoc
      */

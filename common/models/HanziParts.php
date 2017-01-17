@@ -59,6 +59,7 @@ class HanziParts extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
      * @inheritdoc
      */
@@ -203,7 +204,7 @@ class HanziParts extends \yii\db\ActiveRecord
             'replace_parts' => Yii::t('frontend', '代替部件'),
             'strokes' => Yii::t('frontend', '笔画'),
             'stroke_order' => Yii::t('frontend', '笔顺'),
-            'remark' => Yii::t('frontend', '备注'),
+            'remark' => Yii::t('frontend', 'IDS'),
             'c_t' => Yii::t('frontend', '创建时间'),
             'u_t' => Yii::t('frontend', '修改时间'),
             'source' => Yii::t('frontend', '字形来源'),

@@ -147,6 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                        return Html::activeInput('text', $model, 'replace_parts', ['class' => 'form-control rp', 'id' => $model->id]);
 //                    },
 //                ],
+
                 [
                     'attribute' => 'strokes',
                     'headerOptions' => ['width' => '80'],
@@ -155,7 +156,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'stroke_order',
                     'headerOptions' => ['width' => '80'],
                 ],
-                'remark',
+
+                [
+                    'attribute' => 'remark',
+                    'format' => 'raw',
+                    'headerOptions' => ['width' => '120'],
+                    'value' => function ($model) {
+                        return Html::activeInput('text', $model, 'remark', ['class' => 'form-control rm', 'id' => $model->id]);
+                    },
+                ],
+
                 // 'c_t',
                 // 'u_t',
 
@@ -244,6 +254,33 @@ $script = <<<SCRIPT
         });
     });
 
+
+    $(document).on('blur', '.rm', function() {
+        var obj = $(this);
+        var id = $(this).attr('id');
+        var value = $(this).val();
+        $.post( {
+            url: "/hanzi-parts/check?field=rm&id=" + id,
+            data: {value: value},
+            dataType: 'json',
+            success: function(result){
+                if (result.status == 'success') {
+                    obj.attr("disabled", "disabled");
+                    return true;
+                } else {
+                    alert('失败！');
+                }
+            },
+            error: function(result) {
+                alert(result.msg)
+            }
+        });
+    });
+    
+    $(document).on('dblclick', '.rm', function() {
+        $(this).removeAttr("disabled");
+    });
+    
     $(document).on('blur', '.rp', function() {
         var obj = $(this);
         var id = $(this).attr('id');
