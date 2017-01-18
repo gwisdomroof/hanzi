@@ -71,6 +71,7 @@ class HanziParts extends \yii\db\ActiveRecord
             '3' => 'src_old_lqhanzi',
             '4' => 'src_feijinchang',
             '5' => 'src_hujingyu',
+//            '6' => 'src_lqhanzi',
             '6' => 'is_split_part',
         ];
     }

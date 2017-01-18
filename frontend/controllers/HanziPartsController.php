@@ -10,6 +10,7 @@ use common\models\HanziSet;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\Pagination;
 
 /**
  * HanziPartsController implements the CRUD actions for HanziParts model.
@@ -83,6 +84,30 @@ class HanziPartsController extends Controller
             'source' => $source,
 
         ]);
+    }
+
+    /**
+     * 超过两个以上的单笔部件
+     * @return mixed
+     */
+    public function actionLittleStroke()
+    {
+        $find = "[一㇀亅丨󱫸丿丶乀󰄎𠄎𠃉𠃊𠃋𠃌󰄏㇇󰻊󱂎乚𠃍㇉乛⺄乁󱂏𡿨𠃑𠄌].*[一㇀亅丨󱫸丿丶乀󰄎𠄎𠃉𠃊𠃋𠃌󰄏㇇󰻊󱂎乚𠃍㇉乛⺄乁󱂏𡿨𠃑𠄌]";
+        $size = !empty(Yii::$app->request->get()['per-page']) ? (int)trim(Yii::$app->request->get()['per-page']) : 200;
+        $query = HanziSplit::find()
+            ->where("initial_split11 ~ '{$find}' or initial_split12 ~ '{$find}' or deform_split10 ~ '{$find}' or similar_stock10 ~ '{$find}' or initial_split21 ~ '{$find}' or initial_split22 ~ '{$find}' or deform_split20 ~ '{$find}' or similar_stock20 ~ '{$find}'");
+        $pages = new Pagination(['totalCount' =>$query->count(), 'pageSize' => $size]);
+
+        $models = $query->limit($pages->limit)
+            ->offset($pages->offset)
+            ->orderBy('id')
+            ->all();
+
+        return $this->render('little-stroke', [
+            'pages' => $pages,
+            'models' => $models
+        ]);
+
     }
 
     /**
