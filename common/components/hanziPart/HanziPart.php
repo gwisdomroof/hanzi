@@ -70,14 +70,14 @@ class HanziPart extends Widget
         $template[] = '<div class="pull-right hanzi-component" id="hanzi-component">';
         $template[] = '<span title="隐藏" class="glyphicon glyphicon-align-justify pull-right component-hide" id="component-hide"></span>';
         $template[] = '<div class="component-search">';
-        $template[] = '<div class="input-group add-on">';
+        $template[] = '<div class="input-group add-on" id="srch-input">';
         $template[] = '<input class="form-control" placeholder="请输入笔画、笔顺检索部件..." name="srch-term" id="search" type="text" oninput="FindMatch()">';
         $template[] = '<div class="input-group-btn">';
         $template[] = '<a class="btn btn-default search-help" title="帮助" href="/article/component-help" target="blank">?</a>';
         $template[] = '</div>';
         $template[] = '</div>';
         $template[] = '<div id="msg" style="color:#cc0000"></div>';
-        $template[] = '</div>';
+        $template[] = '</div><div class="clearfix"></div>';
         $template[] = ' <div id="output">';
         $template[] = $this->renderItems();
         $template[] = '</div>';
