@@ -196,20 +196,15 @@ class HanziSetSearch extends HanziSet
             if (!empty($stocks)) {
                 $stockNumRows = HanziSet::find()->where(['source' => HanziSet::SOURCE_UNICODE])->andWhere("word in (" . substr($stocks, 1) . ")")->all();
                 foreach ($stockNumRows as $item) {
-                    echo $item->stocks.'<br/>';
-                    $restStockNum += (int)$item->stocks;
+                    $minStockNum += (int)$item->min_strock;
+                    $maxStockNum += (int)$item->max_strock;
                 }
             }
 
             # 计算总的剩余笔画范围
             $minStockNum += $restStockNum;
             $maxStockNum += $restStockNum;
-
-            if ($minStockNum == $maxStockNum) {
-                $sqlParam .= "stocks = $minStockNum ";
-            } else {
-                $sqlParam .= "stocks >= $minStockNum AND stocks <= $maxStockNum ";
-            }
+            $sqlParam .= "min_strock >= $minStockNum AND max_strock <= $maxStockNum ";
         }
 
         # 相似部件
@@ -237,7 +232,7 @@ class HanziSetSearch extends HanziSet
     public function rules()
     {
         return [
-            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'max_strock', 'min_strock', 'bhard', 'created_at', 'updated_at'], 'integer'],
             [['param'], 'trim'],
             // [['param'], 'string', 'max' => 1],
             [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
@@ -281,7 +276,8 @@ class HanziSetSearch extends HanziSet
             'type' => $this->type,
             'nor_var_type' => $this->nor_var_type,
             'duplicate' => $this->duplicate,
-            'stocks' => $this->stocks,
+            'max_strock' => $this->max_strock,
+            'min_strock' => $this->min_strock,
             'bhard' => $this->bhard,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

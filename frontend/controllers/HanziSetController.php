@@ -17,6 +17,8 @@ use yii\filters\VerbFilter;
 class HanziSetController extends Controller
 {
 
+    private $hanziIds = [];
+
     public function behaviors()
     {
         return [
@@ -70,6 +72,98 @@ class HanziSetController extends Controller
             'message' => $message,
         ]);
     }
+
+
+    /**
+     * @param $str
+     * 依次提取参数中的汉字，返回数组
+     */
+    private function extractHanzi($str)
+    {
+        // 删除空格、结构符、圈数字、分号等
+        $str = mb_ereg_replace('[\s\?&{}\[\]0-9a-zA-Z①-⑳⿰-⿻；？󰃾󰃿]', '', $str);
+        $str = mb_ereg_replace('<.>', '', $str);
+        $str = mb_ereg_replace('（.）', '', $str);
+        // 数组
+        if (empty($str)) {
+            return [];
+        } else {
+            $return = array_unique(preg_split('/(?<!^)(?!$)/u', $str));
+            setlocale(LC_COLLATE, 'sk_SK.utf8');
+            $f = function ($a, $b) {
+                return strcoll($a, $b);
+            };
+
+            usort($return, $f);
+            return $return;
+        }
+    }
+
+    /*
+     * 处理每一个单独的min_split_ids，得到按照unicode内码排序后的mix_split_ids
+     */
+    private function generateMixIds($ids)
+    {
+        if (mb_strlen($ids, 'utf-8') == 1) {
+            if (empty($this->hanziIds[$ids])) {
+                return $ids;
+            } else {
+                return "<{$ids}>" . $this->generateMixIds($this->hanziIds[$ids]);
+            }
+        } else {
+            $items = preg_split('/(?<!^)(?!$)/u', $ids);
+            $totalIds = '';
+            foreach ($items as $item) {
+                $totalIds .= $this->generateMixIds($item);
+            }
+            return $totalIds;
+        }
+
+    }
+
+    /**
+     * 根据初步拆分递归混合拆分、最大拆分、拆分序列、结构等信息，生成sql文.
+     * @return mixed
+     */
+    public function actionGenerateSearch()
+    {
+        mb_internal_encoding("UTF-8");
+        mb_regex_encoding("UTF-8");
+
+        $this->hanziIds = require_once('unicodeMinSplitIds.php');
+
+        $index = 1;
+        $output = [];
+//        $todoList = require_once('todo.php');
+//        foreach ($todoList as $word => $minIds) {
+        foreach ($this->hanziIds as $word => $minIds) {
+            $idsArr = explode("；", $minIds);
+            $resultArr = [];
+            foreach ($idsArr as $ids) {
+                $eachMixIds = $this->generateMixIds($ids);
+                $resultArr[] = str_replace('；', '&', $eachMixIds);
+            }
+            $mixIds = implode("；", $resultArr);
+            $maxIds = mb_ereg_replace('<.>', '', $mixIds);
+            $strokeSerial = implode('', $this->extractHanzi($mixIds));
+
+            $output[] = "{$word}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}";
+//            echo "{$word}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}<br/>";
+            if (++$index > 5000) {
+                $contents = implode("\r\n", $output)."\r\n";
+                file_put_contents('d:\Inbox\unicode-mix-max-ids.txt', $contents, FILE_APPEND);
+                unset($output);
+                $index = 1;
+            }
+        }
+
+        $contents = implode("\r\n", $output);
+        file_put_contents('d:\Inbox\unicode-mix-max-ids.txt', $contents, FILE_APPEND);
+
+        echo "success!";
+        die;
+    }
+
 
     /**
      * Lists all HanziSet models.

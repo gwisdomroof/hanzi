@@ -101,14 +101,14 @@ class HanziSet extends \yii\db\ActiveRecord
      * 获取param对应汉字的笔画
      * @inheritdoc
      */
-    public static function getStocks($param) {
-        $models = HanziSet::find()->orderby('id')->where(['word' => $param])->all();
-        foreach ($models as $model) {
-            if (!empty($model->stocks)) {
-                return $model->stocks;
-            }
-        }
-    }
+//    public static function getStocks($param) {
+//        $models = HanziSet::find()->orderBy('id')->where(['word' => $param])->all();
+//        foreach ($models as $model) {
+//            if (!empty($model->stocks)) {
+//                return $model->stocks;
+//            }
+//        }
+//    }
 
     /**
      * 获取model对应的本地网站的url
@@ -182,7 +182,7 @@ class HanziSet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'stocks', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'max_stroke', 'min_stroke', 'bhard', 'created_at', 'updated_at'], 'integer'],
             [['word', 'radical', 'structure'], 'string', 'max' => 8],
             [['pic_name', 'belong_standard_word_code', 'standard_word_code', 'pinyin'], 'string', 'max' => 64],
             [['position_code', 'duplicate_id', 'zhengma', 'wubi',  'similar_stock'], 'string', 'max' => 128],
