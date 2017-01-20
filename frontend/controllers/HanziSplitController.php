@@ -31,23 +31,47 @@ class HanziSplitController extends Controller
         ];
     }
 
+
     /**
-     * Lists all HanziSplit models.
+     * 将拆分结果导入hanzi_set表
      * @return mixed
      */
-    public function actionStage()
+    public function actionExport()
     {
-        $msg = null;
-        if (!empty(Yii::$app->request->post())) {
-            $stage = Yii::$app->request->post()['stage'];
-            if (!empty(Yii::$app->request->post()['stage'])) {
-                Yii::$app->get('keyStorage')->set('frontend.current-split-stage', 2);
-            }
-            $msg = '已启动，系统进入回查阶段！';
+        $sqls = [];
+        $models = HanziSplit::find()->orderBy('id')->all();
+        foreach ($models as $model) {
+            $splitIds = [];
+            if (!empty($model->initial_split11) && trim($model->initial_split11) != $model->word)
+                $splitIds[] = trim($model->initial_split11);
+            if (!empty($model->initial_split12) && trim($model->initial_split12) != $model->word)
+                $splitIds[] = trim($model->initial_split12);
+            if (!empty($model->deform_split10) && trim($model->deform_split10) != $model->word)
+                $splitIds[] = trim($model->deform_split10);
+            if (!empty($model->similar_stock10) && trim($model->similar_stock10) != $model->word)
+                $splitIds[] = trim($model->similar_stock10);
+            if (!empty($model->initial_split21) && trim($model->initial_split21) != $model->word)
+                $splitIds[] = trim($model->initial_split21);
+            if (!empty($model->initial_split22) && trim($model->initial_split22) != $model->word)
+                $splitIds[] = trim($model->initial_split22);
+            if (!empty($model->deform_split20) && trim($model->deform_split20) != $model->word)
+                $splitIds[] = trim($model->deform_split20);
+            if (!empty($model->similar_stock20) && trim($model->similar_stock20) != $model->word)
+                $splitIds[] = trim($model->similar_stock20);
+
+            $splitIds = array_unique($splitIds);
+            $minSplit = implode('；', $splitIds);
+            if (empty($minSplit))
+                $sqls[] = "$model->id\t''";
+            else
+                $sqls[] = "$model->id\t'{$minSplit}'";
+
         }
-        return $this->render('stage', [
-            'msg' => $msg
-        ]);
+        $contents = implode("\r\n", $sqls);
+        file_put_contents('d:\Inbox\hanzi-split-unicode.txt', $contents);
+
+        echo "success!";
+        die;
 
     }
 
@@ -81,7 +105,7 @@ class HanziSplitController extends Controller
         // 如果是查漏阶段（seq=3），则直接从全局分配漏查的id
         if ($seq == 3) {
             $leakHanzi = HanziSplit::getLeakHanzi();
-            if(!$leakHanzi) {
+            if (!$leakHanzi) {
                 throw new HttpException(401, '随喜！查漏工作已完成。');
             }
             $_seq = (int)$leakHanzi['seq'];
@@ -173,7 +197,7 @@ class HanziSplitController extends Controller
         // 如果是查漏阶段（seq=3），则直接从全局分配漏查的id
         if ($seq == 3) {
             $leakHanzi = HanziSplit::getLeakHanzi();
-            if(!$leakHanzi) {
+            if (!$leakHanzi) {
                 throw new HttpException(401, '随喜！查漏工作已完成。');
             }
             $_seq = (int)$leakHanzi['seq'];
