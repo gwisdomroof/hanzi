@@ -222,7 +222,7 @@ class HanziSet extends \yii\db\ActiveRecord
             'duplicate_id' => Yii::t('frontend', '重复ID'),
             'pinyin' => Yii::t('frontend', '拼音'),
             'radical' => Yii::t('frontend', '部首'),
-            'stocks' => Yii::t('frontend', '笔画'),
+            'min_stroke' => Yii::t('frontend', '笔画'),
             'zhengma' => Yii::t('frontend', '郑码'),
             'wubi' => Yii::t('frontend', '五笔'),
             'structure' => Yii::t('frontend', '结构'),
