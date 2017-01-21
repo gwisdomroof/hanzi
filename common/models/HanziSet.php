@@ -91,7 +91,7 @@ class HanziSet extends \yii\db\ActiveRecord
         } elseif($this->source == self::SOURCE_GAOLI) {
             $busu = $this->radical;
             $busuCnt = (int)HanziSet::getStocks($this->radical);
-            $restCnt = (int)$this->min_stroke - $busuCnt;
+            $restCnt = (int)$this->max_stroke - $busuCnt;
             return "http://kb.sutra.re.kr/ritk_eng/etc/chinese/chineseBitSearch.do?busu=" . $busu ."&busuCnt=".$busuCnt."&restCnt=".$restCnt;
         } else {
             return '';
@@ -105,8 +105,8 @@ class HanziSet extends \yii\db\ActiveRecord
     public static function getStocks($param) {
         $models = HanziSet::find()->orderBy('id')->where(['word' => $param])->all();
         foreach ($models as $model) {
-            if (!empty($model->min_stroke)) {
-                return $model->min_stroke;
+            if (!empty($model->max_stroke)) {
+                return $model->max_stroke;
             }
         }
     }
