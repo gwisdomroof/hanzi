@@ -41,6 +41,7 @@ use yii\helpers\Url;
 class HanziSet extends \yii\db\ActiveRecord
 {
     // 字头来源
+    const SOURCE_HANZI_PARTS = 0;
     const SOURCE_UNICODE = 1;
     const SOURCE_TAIWAN = 2;
     const SOURCE_HANYU = 3;
@@ -101,14 +102,14 @@ class HanziSet extends \yii\db\ActiveRecord
      * 获取param对应汉字的笔画
      * @inheritdoc
      */
-//    public static function getStocks($param) {
-//        $models = HanziSet::find()->orderBy('id')->where(['word' => $param])->all();
-//        foreach ($models as $model) {
-//            if (!empty($model->stocks)) {
-//                return $model->stocks;
-//            }
-//        }
-//    }
+    public static function getStocks($param) {
+        $models = HanziSet::find()->orderBy('id')->where(['word' => $param])->all();
+        foreach ($models as $model) {
+            if (!empty($model->min_stroke)) {
+                return $model->min_stroke;
+            }
+        }
+    }
 
     /**
      * 获取model对应的本地网站的url

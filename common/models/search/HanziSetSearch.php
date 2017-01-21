@@ -187,14 +187,14 @@ class HanziSetSearch extends HanziSet
             }
         }
 
-//        echo $minStockNum . '|' . $maxStockNum . '<br/>';
-//        echo $stocks . '|' . $ids . '|' . $similarStock . '<br/>';
+//        echo $minStockNum . '|' . $maxStockNum . '<br/>'; die;
+//        echo $stocks . '|' . $ids . '|' . $similarStock . '<br/>'; die;
 
         # 笔画数
         if ($minStockNum !== null || $maxStockNum !== null || $restStockNum !== null) {
             # 查询各部件笔画，累加得到部件总笔画
             if (!empty($stocks)) {
-                $stockNumRows = HanziSet::find()->where(['source' => HanziSet::SOURCE_UNICODE])->andWhere("word in (" . substr($stocks, 1) . ")")->all();
+                $stockNumRows = HanziSet::find()->where(['<=', 'source', HanziSet::SOURCE_UNICODE])->andWhere("word in (" . substr($stocks, 1) . ")")->all();
                 foreach ($stockNumRows as $item) {
                     $minStockNum += (int)$item->min_strock;
                     $maxStockNum += (int)$item->max_strock;
