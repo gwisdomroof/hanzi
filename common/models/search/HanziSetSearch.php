@@ -196,15 +196,15 @@ class HanziSetSearch extends HanziSet
             if (!empty($stocks)) {
                 $stockNumRows = HanziSet::find()->where(['<=', 'source', HanziSet::SOURCE_UNICODE])->andWhere("word in (" . substr($stocks, 1) . ")")->all();
                 foreach ($stockNumRows as $item) {
-                    $minStockNum += (int)$item->min_strock;
-                    $maxStockNum += (int)$item->max_strock;
+                    $minStockNum += (int)$item->min_stroke;
+                    $maxStockNum += (int)$item->max_stroke;
                 }
             }
 
             # 计算总的剩余笔画范围
             $minStockNum += $restStockNum;
             $maxStockNum += $restStockNum;
-            $sqlParam .= "min_strock >= $minStockNum AND max_strock <= $maxStockNum ";
+            $sqlParam .= "min_stroke >= $minStockNum AND max_stroke <= $maxStockNum ";
         }
 
         # 相似部件
@@ -232,7 +232,7 @@ class HanziSetSearch extends HanziSet
     public function rules()
     {
         return [
-            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'max_strock', 'min_strock', 'bhard', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'source', 'type', 'nor_var_type', 'frequence', 'duplicate', 'max_stroke', 'min_stroke', 'bhard', 'created_at', 'updated_at'], 'integer'],
             [['param'], 'trim'],
             // [['param'], 'string', 'max' => 1],
             [['word', 'pic_name', 'belong_standard_word_code', 'standard_word_code', 'position_code', 'duplicate_id', 'pinyin', 'radical', 'zhengma', 'wubi', 'structure', 'min_split', 'deform_split', 'similar_stock', 'max_split', 'mix_split', 'stock_serial', 'remark'], 'safe'],
@@ -276,8 +276,8 @@ class HanziSetSearch extends HanziSet
             'type' => $this->type,
             'nor_var_type' => $this->nor_var_type,
             'duplicate' => $this->duplicate,
-            'max_strock' => $this->max_strock,
-            'min_strock' => $this->min_strock,
+            'max_stroke' => $this->max_stroke,
+            'min_stroke' => $this->min_stroke,
             'bhard' => $this->bhard,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
