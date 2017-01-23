@@ -78,7 +78,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => ['1' => '是', '0' => '否'],
                     'headerOptions' => ['width' => '120'],
                     'value' => function ($model) {
-                        $selected = $model->duplicate20 == $model->duplicate30;
+                        $selected = false;
+                        if ($model->duplicate20 == $model->duplicate30 && !empty($model->duplicate10))
+                            $selected = true;
                         return Html::radioList('duplicate20' . $model->id, $selected, ['1' => '是', '0' => '否'], ['class' => 'duplicate20', 'id' => $model->id]);
                     },
                 ],
