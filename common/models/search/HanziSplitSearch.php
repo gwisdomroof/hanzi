@@ -43,11 +43,13 @@ class HanziSplitSearch extends HanziSplit
      */
     public function search($params, $bExceptDuplicate = true)
     {
-        $query = HanziSplit::find();
+        $query = HanziSplit::find()
+            ->where('duplicate = 0 and duplicate10 != duplicate20')
+            ->andWhere('(duplicate10 != \'\' and duplicate10 is not null ) or (duplicate20 != \'\' and duplicate20 is not null )');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['id'=>SORT_ASC]]
+            'sort' => ['defaultOrder' => ['id' => SORT_ASC]]
         ]);
 
         if ($bExceptDuplicate) {

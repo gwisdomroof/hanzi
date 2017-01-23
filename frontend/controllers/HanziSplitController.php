@@ -33,15 +33,17 @@ class HanziSplitController extends Controller
 
 
     /**
-     * 将拆分结果导入hanzi_set表
+     * 将初拆和回查结果合并，生成审查结果
      * @return mixed
      */
-    public function actionExport()
+    public function actionExportIds()
     {
         $sqls = [];
-        $models = HanziSplit::find()->orderBy('id')->all();
+        $models = HanziSplit::find()->where('duplicate = 0')->orderBy('id')->all();
         foreach ($models as $model) {
-            $splitIds = [];
+            $minSplitIds = [];
+            $deforamSplitIds = [];
+            $similarParts = '';
             if (!empty($model->initial_split11) && trim($model->initial_split11) != $model->word)
                 $splitIds[] = trim($model->initial_split11);
             if (!empty($model->initial_split12) && trim($model->initial_split12) != $model->word)
@@ -73,6 +75,60 @@ class HanziSplitController extends Controller
         echo "success!";
         die;
 
+    }
+
+    /**
+     * 处理去重结果
+     * @return mixed
+     */
+    public function actionDup()
+    {
+        $searchModel = new HanziSplitSearch();
+        $currentPage = isset(Yii::$app->request->queryParams['page']) ? (int)Yii::$app->request->queryParams['page'] : 1;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
+        $dataProvider->pagination->pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
+        return $this->render('dup', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all HanziParts models.
+     * @return mixed
+     */
+    public function actionCheck($id, $field)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return false;
+        }
+
+        $id = (int)trim($id);
+        $model = HanziSplit::findOne($id);
+        if ($model == null) {
+            return '{"status":"error", "msg": "data not found."}';
+        }
+
+        if (isset(Yii::$app->request->post()['value'])) {
+            $value = Yii::$app->request->post()['value'];
+            if ($value == '1') {
+                $field = '' . trim($field);
+                if (strcmp($field, "duplicate10") == 0) {
+                    $model->duplicate30 = $model->duplicate10;
+                } elseif (strcmp($field, "duplicate20") == 0) {
+                    $model->duplicate30 = $model->duplicate20;
+                }
+            } elseif ($value == '0') {
+                $model->duplicate30 = null;
+            }
+
+            if ($model->save())
+                return '{"status":"success", "id": "' . $model->id . '"}';
+            else
+                var_dump($model->getErrors());
+        }
+
+        return '{"status":"error", "msg": "uncertain."}';
     }
 
     /**
