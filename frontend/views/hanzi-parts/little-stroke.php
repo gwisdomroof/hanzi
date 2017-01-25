@@ -58,6 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $title = "{$variant->id}";
                 $title .= "&#xa;初次：{$variant->initial_split11}|{$variant->initial_split12}|{$variant->deform_split10};";
                 $title .= "&#xa;回查：{$variant->initial_split21}|{$variant->initial_split22}|{$variant->deform_split20};";
+                $title .= "&#xa;审查：{$variant->initial_split31}|{$variant->initial_split32}|{$variant->deform_split30};";
 
                 if (!empty($variant->word)) {
                     echo "<span class='hanzi-item glyph' title='{$title}'  id='{$variant->id}'>{$variant->word}</span>";
