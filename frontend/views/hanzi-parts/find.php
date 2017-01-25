@@ -99,6 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $title = "{$variant->id}";
                 $title .= "&#xa;初次：{$variant->initial_split11}|{$variant->initial_split12}|{$variant->deform_split10};";
                 $title .= "&#xa;回查：{$variant->initial_split21}|{$variant->initial_split22}|{$variant->deform_split20};";
+                $title .= "&#xa;审查：{$variant->initial_split31}|{$variant->initial_split32}|{$variant->deform_split30};";
 
                 if (!empty($variant->word)) {
                     echo "<span class='hanzi-item glyph' title='{$title}'  id='{$variant->id}'>{$variant->word}</span>";
@@ -123,6 +124,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $script = <<<SCRIPT
+    
+    $(document).on('dblclick', '.hanzi-item', function() {
+        window.open("/hanzi-split/determine?id="+$(this).attr('id'));
+    });
+ 
     $(document).on('click', '.hanzi-item', function() {
         if($(this).hasClass('choose')) {
             $(this).removeClass('choose');
@@ -132,7 +138,7 @@ $script = <<<SCRIPT
             $(this).addClass('choose');
         }
     });
-    
+
     $(document).on('click', '#choose-all', function() {
         $('.hanzi-item').addClass('choose');
         $('.hanzi-item').removeClass('cancel');
