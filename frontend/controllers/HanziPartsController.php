@@ -95,7 +95,7 @@ class HanziPartsController extends Controller
         $find = "[一㇀亅丨󱫸丿丶乀󰄎𠄎𠃉𠃊𠃋𠃌󰄏㇇󰻊󱂎乚𠃍㇉乛⺄乁󱂏𡿨𠃑𠄌].*[一㇀亅丨󱫸丿丶乀󰄎𠄎𠃉𠃊𠃋𠃌󰄏㇇󰻊󱂎乚𠃍㇉乛⺄乁󱂏𡿨𠃑𠄌]";
         $size = !empty(Yii::$app->request->get()['per-page']) ? (int)trim(Yii::$app->request->get()['per-page']) : 200;
         $query = HanziSplit::find()
-            ->where("(initial_split31 is null or initial_split31 = '') and (deform_split30 is null or deform_split30 = '')")
+            ->where("(initial_split31 is null or initial_split31 = '') and (deform_split30 is null or deform_split30 = '') and (duplicate30 is not null and duplicate30 != '')")
             ->andWhere("initial_split11 ~ '{$find}' or initial_split12 ~ '{$find}' or deform_split10 ~ '{$find}' or similar_stock10 ~ '{$find}' or initial_split21 ~ '{$find}' or initial_split22 ~ '{$find}' or deform_split20 ~ '{$find}' or similar_stock20 ~ '{$find}'");
         $pages = new Pagination(['totalCount' =>$query->count(), 'pageSize' => $size]);
 
