@@ -6,6 +6,7 @@ use common\models\HanziSet;
 use common\models\search\HanziSetSearch;
 use common\models\LqVariant;
 use common\models\search\LqVariantSetSearch;
+use common\models\HanziSplit;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -73,17 +74,168 @@ class HanziSetController extends Controller
         ]);
     }
 
+    /**
+     * 检查高丽台湾拆字结果
+     * @param $str
+     */
+    public function actionCheck()
+    {
+        $dups = require_once('todo.php');
+        $existed = [];
+        $notExisted = [];
+        $notFound = [];
+        foreach ($dups as $key => $value) {
+            $model = HanziSet::find()->where("position_code like '%{$key};%' or pic_name = '{$key}' ")->one();
+            if (!empty($model)) {
+                if (!empty($model->pic_name)) {
+                    $existed[] = "{$key}\t{$value}\t{$model->pic_name}";
+                } elseif (!empty($model->pic_name)) {
+                    $notExisted[] = "{$key}\t{$value}\t{$model->word}";
+                }
+            } else {
+                $notFound[] = "\t{$key}\t{$value}\tnot found";
+            }
+
+        }
+
+        echo "=====not existed =====<br/>";
+        foreach ($notExisted as $i) {
+            echo "{$i}<br/>";
+        }
+
+        echo "=====existed=====<br/>";
+        foreach ($existed as $i) {
+            echo "{$i}<br/>";
+        }
+
+        echo "=====not found=====<br/>";
+        foreach ($notFound as $i) {
+            echo "{$i}<br/>";
+        }
+
+        die;
+    }
+
+
+    /**
+     * 生成部件序列
+     * @return mixed
+     */
+    public function actionGenerateSerial()
+    {
+        mb_internal_encoding("UTF-8");
+        mb_regex_encoding("UTF-8");
+
+        $models = HanziSet::find()
+            ->where("(source = 2 or source = 4) and word is null")
+            ->orderBy('id')
+            ->all();
+
+        $index = 1;
+        $output = [];
+        foreach ($models as $model) {
+            $strokeSerial = implode('', $this->extractHanzi($model->mix_split . $model->radical));
+            if (!empty($strokeSerial))
+                $output[] = "{$model->word}\t{$strokeSerial}";
+            echo "{$model->word}\t{$strokeSerial}<br/>";
+            if (++$index > 5000) {
+                $contents = implode("\r\n", $output) . "\r\n";
+                file_put_contents('d:\Inbox\unicode-serial.txt', $contents, FILE_APPEND);
+                unset($output);
+                $index = 1;
+            }
+        }
+
+        $contents = implode("\r\n", $output);
+        file_put_contents('d:\Inbox\unicode-serial.txt', $contents, FILE_APPEND);
+
+        echo "success!";
+        die;
+    }
+
+    /**
+     * 根据初步拆分递归混合拆分、最大拆分、拆分序列、结构等信息，生成sql文.
+     * @return mixed
+     */
+    public function actionGenerateMixSplit()
+    {
+        mb_internal_encoding("UTF-8");
+        mb_regex_encoding("UTF-8");
+
+        $this->hanziIds = require_once('unicodeMinSplitIds.php');
+
+        $models = HanziSet::find()->orderBy('id')
+            ->where("")
+            ->all();
+
+        $index = 1;
+        $outputWord = [];
+        $outputIds = [];
+        foreach ($models as $model) {
+            // 获取人工拆字信息
+            $splitInfo = HanziSplit::getSplitInfo($model);
+            if (empty($splitInfo))
+                continue;
+            $model->min_split = $splitInfo['min_split'];
+            $model->deform_split = $splitInfo['deform_split'];
+            $model->similar_stock = $splitInfo['similar_stock'];
+
+            // 生成计算机拆字信息
+            $minIdsArr = explode("；", $model->min_split);
+            if (!empty($model->deform_split))
+                $minIdsArr[] = $model->deform_split;
+            if (empty($minIdsArr))
+                continue;
+
+            $structuresArr = [];
+            $mixIdsArr = [];
+            foreach ($minIdsArr as $minIds) {
+                if (!empty($minIds)) {
+                    $eachMixIds = $this->generateMixIds($minIds);
+                    $mixIdsArr[] = str_replace('；', '&', $eachMixIds);
+                    $structure = mb_substr($minIds, 0, 1, 'utf-8');
+                    if (mb_strpos('⿰⿱⿴⿵⿶⿷󰃾⿸⿹⿺󰃿⿻', $structure) !== false) {
+                        $structuresArr[] = $structure;
+                    }
+                }
+            }
+
+            $mixIds = implode("；", $mixIdsArr);
+            $maxIds = mb_ereg_replace('<.>', '', $mixIds);
+            $strokeSerial = implode('', $this->extractHanzi($mixIds . $model->radical));
+            $structures = implode("", array_unique($structuresArr));
+
+            $outputIds[] = "{$model->id}\t{$structures}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}";
+
+            $model->structure = $structures;
+            $model->mix_split = $mixIds;
+            $model->max_split = $maxIds;
+            $model->stock_serial = $strokeSerial;
+            $model->save();
+
+            if (++$index > 5000) {
+                $contents = implode("\r\n", $outputIds) . "\r\n";
+                file_put_contents('d:\Inbox\hanzi-set-mix-max-ids.txt', $contents, FILE_APPEND);
+                unset($output);
+                $index = 1;
+            }
+        }
+
+        file_put_contents('d:\Inbox\hanzi-set-mix-max-ids.txt', implode("\r\n", $outputIds), FILE_APPEND);
+        file_put_contents('d:\Inbox\hanzi-set-word.txt', implode("\r\n", $outputWord));
+
+        echo "success!";
+        die;
+    }
 
     /**
      * @param $str
-     * 依次提取参数中的汉字，返回数组
+     * 依次提取参数中的汉字，进行排序，然后返回数组
      */
     private function extractHanzi($str)
     {
         // 删除空格、结构符、圈数字、分号等
-        $str = mb_ereg_replace('[\s\?&{}\[\]0-9a-zA-Z①-⑳⿰-⿻；？󰃾󰃿]', '', $str);
-        $str = mb_ereg_replace('<.>', '', $str);
-        $str = mb_ereg_replace('（.）', '', $str);
+        $str = mb_ereg_replace('[\s\?&{}<>（）\[\]0-9a-zA-Z①-⑳⿰-⿻；？󰃾󰃿]', '', $str);
         // 数组
         if (empty($str)) {
             return [];
@@ -100,7 +252,7 @@ class HanziSetController extends Controller
     }
 
     /*
-     * 处理每一个单独的min_split_ids，得到按照unicode内码排序后的mix_split_ids
+     * 从初步拆分递归生成混合拆分
      */
     private function generateMixIds($ids)
     {
@@ -120,50 +272,6 @@ class HanziSetController extends Controller
         }
 
     }
-
-    /**
-     * 根据初步拆分递归混合拆分、最大拆分、拆分序列、结构等信息，生成sql文.
-     * @return mixed
-     */
-    public function actionGenerateSearch()
-    {
-        mb_internal_encoding("UTF-8");
-        mb_regex_encoding("UTF-8");
-
-        $this->hanziIds = require_once('unicodeMinSplitIds.php');
-
-        $index = 1;
-        $output = [];
-//        $todoList = require_once('todo.php');
-//        foreach ($todoList as $word => $minIds) {
-        foreach ($this->hanziIds as $word => $minIds) {
-            $idsArr = explode("；", $minIds);
-            $resultArr = [];
-            foreach ($idsArr as $ids) {
-                $eachMixIds = $this->generateMixIds($ids);
-                $resultArr[] = str_replace('；', '&', $eachMixIds);
-            }
-            $mixIds = implode("；", $resultArr);
-            $maxIds = mb_ereg_replace('<.>', '', $mixIds);
-            $strokeSerial = implode('', $this->extractHanzi($mixIds));
-
-            $output[] = "{$word}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}";
-//            echo "{$word}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}<br/>";
-            if (++$index > 5000) {
-                $contents = implode("\r\n", $output)."\r\n";
-                file_put_contents('d:\Inbox\unicode-mix-max-ids.txt', $contents, FILE_APPEND);
-                unset($output);
-                $index = 1;
-            }
-        }
-
-        $contents = implode("\r\n", $output);
-        file_put_contents('d:\Inbox\unicode-mix-max-ids.txt', $contents, FILE_APPEND);
-
-        echo "success!";
-        die;
-    }
-
 
     /**
      * Lists all HanziSet models.

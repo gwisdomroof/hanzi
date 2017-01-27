@@ -38,39 +38,61 @@ class HanziSplitController extends Controller
      */
     public function actionExportIds()
     {
-        $sqls = [];
-        $models = HanziSplit::find()->where('duplicate = 0')->orderBy('id')->all();
+        $index = 1;
+        $output = [];
+        $models = HanziSplit::find()
+            ->where("duplicate = 0 and word is null and duplicate30 is null and (is_duplicated_temp is null or is_duplicated_temp = 0)")
+//            ->limit(100)
+            ->orderBy('id')
+            ->all();
         foreach ($models as $model) {
             $minSplitIds = [];
             $deforamSplitIds = [];
-            $similarParts = '';
-            if (!empty($model->initial_split11) && trim($model->initial_split11) != $model->word)
-                $splitIds[] = trim($model->initial_split11);
-            if (!empty($model->initial_split12) && trim($model->initial_split12) != $model->word)
-                $splitIds[] = trim($model->initial_split12);
-            if (!empty($model->deform_split10) && trim($model->deform_split10) != $model->word)
-                $splitIds[] = trim($model->deform_split10);
-            if (!empty($model->similar_stock10) && trim($model->similar_stock10) != $model->word)
-                $splitIds[] = trim($model->similar_stock10);
-            if (!empty($model->initial_split21) && trim($model->initial_split21) != $model->word)
-                $splitIds[] = trim($model->initial_split21);
-            if (!empty($model->initial_split22) && trim($model->initial_split22) != $model->word)
-                $splitIds[] = trim($model->initial_split22);
-            if (!empty($model->deform_split20) && trim($model->deform_split20) != $model->word)
-                $splitIds[] = trim($model->deform_split20);
-            if (!empty($model->similar_stock20) && trim($model->similar_stock20) != $model->word)
-                $splitIds[] = trim($model->similar_stock20);
+            $similarParts = $model->duplicate10 . $model->duplicate20;
 
-            $splitIds = array_unique($splitIds);
-            $minSplit = implode('；', $splitIds);
-            if (empty($minSplit))
-                $sqls[] = "$model->id\t''";
-            else
-                $sqls[] = "$model->id\t'{$minSplit}'";
+            if (!empty($model->initial_split11))
+                $minSplitIds[] = trim($model->initial_split11);
+            if (!empty($model->initial_split12))
+                $minSplitIds[] = trim($model->initial_split12);
+            if (!empty($model->deform_split10))
+                $deforamSplitIds[] = trim($model->deform_split10);
+            if (!empty($model->similar_stock10))
+                $similarParts .= trim($model->similar_stock10);
 
+            if (!empty($model->initial_split21))
+                $minSplitIds[] = trim($model->initial_split21);
+            if (!empty($model->initial_split22))
+                $minSplitIds[] = trim($model->initial_split22);
+            if (!empty($model->deform_split20))
+                $deforamSplitIds[] = trim($model->deform_split20);
+            if (!empty($model->similar_stock20))
+                $similarParts .= trim($model->similar_stock20);
+
+            $minSplitIds = array_unique($minSplitIds);
+            $minSplitIds = implode('；', $minSplitIds);
+            $deforamSplitIds = array_unique($deforamSplitIds);
+            $deforamSplitIds = implode('；', $deforamSplitIds);
+
+            $similarParts = array_unique(preg_split('/(?<!^)(?!$)/u', $similarParts));
+            setlocale(LC_COLLATE, 'sk_SK.utf8');
+            $f = function ($a, $b) {
+                return strcoll($a, $b);
+            };
+            usort($similarParts, $f);
+            $similarParts = implode('', $similarParts);
+
+            $output[] = "{$model->id}\t{$model->picture}\t{$minSplitIds}\t{$deforamSplitIds}\t{$similarParts}";
+
+            if (++$index > 5000) {
+                $contents = implode("\r\n", $output) . "\r\n";
+                file_put_contents('d:\Inbox\from_1_2_split_to_3.txt', $contents, FILE_APPEND);
+                unset($output);
+                $index = 1;
+            }
         }
-        $contents = implode("\r\n", $sqls);
-        file_put_contents('d:\Inbox\hanzi-split-unicode.txt', $contents);
+
+        $contents = implode("\r\n", $output);
+        file_put_contents('d:\Inbox\from_1_2_split_to_3.txt', $contents, FILE_APPEND);
 
         echo "success!";
         die;
@@ -86,7 +108,6 @@ class HanziSplitController extends Controller
         $searchModel = new HanziSplitSearch();
         $currentPage = isset(Yii::$app->request->queryParams['page']) ? (int)Yii::$app->request->queryParams['page'] : 1;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
-        $dataProvider->pagination->pageSize = Yii::$app->get('keyStorage')->get('frontend.task-per-page', null, false);
         return $this->render('dup', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

@@ -248,6 +248,66 @@ class HanziSplit extends \yii\db\ActiveRecord
         return $id >= 98240 ? HanziTask::TYPE_GAOLI_SPLIT : HanziTask::TYPE_SPLIT;
     }
 
+
+    /**
+     * 获取pic_name的拆字信息：重复值，初步拆分，调笔拆分和相似部件
+     * @param $pic_name
+     */
+    public static function getSplitInfo($hanzi)
+    {
+        $picName = str_replace('kr', '', $hanzi->pic_name);
+        $model = HanziSplit::find()->where("picture = '{$picName}'")->one();
+        if (empty($model))
+            return false;
+
+        $output = [];
+        $minSplitIds = empty($hanzi->min_split) ? [] : explode('；', $hanzi->min_split);
+        $deforamSplitIds = empty($hanzi->deform_split) ? [] : explode('；', $hanzi->deform_split);
+        $similarParts = $model->duplicate10 . $model->duplicate20 . $hanzi->similar_stock;
+
+        if (!empty($model->initial_split11))
+            $minSplitIds[] = trim($model->initial_split11);
+        if (!empty($model->initial_split12))
+            $minSplitIds[] = trim($model->initial_split12);
+        if (!empty($model->deform_split10))
+            $deforamSplitIds[] = trim($model->deform_split10);
+        if (!empty($model->similar_stock10))
+            $similarParts .= trim($model->similar_stock10);
+
+        if (!empty($model->initial_split21))
+            $minSplitIds[] = trim($model->initial_split21);
+        if (!empty($model->initial_split22))
+            $minSplitIds[] = trim($model->initial_split22);
+        if (!empty($model->deform_split20))
+            $deforamSplitIds[] = trim($model->deform_split20);
+        if (!empty($model->similar_stock20))
+            $similarParts .= trim($model->similar_stock20);
+
+        $minSplitIds = array_unique($minSplitIds);
+        $minSplitIds = implode('；', $minSplitIds);
+
+        $deforamSplitIds = array_unique($deforamSplitIds);
+        $deforamSplitIds = implode('；', $deforamSplitIds);
+
+        $similarParts = array_unique(preg_split('/(?<!^)(?!$)/u', $similarParts));
+        setlocale(LC_COLLATE, 'sk_SK.utf8');
+        $f = function ($a, $b) {
+            return strcoll($a, $b);
+        };
+        usort($similarParts, $f);
+        $similarParts = implode('', $similarParts);
+
+//        $output = "{$model->id}\t{$model->picture}\t{$minSplitIds}\t{$deforamSplitIds}\t{$similarParts}";
+
+        return [
+            'word' => $model->word,
+            'min_split' => $minSplitIds,
+            'deform_split' => $deforamSplitIds,
+            'similar_stock' => $similarParts
+        ];
+
+    }
+
     /**
      * [getMaxSplitIdByPage description]
      * @param  [type] $page [description]
@@ -263,7 +323,7 @@ class HanziSplit extends \yii\db\ActiveRecord
         ');
         $model = $query->one();
         if (!empty($model)) {
-            return ['seq'=>2, 'id'=>$model->id];
+            return ['seq' => 2, 'id' => $model->id];
         }
 
         $query->where('(duplicate = 0 or duplicate is null ) and (is_duplicated_temp = 0 or is_duplicated_temp is null) 
@@ -272,7 +332,7 @@ class HanziSplit extends \yii\db\ActiveRecord
         ');
         $model = $query->one();
         if (!empty($model)) {
-            return ['seq'=>1, 'id'=>$model->id];
+            return ['seq' => 1, 'id' => $model->id];
         }
 
         return false;

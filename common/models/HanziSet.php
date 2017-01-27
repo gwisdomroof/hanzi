@@ -188,7 +188,7 @@ class HanziSet extends \yii\db\ActiveRecord
             [['pic_name', 'belong_standard_word_code', 'standard_word_code', 'pinyin'], 'string', 'max' => 64],
             [['position_code', 'duplicate_id', 'zhengma', 'wubi',  'similar_stock'], 'string', 'max' => 128],
             [['min_split', 'deform_split', 'stock_serial', 'remark'], 'string', 'max' => 256],
-            [['max_split', 'mix_split'], 'string', 'max' => 512],
+            [['max_split', 'mix_split'], 'string', 'max' => 1024],
         ];
     }
 

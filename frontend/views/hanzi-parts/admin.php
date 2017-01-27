@@ -92,27 +92,27 @@ $this->params['breadcrumbs'][] = $this->title;
                         return "<span class='{$class}'>" . ['1' => '是', '2' => '否', '0' => '空'][$selected] . '</span>';
                     },
                 ],
-                [
-                    'attribute' => 'src_feijinchang',
-                    'format' => 'raw',
-                    'filter' => ['1' => '是', '2' => '否', '0' => '空'],
-                    'headerOptions' => ['width' => '80'],
-                    'value' => function ($model) {
-                        $selected = !isset($model->src_feijinchang) ? 0 : $model->src_feijinchang;
-                        $class = ['1' => 'yes', '2' => 'no', '0' => 'empty'][$selected];
-                        return "<span class='{$class}'>" . ['1' => '是', '2' => '否', '0' => '空'][$selected] . '</span>';
-                    },
-                ],
 //                [
-//                    'attribute' => 'src_lqhanzi',
+//                    'attribute' => 'src_feijinchang',
 //                    'format' => 'raw',
 //                    'filter' => ['1' => '是', '2' => '否', '0' => '空'],
-//                    'headerOptions' => ['width' => '150'],
+//                    'headerOptions' => ['width' => '80'],
 //                    'value' => function ($model) {
-//                        $selected = !isset($model->src_lqhanzi) ? 0 : $model->src_lqhanzi;
-//                        return Html::radioList('lqhz' . $model->id, $selected, ['1' => '是', '2' => '否', '0' => '空'], ['class' => 'lqhz', 'id' => $model->id]);
+//                        $selected = !isset($model->src_feijinchang) ? 0 : $model->src_feijinchang;
+//                        $class = ['1' => 'yes', '2' => 'no', '0' => 'empty'][$selected];
+//                        return "<span class='{$class}'>" . ['1' => '是', '2' => '否', '0' => '空'][$selected] . '</span>';
 //                    },
 //                ],
+                [
+                    'attribute' => 'src_lqhanzi',
+                    'format' => 'raw',
+                    'filter' => ['1' => '是', '2' => '否', '0' => '空'],
+                    'headerOptions' => ['width' => '150'],
+                    'value' => function ($model) {
+                        $selected = !isset($model->src_lqhanzi) ? 0 : $model->src_lqhanzi;
+                        return Html::radioList('lqhz' . $model->id, $selected, ['1' => '是', '2' => '否', '0' => '空'], ['class' => 'lqhz', 'id' => $model->id]);
+                    },
+                ],
                 // 'src_hujingyu',
                 // 'lqhanzi_sn',
                 // 'is_redundant',
@@ -139,14 +139,14 @@ $this->params['breadcrumbs'][] = $this->title;
 //                        return Html::radioList('shp' . $model->id, $selected, ['1' => '是', '2' => '否'], ['class' => 'shp', 'id' => $model->id]);
 //                    },
 //                ],
-//                [
-//                    'attribute' => 'replace_parts',
-//                    'format' => 'raw',
-//                    'headerOptions' => ['width' => '120'],
-//                    'value' => function ($model) {
-//                        return Html::activeInput('text', $model, 'replace_parts', ['class' => 'form-control rp', 'id' => $model->id]);
-//                    },
-//                ],
+                [
+                    'attribute' => 'replace_parts',
+                    'format' => 'raw',
+                    'headerOptions' => ['width' => '120'],
+                    'value' => function ($model) {
+                        return Html::activeInput('text', $model, 'replace_parts', ['class' => 'form-control rp', 'id' => $model->id]);
+                    },
+                ],
 
                 [
                     'attribute' => 'strokes',
@@ -157,14 +157,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['width' => '80'],
                 ],
 
-                [
-                    'attribute' => 'remark',
-                    'format' => 'raw',
-                    'headerOptions' => ['width' => '120'],
-                    'value' => function ($model) {
-                        return Html::activeInput('text', $model, 'remark', ['class' => 'form-control rm', 'id' => $model->id]);
-                    },
-                ],
+//                [
+//                    'attribute' => 'remark',
+//                    'format' => 'raw',
+//                    'headerOptions' => ['width' => '120'],
+//                    'value' => function ($model) {
+//                        $options = ['class' => 'form-control rm', 'id' => $model->id];
+//                        if (!empty($model->remark)) {
+//                            $options['disabled'] = 'disabled';
+//                        }
+//                        return Html::activeInput('text', $model, 'remark', $options);
+//                    },
+//                ],
 
                 // 'c_t',
                 // 'u_t',
@@ -259,6 +263,7 @@ $script = <<<SCRIPT
         var obj = $(this);
         var id = $(this).attr('id');
         var value = $(this).val();
+        if (value == '') return;
         $.post( {
             url: "/hanzi-parts/check?field=rm&id=" + id,
             data: {value: value},
@@ -285,6 +290,7 @@ $script = <<<SCRIPT
         var obj = $(this);
         var id = $(this).attr('id');
         var value = $(this).val();
+        if (value == '') return;
         $.post( {
             url: "/hanzi-parts/check?field=rp&id=" + id,
             data: {value: value},

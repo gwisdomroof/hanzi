@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => ['image', ['width' => '35', 'height' => '35']],
                     "headerOptions" => ["width" => "50"]
                 ],
+
                 [
                     'header' => '重复值1',
                     'attribute' => 'duplicate10',
@@ -84,7 +85,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::radioList('duplicate20' . $model->id, $selected, ['1' => '是', '0' => '否'], ['class' => 'duplicate20', 'id' => $model->id]);
                     },
                 ],
-
                 [
                     'header' => '重复值3',
                     'attribute' => 'duplicate30',
@@ -93,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return "<div class='duplicate30' id='duplicate30{$model->id}'>$model->duplicate30</div>";
                     },
                 ],
+
             ],
         ]); ?>
 
