@@ -120,7 +120,8 @@ class HanziSet extends \yii\db\ActiveRecord
         $urls = [];
         if ($this->source == self::SOURCE_TAIWAN) {
             $positions = empty($this->standard_word_code) ? $this->position_code : $this->standard_word_code . ";" . $this->position_code;
-            $positions = explode(';', $positions);
+            $positions = explode(';', trim($positions, ';'));
+            $positions = array_unique($positions);
             foreach ($positions as $position) {
                 $position = ltrim($position, "#");
                 $urls[$position] = Url::toRoute(['/hanzi-dict/taiwan', 'param' => $position]);
@@ -128,7 +129,7 @@ class HanziSet extends \yii\db\ActiveRecord
 
         } elseif($this->source == self::SOURCE_HANYU) {
             $position = $this->position_code;
-            $page = explode('-', $position)[1];
+            $page = explode('-', $position)[0];
             $page =  str_pad($page, 4, '0', STR_PAD_LEFT);
             $urls[$position] = Url::toRoute(['/hanzi-dict/hanyu', 'param' => $page]);
 

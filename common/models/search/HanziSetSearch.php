@@ -43,7 +43,11 @@ class HanziSetSearch extends HanziSet
         if (preg_match($regUni, $param, $matches) || preg_match($regTw, $param, $matches) || preg_match($regHy, $param, $matches) || preg_match($regGl, $param, $matches)) {
             // 检索正字
             $search = $matches[0];
-            $models = HanziSet::find()->orderBy('id')->where(['word' => $search])->orWhere(['pic_name' => $search])->all();
+            $models = HanziSet::find()->orderBy('id')
+                ->where(['word' => $search])
+                ->orWhere(['pic_name' => $search])
+                ->orWhere("position_code ~ '{$search};'")
+                ->all();
             foreach ($models as $model) {
                 switch ($model->source) {
                     case HanziSet::SOURCE_TAIWAN:
@@ -220,7 +224,7 @@ class HanziSetSearch extends HanziSet
         }
 
         # 去重
-        $sqlParam .= $sqlParam == '' ? "duplicate = 0" : " AND duplicate = 0";
+        $sqlParam .= $sqlParam == '' ? "is_for_search = 1" : " AND is_for_search = 1";
 
         return HanziSet::find()->where($sqlParam);
 

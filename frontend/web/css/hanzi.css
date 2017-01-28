@@ -30,10 +30,10 @@ body {font-family: Arial,  Helvetica, KaiXinSong, sans-serif, lqhanzi;}
     /*border: 1px solid #eee;*/
     border-collapse: collapse;
     display: inline-table;
-    font-size: 28px;
+    font-size: 33px;
     width: 35px;
-    height: 35px;
-    margin: 1px 1px;
+    height: 37px;
+    margin: 5px 5px;
     padding: 2px 0px;
     vertical-align: middle;
 }
@@ -42,11 +42,11 @@ body {font-family: Arial,  Helvetica, KaiXinSong, sans-serif, lqhanzi;}
     /*border: 1px solid #eee;*/
     color: #003399;
     width: 35px;
-    height: 35px;
-    font-size: 28px;
+    height: 37px;
+    font-size: 33px;
     display: inline-table;
     vertical-align: middle;
-    margin: 1px 1px;
+    margin: 5px 5px;
     padding: 2px 0px;
     border-collapse: collapse;
 }

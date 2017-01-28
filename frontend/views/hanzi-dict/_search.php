@@ -122,7 +122,7 @@ if (!empty($param)) {
                 echo "<div class='hanzi-variants'>";
                 foreach ($variants as $variant) {
                     if (!empty($variant->word)) {
-                        $title = empty($variant->nor_var_type) ? $variant->word : $variant->word.'|'.HanziSet::norVarTypes()[$variant->nor_var_type];
+                        $title = empty($variant->nor_var_type) ? $variant->word : $variant->word . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
                         if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
                             $title = "$title|{$variant->belong_standard_word_code}";
                         }
@@ -154,11 +154,19 @@ if (!empty($param)) {
                 echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $normal, 'a' => 'gl']) . "'>【<span class=$class >" . $normal . "</span>】</a></div>";
                 echo "<div class='hanzi-variants'>";
                 foreach ($variants as $variant) {
-                    if (!empty($variant->word)) {
-                        echo "<span class='hanzi-item'>" . $variant->word . "</span>";
-                    } elseif (!empty($variant->pic_name)) {
+                    if (!empty($variant->pic_name)) {
                         $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-                        echo "<img alt='$variant->pic_name' title='$variant->pic_name' src='$picPath' class='hanzi-img'>";
+                        $title = $variant->pic_name;
+                        if (!empty($variant->word))
+                            $title = $title . '|' . $variant->word;
+                        if (!empty($variant->nor_var_type)) {
+                            $title = $title . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
+                        }
+                        $class = ($param == $variant->pic_name) ? 'hanzi-img param variant' . $variant->nor_var_type : 'hanzi-img variant' . $variant->nor_var_type;
+                        echo "<img alt='$variant->pic_name' class='$class' title='$title' src='$picPath' >";
+
+                    } elseif (!empty($variant->word)) {
+                        echo "<span class='hanzi-item'>" . $variant->word . "</span>";
                     }
                 }
                 echo "</div><br/>";
@@ -172,7 +180,7 @@ if (!empty($param)) {
             <div><a target="_blank"
                     href=<?= Url::toRoute(['hanzi-dict/variant', 'param' => $param, 'a' => 'hy']) ?>><?php
                     $position = explode('-', $hanziSet[HanziSet::SOURCE_HANYU]);
-                    echo "第" . $position[1] . "页 第" . $position[2] . "字";
+                    echo "第" . $position[0] . "页 第" . $position[1] . "字";
                     ?></a></div>
         </div>
     <?php endif; ?>

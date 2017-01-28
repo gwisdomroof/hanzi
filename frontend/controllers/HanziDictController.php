@@ -101,10 +101,13 @@ class HanziDictController extends Controller
      */
     public function actionVariant($param, $a = 'tw')
     {
+        $param = trim($param);
         $models = HanziSet::find()->orderBy(['source' => SORT_ASC, 'id' => SORT_ASC])
+            ->where("source > 1")
             ->andFilterWhere(['or',
                 ['word' => trim($param)],
                 ['pic_name' => trim($param)]])
+            ->orWhere("position_code ~ '{$param};'")
             ->all();
 
         // 概要信息
@@ -141,7 +144,7 @@ class HanziDictController extends Controller
                     $summary[$model->id]['position'] = "<a class='hy' href='#' >$model->position_code</a>";
                     $summary[$model->id]['standardWord'] = '';
                     $posArr = explode('-', $model->position_code);
-                    $summary[$model->id]['remark'] = '第' . $posArr[1] . '页 第' . $posArr[2] . '字';
+                    $summary[$model->id]['remark'] = '第' . $posArr[0] . '页 第' . $posArr[1] . '字';
                     if (empty($zitouArr)) {
                         $zitouArr['source'] = HanziSet::SOURCE_HANYU;
                         $zitouArr['zitou'] = !empty($model->word) ? $model->word : $model->pic_name;
@@ -229,9 +232,7 @@ class HanziDictController extends Controller
     public function actionDunhuang($param)
     {
         $this->layout = '_clear';
-
-        $offset = 91;
-        $param = trim($param) + 91;
+        $param = trim($param);
         $page = str_pad($param, 3, '0', STR_PAD_LEFT);
         $maxPage = 680;
         return $this->render('dunhuang', [
@@ -306,8 +307,11 @@ class HanziDictController extends Controller
         ])->asArray()->all();
 
         // 查正字对应的所有异体字
-        $models = HanziSet::find()->where(['source' => HanziSet::SOURCE_GAOLI, 'nor_var_type' => 1])
-            ->andWhere(['belong_standard_word_code' => $normals])->all();
+        $models = HanziSet::find()
+            ->where(['source' => HanziSet::SOURCE_GAOLI])
+            ->andWhere('nor_var_type > 0')
+            ->andWhere(['belong_standard_word_code' => $normals])
+            ->all();
 
         return $this->render('gaoli', [
             'models' => $models,
