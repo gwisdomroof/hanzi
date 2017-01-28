@@ -121,23 +121,37 @@ if (!empty($param)) {
                 echo "<div class='hanzi-normal'><a target='_blank' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $normal]) . "'>【<span class=$class>" . $normal . "</span>】</a></div>";
                 echo "<div class='hanzi-variants'>";
                 foreach ($variants as $variant) {
+                    $title = "";
+                    if (!empty($variant->pic_name)) {
+                        $title .= "编号：{$variant->pic_name}&#xa;";
+                    }
                     if (!empty($variant->word)) {
-                        $title = empty($variant->nor_var_type) ? $variant->word : $variant->word . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
-                        if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
-                            $title = "$title|{$variant->belong_standard_word_code}";
-                        }
-                        $class = ($param == $variant->word) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
+                        $title .= "文字：{$variant->word}&#xa;";
+                    }
+                    if (!empty($variant->belong_standard_word_code)) {
+                        $title .= "所属正字：{$variant->belong_standard_word_code}&#xa;";
+                    }
+                    if (!empty($variant->nor_var_type)) {
+                        $title = $title . "正异类型：" . HanziSet::norVarTypes()[$variant->nor_var_type] . "&#xa;";
+                    }
+                    if (!empty($variant->position_code)) {
+                        $title .= "其它台湾编号：{$variant->position_code}&#xa;";
+                    }
+                    if (!empty($variant->duplicate_id)) {
+                        $title .= "重复编号：{$variant->duplicate_id}&#xa;";
+                    }
+                    if (!empty($variant->korean_dup_hanzi)) {
+                        $title .= "高丽重复编号：{$variant->korean_dup_hanzi}&#xa;";
+                    }
+                    $title = trim($title, '&#xa;');
+
+                    $searchField = $variant->word . $variant->pic_name . $variant->position_code . $variant->korean_dup_hanzi . $variant->duplicate_id;
+                    if (!empty($variant->word)) {
+                        $class = (strpos($searchField, $param) !== false) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
                         echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->word]) . "'>" . $variant->word . "</a></span>";
                     } elseif (!empty($variant->pic_name)) {
                         $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-                        $title = $variant->pic_name;
-                        if (!empty($variant->nor_var_type)) {
-                            $title = $title . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
-                        }
-                        if (!empty($variant->nor_var_type) && $variant->nor_var_type >= HanziSet::TYPE_NORMAL_WIDE) {
-                            $title = "$title|{$variant->belong_standard_word_code}";
-                        }
-                        $class = ($param == $variant->pic_name) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
+                        $class = (strpos($searchField, $param) !== false) ? 'param variant' . $variant->nor_var_type : 'variant' . $variant->nor_var_type;
                         echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->pic_name]) . "'>" . "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'></a></span>";
                     }
                 }
@@ -156,15 +170,30 @@ if (!empty($param)) {
                 foreach ($variants as $variant) {
                     if (!empty($variant->pic_name)) {
                         $picPath = \common\models\HanziSet::getPicturePath($variant->source, $variant->pic_name);
-                        $title = $variant->pic_name;
-                        if (!empty($variant->word))
-                            $title = $title . '|' . $variant->word;
-                        if (!empty($variant->nor_var_type)) {
-                            $title = $title . '|' . HanziSet::norVarTypes()[$variant->nor_var_type];
+                        $title = "";
+                        if (!empty($variant->pic_name)) {
+                            $title .= "编号：{$variant->pic_name}&#xa;";
                         }
-                        $class = ($param == $variant->pic_name) ? 'hanzi-img param variant' . $variant->nor_var_type : 'hanzi-img variant' . $variant->nor_var_type;
-                        echo "<img alt='$variant->pic_name' class='$class' title='$title' src='$picPath' >";
+                        if (!empty($variant->word)) {
+                            $title .= "文字：{$variant->word}&#xa;";
+                        }
+                        if (!empty($variant->belong_standard_word_code)) {
+                            $title .= "所属正字：{$variant->belong_standard_word_code}&#xa;";
+                        }
+                        if (!empty($variant->nor_var_type)) {
+                            $title = $title . "正异类型：" . HanziSet::norVarTypes()[$variant->nor_var_type] . "&#xa;";
+                        }
+                        if (!empty($variant->korean_dup_hanzi)) {
+                            $title .= "高丽重复编号：{$variant->korean_dup_hanzi}&#xa;";
+                        }
+                        if (!empty($variant->duplicate_id)) {
+                            $title .= "重复编号：{$variant->duplicate_id}&#xa;";
+                        }
+                        $title = trim($title, '&#xa;');
 
+                        $searchField = $variant->word . $variant->pic_name . $variant->position_code . $variant->korean_dup_hanzi . $variant->duplicate_id;
+                        $class = (strpos($searchField, $param) !== false) ? 'hanzi-img param variant' . $variant->nor_var_type : 'hanzi-img variant' . $variant->nor_var_type;
+                        echo "<span class='hanzi-item' ><a target='_blank' class='$class' title='$title' href='" . Url::toRoute(['hanzi-dict/variant', 'param' => $variant->pic_name]) . "'>" . "<img alt= '$variant->pic_name' src='$picPath' class='hanzi-img'></a></span>";
                     } elseif (!empty($variant->word)) {
                         echo "<span class='hanzi-item'>" . $variant->word . "</span>";
                     }

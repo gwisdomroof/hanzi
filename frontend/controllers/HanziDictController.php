@@ -102,13 +102,15 @@ class HanziDictController extends Controller
     public function actionVariant($param, $a = 'tw')
     {
         $param = trim($param);
-        $models = HanziSet::find()->orderBy(['source' => SORT_ASC, 'id' => SORT_ASC])
-            ->where("source > 1")
-            ->andFilterWhere(['or',
-                ['word' => trim($param)],
-                ['pic_name' => trim($param)]])
-            ->orWhere("position_code ~ '{$param};'")
-            ->all();
+        $query = HanziSet::find()->orderBy(['source' => SORT_ASC, 'id' => SORT_ASC])
+            ->where(['and', 'source > 1', ['or',
+                ['=', 'word', $param],
+                ['=', 'pic_name', $param],
+                ['~', 'position_code', "{$param}(;|$)"],
+                ['~', 'duplicate_id', "{$param}(;|$)"],
+                ['~', 'korean_dup_hanzi', "{$param}(;|$)"]
+            ]]);
+        $models = $query->all();
 
         // 概要信息
         $summary = array();
@@ -301,10 +303,15 @@ class HanziDictController extends Controller
         $this->layout = '_clear';
 
         // 查param对应的正字
-        $normals = HanziSet::find()->select('belong_standard_word_code')->where(['source' => HanziSet::SOURCE_GAOLI])->andWhere(['or',
-            ['word' => trim($param)],
-            ['pic_name' => trim($param)]
-        ])->asArray()->all();
+        $normals = HanziSet::find()
+            ->select('belong_standard_word_code')
+            ->where(['source' => HanziSet::SOURCE_GAOLI])
+            ->andWhere(['or',
+                ['word' => trim($param)],
+                ['pic_name' => trim($param)]
+            ])
+            ->asArray()
+            ->all();
 
         // 查正字对应的所有异体字
         $models = HanziSet::find()
@@ -315,6 +322,7 @@ class HanziDictController extends Controller
 
         return $this->render('gaoli', [
             'models' => $models,
+            'param' => $param
         ]);
     }
 

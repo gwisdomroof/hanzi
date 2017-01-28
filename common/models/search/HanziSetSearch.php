@@ -43,18 +43,21 @@ class HanziSetSearch extends HanziSet
         if (preg_match($regUni, $param, $matches) || preg_match($regTw, $param, $matches) || preg_match($regHy, $param, $matches) || preg_match($regGl, $param, $matches)) {
             // 检索正字
             $search = $matches[0];
-            $models = HanziSet::find()->orderBy('id')
+            $query = HanziSet::find()->orderBy('id')
                 ->where(['word' => $search])
                 ->orWhere(['pic_name' => $search])
-                ->orWhere("position_code ~ '{$search};'")
-                ->all();
+                ->orWhere("position_code ~ '{$search}(;|$)'")
+                ->orWhere("duplicate_id ~ '{$search}(;|$)'")
+                ->orWhere("korean_dup_hanzi ~ '{$search}(;|$)'");
+//            echo $query->createCommand()->getRawSql(); die;
+            $models = $query->all();
             foreach ($models as $model) {
                 switch ($model->source) {
                     case HanziSet::SOURCE_TAIWAN:
                         if ($model->nor_var_type == HanziSet::TYPE_NORMAL_PURE || $model->nor_var_type == HanziSet::TYPE_NORMAL_WIDE) {
                             $twNormals .= $model->word;
                         }
-                        $twNormals .= str_replace([';', '#'], '', $model->belong_standard_word_code);
+                        $twNormals .= str_replace([';', '&'], '', $model->belong_standard_word_code);
                         break;
                     case HanziSet::SOURCE_GAOLI:
                         $glNormals .= str_replace(';', '', $model->belong_standard_word_code);
@@ -88,7 +91,6 @@ class HanziSetSearch extends HanziSet
             if (empty($glNormals) && empty($twNormals)) {
                 $query->andWhere("0=1");
             }
-            // echo $query->createCommand()->getRawSql(); die;
             $variants = $query->all();
 
             // 处理结果
@@ -109,6 +111,7 @@ class HanziSetSearch extends HanziSet
                 $result[HanziSet::SOURCE_DUNHUANG] = $dhPosition;
             }
         }
+
         return $result;
     }
 
