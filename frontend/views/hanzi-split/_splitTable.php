@@ -16,6 +16,11 @@ use common\models\HanziSet;
 	<td style="font-weight: bold">二次拆分</td>
 </tr>
 <tr>
+	<td>重复值</td>
+	<td><?php echo empty($model->duplicate10) ?null : HanziSet::hards()[$model->duplicate10]; ?></td>
+	<td><?php echo empty($model->duplicate20) ?null : HanziSet::hards()[$model->duplicate20]; ?></td>
+</tr>
+<tr>
 	<td>是否难字</td>
 	<td><?php echo empty($model->hard10) ?null : HanziSet::hards()[$model->hard10]; ?></td>
 	<td><?php echo empty($model->hard20) ?null : HanziSet::hards()[$model->hard20]; ?></td>
