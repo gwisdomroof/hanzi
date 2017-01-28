@@ -302,6 +302,7 @@ class HanziSetController extends Controller
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_ASC]]
         ]);
+        $models->pagination->pageSize = 50;
 
         return $this->render('strokes', [
             'models' => $models,
