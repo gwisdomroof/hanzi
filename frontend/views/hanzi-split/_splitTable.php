@@ -17,8 +17,8 @@ use common\models\HanziSet;
 </tr>
 <tr>
 	<td>重复值</td>
-	<td><?php echo empty($model->duplicate10) ?null : HanziSet::hards()[$model->duplicate10]; ?></td>
-	<td><?php echo empty($model->duplicate20) ?null : HanziSet::hards()[$model->duplicate20]; ?></td>
+	<td><?php echo empty($model->duplicate10) ?null : $model->duplicate10; ?></td>
+	<td><?php echo empty($model->duplicate20) ?null : $model->duplicate20; ?></td>
 </tr>
 <tr>
 	<td>是否难字</td>
