@@ -314,7 +314,7 @@ class HanziDictController extends Controller
             ->all();
 
         // 查正字对应的所有异体字
-        $models = HanziSet::find()
+        $models = HanziSet::find()->orderBy('belong_standard_word_code')
             ->where(['source' => HanziSet::SOURCE_GAOLI])
             ->andWhere('nor_var_type > 0')
             ->andWhere(['belong_standard_word_code' => $normals])
