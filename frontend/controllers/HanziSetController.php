@@ -7,6 +7,7 @@ use common\models\search\HanziSetSearch;
 use common\models\LqVariant;
 use common\models\search\LqVariantSetSearch;
 use common\models\HanziSplit;
+use yii\data\ActiveDataProvider;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -85,16 +86,33 @@ class HanziSetController extends Controller
         $notExisted = [];
         $notFound = [];
         foreach ($dups as $key => $value) {
-            $model = HanziSet::find()->where("position_code like '%{$key};%' or pic_name = '{$key}' ")->one();
-            if (!empty($model)) {
-                if (!empty($model->pic_name)) {
-                    $existed[] = "{$key}\t{$value}\t{$model->pic_name}";
-                } elseif (!empty($model->pic_name)) {
-                    $notExisted[] = "{$key}\t{$value}\t{$model->word}";
-                }
-            } else {
-                $notFound[] = "\t{$key}\t{$value}\tnot found";
+            $valueArr = explode(';', $value);
+            $picName =  "'$key',";
+            foreach ($valueArr as $item) {
+                $picName .=  "'$item',";
             }
+            $picName = trim($picName, ',');
+            $models = HanziSet::find()->where("pic_name in ({$picName}) ")->all();
+            $normals = [];
+            foreach ($models as $model) {
+                $normals[] = $model->belong_standard_word_code;
+            }
+            $normals = array_unique($normals);
+            $normals = implode(',', $normals);
+            if (strpos($normals, ',') !== false) {
+                $existed[] = "{$key}\t{$value}\t{$normals}";
+            } else {
+                $notExisted[] = "{$key}\t{$value}\t{$normals}";
+            }
+//            if (!empty($model)) {
+//                if (!empty($model->pic_name)) {
+//                    $existed[] = "{$key}\t{$value}\t{$model->pic_name}";
+//                } elseif (!empty($model->pic_name)) {
+//                    $notExisted[] = "{$key}\t{$value}\t{$model->word}";
+//                }
+//            } else {
+//                $notFound[] = "\t{$key}\t{$value}\tnot found";
+//            }
 
         }
 
@@ -272,6 +290,59 @@ class HanziSetController extends Controller
         }
 
     }
+
+    /**
+     * 补充hanzi_set中未填写的部首和笔画信息.
+     * @return mixed
+     */
+    public function actionStrokes()
+    {
+        $query = HanziSet::find()->where("type = 1 and pic_name is not null");
+        $models = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_ASC]]
+        ]);
+
+        return $this->render('strokes', [
+            'models' => $models,
+        ]);
+    }
+
+
+    /**
+     * Lists all HanziParts models.
+     * @return mixed
+     */
+    public function actionSave($id, $field)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return false;
+        }
+
+        $id = (int)trim($id);
+        $model = HanziSet::findOne($id);
+        if ($model == null) {
+            return '{"status":"error", "msg": "data not found."}';
+        }
+
+        if (isset(Yii::$app->request->post()['value'])) {
+            $value = Yii::$app->request->post()['value'];
+            $field = '' . trim($field);
+            if (strcmp($field, "ra") == 0) {
+                $model->radical = trim($value);
+            } elseif (strcmp($field, "ms") == 0) {
+                $model->max_stroke = trim($value);
+            }
+
+            if ($model->save())
+                return '{"status":"success", "id": "' . $model->id . '"}';
+            else
+                var_dump($model->getErrors());
+        }
+
+        return '{"status":"error", "msg": "uncertain."}';
+    }
+
 
     /**
      * Lists all HanziSet models.
