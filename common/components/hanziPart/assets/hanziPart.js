@@ -185,6 +185,7 @@
 	{"display" : "亼", "input" : "亼", "search" : "3pnh"},
 	{"display" : "𠆤", "input" : "𠆤", "search" : "3pns"},
 	{"display" : "𠆥", "input" : "𠆥", "search" : "3pnp"},
+	{"display" : "乊", "input" : "乊", "search" : "3pnp"},
 	{"display" : "亽", "input" : "亽", "search" : "3pnn"},
 	{"display" : "亾", "input" : "亾", "search" : "3pnz"},
 	{"display" : "󰄼", "input" : "󰄼", "search" : "3pzh"},
