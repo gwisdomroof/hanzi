@@ -34,6 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     "headerOptions" => ["width" => "50"],
                 ],
                 [
+                    'header' => '', # 取消排序
+                    'attribute' => 'belong_standard_word_code',
+                    "headerOptions" => ["width" => "50"],
+                ],
+                [
                     'header' => '部首', # 取消排序
                     'attribute' => 'radical',
                     'format' => 'raw',
