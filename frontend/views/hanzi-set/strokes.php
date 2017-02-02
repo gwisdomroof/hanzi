@@ -1,7 +1,8 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\HanziSetSearch */
@@ -10,7 +11,17 @@ use yii\grid\GridView;
 $this->title = Yii::t('frontend', 'Hanzi Sets');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-    <div class="hanzi-set-index col-sm-8 col-offset-sm-4">
+
+    <style>
+        .hanzi-img {
+            cursor: pointer;
+        }
+        .container {
+            width: 95%;
+        }
+    </style>
+
+    <div class="hanzi-set-index col-sm-5" style='height: 800px; overflow-y: auto'>
 
         <?php echo GridView::widget([
             'dataProvider' => $models,
@@ -29,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => ['raw'],
                     'value' => function ($model) {
                         $picPath = \common\models\HanziSet::getPicturePath($model->source, $model->pic_name);
-                        return "<img alt= '$model->pic_name' src='$picPath' class='hanzi-img'>";
+                        return "<img alt= '$model->pic_name' title='$model->pic_name' src='$picPath' class='hanzi-img'></a></span>";
                     },
                     "headerOptions" => ["width" => "50"],
                 ],
@@ -61,6 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]); ?>
 
+    </div>
+
+    <div class="col-sm-7">
+        <iframe id='iframe' src='' style='width:100%; height: 800px;'></iframe>
     </div>
 
 
@@ -120,6 +135,12 @@ $script = <<<SCRIPT
     $(document).on('dblclick', '.ms', function() {
         $(this).removeAttr("disabled");
     });
+    
+    $(document).on('click', '.hanzi-img', function() {
+        var url = "/hanzi-dict/taiwan?param=" + $(this).attr("title");
+        $('#iframe').attr("src",url);  
+    });
+    
 
 SCRIPT;
 

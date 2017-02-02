@@ -251,8 +251,10 @@ class HanziDictController extends Controller
     public function actionTaiwan($param)
     {
         $this->layout = 'twyitizi';
-
         $param = trim($param);
+        $model = HanziSet::find()->where("pic_name = '{$param}' or position_code ~ '{$param}($|;)'")->one();
+        $param = explode(';', $model->position_code)[0];
+
         $positionArr = explode('-', $param);
         $normal = strtolower($positionArr[0]);
         $anchor = '';

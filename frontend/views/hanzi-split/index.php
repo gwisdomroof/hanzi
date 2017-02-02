@@ -27,11 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'id',
                 "headerOptions" => ["width" => "30"]
             ],
-//            [
-//                'header' => '', # 取消排序
-//                'attribute' => 'word',
-//                "headerOptions" => ["width" => "50"]
-//            ],
+            [
+                'header' => '', # 取消排序
+                'attribute' => 'word',
+                "headerOptions" => ["width" => "50"]
+            ],
             [
                 'header' => '', # 取消排序
                 'attribute' => 'picture',

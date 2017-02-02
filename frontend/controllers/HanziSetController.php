@@ -81,15 +81,16 @@ class HanziSetController extends Controller
      */
     public function actionCheck()
     {
-        $dups = require_once('todo.php');
+        $dups = require_once('_todo.php');
+
         $existed = [];
         $notExisted = [];
         $notFound = [];
         foreach ($dups as $key => $value) {
             $valueArr = explode(';', $value);
-            $picName =  "'$key',";
+            $picName = "'$key',";
             foreach ($valueArr as $item) {
-                $picName .=  "'$item',";
+                $picName .= "'$item',";
             }
             $picName = trim($picName, ',');
             $models = HanziSet::find()->where("pic_name in ({$picName}) ")->all();
@@ -143,29 +144,39 @@ class HanziSetController extends Controller
     {
         mb_internal_encoding("UTF-8");
         mb_regex_encoding("UTF-8");
+        $this->hanziIds = require_once('_unicodeMinSplitIds.php');
 
         $models = HanziSet::find()
-            ->where("(source = 2 or source = 4) and word is null")
+            ->where("(min_split is not null or deform_split is not null)")
+            ->andWhere("id > 242051")
+//            ->andWhere("id = 242052")
+//            ->limit(2)
             ->orderBy('id')
             ->all();
 
         $index = 1;
         $output = [];
         foreach ($models as $model) {
-            $strokeSerial = implode('', $this->extractHanzi($model->mix_split . $model->radical));
+            $minIds = $model->min_split . $model->deform_split;
+            if(!empty($model->min_split) && !empty($model->deform_split)) {
+                $minIds = $model->min_split . "；" . $model->deform_split;
+            }
+            if(empty($minIds))
+                continue;
+
+            $strokeSerial = implode('', $this->extractStrokeSerial($minIds, $model->radical));
             if (!empty($strokeSerial))
-                $output[] = "{$model->word}\t{$strokeSerial}";
-            echo "{$model->word}\t{$strokeSerial}<br/>";
-            if (++$index > 5000) {
+                $output[] = "{$model->id}\t{$model->word}\t{$model->pic_name}\t{$strokeSerial}";
+            if (++$index > 1000) {
                 $contents = implode("\r\n", $output) . "\r\n";
-                file_put_contents('d:\Inbox\unicode-serial.txt', $contents, FILE_APPEND);
+                file_put_contents('d:\Inbox\hanzi-set-serial.txt', $contents, FILE_APPEND);
                 unset($output);
                 $index = 1;
             }
         }
 
-        $contents = implode("\r\n", $output);
-        file_put_contents('d:\Inbox\unicode-serial.txt', $contents, FILE_APPEND);
+        $contents = implode("\r\n", $output). "\r\n";
+        file_put_contents('d:\Inbox\hanzi-set-serial.txt', $contents, FILE_APPEND);
 
         echo "success!";
         die;
@@ -180,28 +191,34 @@ class HanziSetController extends Controller
         mb_internal_encoding("UTF-8");
         mb_regex_encoding("UTF-8");
 
-        $this->hanziIds = require_once('unicodeMinSplitIds.php');
+        $this->hanziIds = require_once('_unicodeMinSplitIds.php');
 
         $models = HanziSet::find()->orderBy('id')
-            ->where("")
+            ->where("(min_split is not null or deform_split is not null) and mix_split is null")
+            ->andWhere("id=242052")
             ->all();
 
         $index = 1;
         $outputWord = [];
         $outputIds = [];
         foreach ($models as $model) {
-            // 获取人工拆字信息
-            $splitInfo = HanziSplit::getSplitInfo($model);
-            if (empty($splitInfo))
-                continue;
-            $model->min_split = $splitInfo['min_split'];
-            $model->deform_split = $splitInfo['deform_split'];
-            $model->similar_stock = $splitInfo['similar_stock'];
+            // 从Split表获取人工拆字信息
+//            $splitInfo = HanziSplit::getSplitInfo($model);
+//            if (empty($splitInfo))
+//                continue;
+//            $model->min_split = $splitInfo['min_split'];
+//            $model->deform_split = $splitInfo['deform_split'];
+//            $model->similar_stock = $splitInfo['similar_stock'];
 
-            // 生成计算机拆字信息
-            $minIdsArr = explode("；", $model->min_split);
-            if (!empty($model->deform_split))
-                $minIdsArr[] = $model->deform_split;
+            // 递归生成混合拆分、最大拆分
+            $minIds = $model->min_split . $model->deform_split;
+            if(!empty($model->min_split) && !empty($model->deform_split)) {
+                $minIds = $model->min_split . "；" . $model->deform_split;
+            }
+            if(empty($minIds))
+                continue;
+
+            $minIdsArr = explode("；", $minIds);
             if (empty($minIdsArr))
                 continue;
 
@@ -220,7 +237,7 @@ class HanziSetController extends Controller
 
             $mixIds = implode("；", $mixIdsArr);
             $maxIds = mb_ereg_replace('<.>', '', $mixIds);
-            $strokeSerial = implode('', $this->extractHanzi($mixIds . $model->radical));
+            $strokeSerial = implode('', $this->extractStrokeSerial($minIds, $model->radical));
             $structures = implode("", array_unique($structuresArr));
 
             $outputIds[] = "{$model->id}\t{$structures}\t{$mixIds}\t{$maxIds}\t{$strokeSerial}";
@@ -247,26 +264,106 @@ class HanziSetController extends Controller
     }
 
     /**
+     * 根据最小拆分和部首，递归生成部件序列
      * @param $str
-     * 依次提取参数中的汉字，进行排序，然后返回数组
      */
-    private function extractHanzi($str)
+    private function extractStrokeSerial($minIdsStr, $radical)
     {
-        // 删除空格、结构符、圈数字、分号等
-        $str = mb_ereg_replace('[\s\?&{}<>（）\[\]0-9a-zA-Z①-⑳⿰-⿻；？󰃾󰃿]', '', $str);
-        // 数组
-        if (empty($str)) {
-            return [];
-        } else {
-            $return = array_unique(preg_split('/(?<!^)(?!$)/u', $str));
-            setlocale(LC_COLLATE, 'sk_SK.utf8');
-            $f = function ($a, $b) {
-                return strcoll($a, $b);
-            };
+        // 获取部件字频
+        $totalChrCount = [];
+        $verbMixIds = $this->getVerbMixIds($minIdsStr);
 
-            usort($return, $f);
-            return $return;
+        foreach ($verbMixIds as $ids) {
+            $eachChrCount = $this->getCharCount($ids);
+            foreach ($eachChrCount as $chr => $count) {
+                if (empty($totalChrCount[$chr]))
+                    $totalChrCount[$chr] = $count;
+                elseif ($totalChrCount[$chr] < $count)
+                    $totalChrCount[$chr] = $count;
+            }
         }
+
+        // 将每个部首加入部件字频
+        foreach (explode(';', $radical) as $r) {
+            if (!empty($r) && !empty($totalChrCount[$r])) {
+                $totalChrCount[$r] = 1;
+            }
+        }
+
+        // 获取部件串
+        $idsChar = '';
+        foreach ($totalChrCount as $key => $value) {
+            for ($i = 0; $i < $value; $i++) {
+                $idsChar .= $key;
+            }
+        }
+
+        // 排序
+        $return = preg_split('/(?<!^)(?!$)/u', $idsChar);
+        setlocale(LC_COLLATE, 'sk_SK.utf8');
+        $f = function ($a, $b) {
+            return strcoll($a, $b);
+        };
+        usort($return, $f);
+
+        return $return;
+    }
+
+
+    /*
+     * 从初步拆分递归生成完全混合拆分数组
+     */
+    private function getVerbMixIds($ids)
+    {
+        if (mb_strlen($ids, 'utf-8') == 1) {
+            if (empty($this->hanziIds[$ids])) {
+                return [$ids];
+            } else {
+                $idsArr = [];
+                foreach ($this->getVerbMixIds($this->hanziIds[$ids]) as $i) {
+                    $idsArr[] = "<$ids>{$i}";
+                }
+                return $idsArr;
+            }
+        } elseif (strpos($ids, '；') !== false) {
+            $idsArr = [];
+            foreach (explode('；', $ids) as $i) {
+                $idsArr = array_merge($idsArr, $this->getVerbMixIds($i));
+            }
+            return $idsArr;
+        } else {
+            $items = preg_split('/(?<!^)(?!$)/u', $ids);
+            $totalIds = [''];
+            foreach ($items as $item) {
+                $tempTotalIds = [];
+                $eachArr = $this->getVerbMixIds($item);
+                foreach ($totalIds as $ids) {
+                    foreach ($eachArr as $each) {
+                        $tempTotalIds[] = $ids . $each;
+                    }
+                }
+                $totalIds = $tempTotalIds;
+            }
+            return $totalIds;
+        }
+    }
+
+    /*
+     * 从初步拆分递归得到部件字频
+     */
+    private function getCharCount($str)
+    {
+        $eachChrCount = [];
+        // 删除空格、结构符、圈数字、分号等
+        $chars = mb_ereg_replace('[\s\?&{}<>（）\[\]0-9a-zA-Z①-⑳⿰-⿻？；󰃾󰃿]', '', $str);
+        foreach (preg_split('/(?<!^)(?!$)/u', $chars) as $chr) {
+            if (empty($eachChrCount[$chr]))
+                $eachChrCount[$chr] = 1;
+            else
+                $eachChrCount[$chr] = $eachChrCount[$chr] + 1;
+        }
+        return $eachChrCount;
+
     }
 
     /*
@@ -288,7 +385,6 @@ class HanziSetController extends Controller
             }
             return $totalIds;
         }
-
     }
 
     /**
