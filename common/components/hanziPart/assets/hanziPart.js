@@ -71,6 +71,7 @@
 	{"display" : "𠂆", "input" : "𠂆", "search" : "2pp"},
 	{"display" : "乂", "input" : "乂", "search" : "2pn"},
 	{"display" : "𠆢", "input" : "𠆢", "search" : "2pn"},
+	{"display" : "󱁾", "input" : "󱁾", "search" : "2pn"},
 	{"display" : "㐅", "input" : "㐅", "search" : "2pn"},
 	{"display" : "󱁰", "input" : "󱁰", "search" : "2pn"},
 	{"display" : "⺈", "input" : "⺈", "search" : "2pz"},
